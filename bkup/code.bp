@@ -1,0 +1,206 @@
+//TODO- 1. add copyright and software license
+
+#ifndef PERMACN_MERKLE_H //for avoid multi-inclusions of header files
+#define PERMACN_MERKLE_H
+
+#include <stdint.h>
+#include <stdlib.h>
+
+#include "common.h"
+#define LEAF_SIZE 1024
+typedef unsigned char digest[20];
+
+struct node {
+    digest dgst;
+
+    node *leftPt = nullptr;
+    node *rightPt = nullptr;
+};	// of a Merkle tree
+
+struct leaf {
+	unsigned char data[LEAF_SIZE];
+	node *processedPt = nullptr;
+};	// link the data to its leaf among all
+
+struct path {
+    leaf item;
+    digest *siblings;
+};	// to validate the integrity of an item
+
+class MERKLE {
+private:
+    int height;
+    node *rootPt;
+    leaf *segments;
+
+public:
+    inline node *layer(int k);
+    digest hashLeaf();
+
+};
+
+#endif
+/// merkle.h v0.1
+	leaf seg[10];
+	std::cout << "bytes of whole array (10440) " << sizeof(seg) << std::endl;
+	std::cout << "single element bytes (1044) " << sizeof(*seg) << std::endl;
+	std::cout << "size of arrays (10) " << sizeof(seg) / sizeof(*seg) << std::endl;
+/// test sizeof function
+	using namespace std;
+	leaf test[3];
+	memcpy(test[0].data, "123" , sizeof("123"));
+	SHA1(test[0].data,sizeof(test[0].data),test[0].hash);
+	memcpy(test[1].data, "456" , sizeof("456"));
+	SHA1(test[1].data,sizeof(test[1].data),test[1].hash);
+	memcpy(test[2].data, "678" , sizeof("678"));
+	SHA1(test[2].data,sizeof(test[2].data),test[2].hash);
+	MERKLE testo(test,sizeof(test)/sizeof(*test));
+	cout << testo.returnHeight() << endl;
+/// test Memo allocation
+//TODO- 1. add copyright and software license
+
+#ifndef PERMACN_MERKLE_H //for avoid multi-inclusions of header files
+#define PERMACN_MERKLE_H
+
+#include <cstdint>
+#include <cstdlib>
+
+#include "common.h"
+
+#define LEAF_SIZE 1024
+typedef unsigned char digest[20];
+
+
+struct leaf {
+	unsigned char data[LEAF_SIZE];
+	digest hash;
+};	// data and its hash value
+
+struct path {
+    leaf item;
+    digest *siblings;
+};	// to validate the integrity of an item
+
+class MERKLE {
+private:
+    int now_layer, next_layer, height;
+    size_t num_leaves;
+    leaf *segments;
+    digest **arrays;
+public:
+    MERKLE(unsigned char segments[][LEAF_SIZE], size_t num_segs);
+    int returnHeight();
+};
+
+#endif
+/// merkle.h 07.30
+#include "merkle.h"
+
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <stdexcept>
+#include <iostream>
+#include <openssl/sha.h>
+
+
+// Internal implementation code
+namespace {
+
+/* printHex - to print the unchar array in Hex form
+ * Input - unchar array; Outuput - void; Affect - None
+ */
+void printHex(const unsigned char *d) {
+    for (int i = 0; i < 20; i++) printf("%02x", d[i]);
+    printf("\n");
+}
+// Internal Merkle Tree implmentation
+namespace merkle {
+
+digest hashTwoDigests(digest left, digest right){
+	unsigned char tmp_char[40];
+	// TODO - unwrap self-defined struct and set the digest as a long array
+}
+
+}	// namespace merkle
+
+}	// namespace
+
+/* Merkle tree 1st constructor
+ * Input - the segments of entire file (segment is in fixed length) & their size;
+ * Ouput - void; Affect - initialise the private data source
+ */
+MERKLE::MERKLE(unsigned char segmts[][LEAF_SIZE], size_t num_segs){
+	using namespace std;
+	height = ceil(log2(num_segs)); // excludes leaves layer
+
+	// Arrays memory allocation
+	try{
+		arrays = new digest*[height];
+	}catch (bad_alloc& err){
+		cerr << err.what() <<
+				" @ MERKLE 1st constructor for [arrays**]." << endl;
+	}
+	size_t num_elem = 1;
+	now_layer = 0;
+	next_layer = 0;
+	while(now_layer < height){
+		// Coutest H arrays
+		// cout << "now layer: " << now_layer << " has " << num_elem << " element(s). " << endl;
+		try{
+			arrays[now_layer++] = new digest[num_elem];
+			num_elem = num_elem << 1;
+		}catch (bad_alloc& err){
+			cerr << err.what() <<
+					" @ MERKLE 1st constructor for [arrays*]." << endl;
+		}
+	}
+	// The status after breaking the while loop is the leaf layer
+
+	// Process leaves
+	try{
+		segments = new leaf[num_elem]; // full binary tree
+	}catch (bad_alloc& err){
+		cerr << err.what() <<
+				" @ MERKLE 1st constructor for [segments*]." << endl;
+	}
+
+	for(size_t i = 0; i < num_segs; i++){
+		memcpy(segments[i].data,segmts[i],LEAF_SIZE);
+		SHA1(segmts[i],LEAF_SIZE,segments[i].hash);
+		// Coutest memcpy
+		/*cout << "No. " << i << ": " << segments[i].data  << endl;
+		cout << "And its hash value: ";
+		printHex(segments[i].hash);*/
+		//printHex(segments[i].data);
+	}
+
+	// Fill the leaves into a full binary tree
+	num_leaves = num_segs;
+	while(num_leaves < num_elem){
+		// TODO - should be a LEAF_SIZE random bits
+		memset(segments[num_leaves].data,0,LEAF_SIZE);
+		SHA1(segments[num_leaves].data,LEAF_SIZE,segments[num_leaves].hash);
+		num_leaves++;
+	}
+
+	// Coutest all leaves
+	for(size_t i = 0; i < num_elem; i++){
+		cout << "No. " << i << ": " << segments[i].data  << endl;
+		cout << "And its hash value: ";
+		printHex(segments[i].hash);
+		//printHex(segments[i].data);
+	}
+
+	// Hash children digests
+
+
+}
+
+/* returnHeight - to return the height of this Merkle tree
+ * ! Excludes the leaf layer
+ */
+int MERKLE::returnHeight(){
+	return height;
+}
+/// merkle.cpp 07.30
