@@ -3,6 +3,8 @@
 
 #include "merkle.h"
 
+#include <cstdlib>
+
 #define KEY_SIZE 256
 
 class DEALER {

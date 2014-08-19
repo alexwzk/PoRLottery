@@ -3,7 +3,6 @@
 #ifndef PERMACN_MERKLE_H //for avoid multi-inclusions of header files
 #define PERMACN_MERKLE_H
 
-#include <cstdint>
 #include <cstdlib>
 
 #define LEAF_SIZE 1024
