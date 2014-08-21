@@ -2,17 +2,22 @@
 
 #ifndef PERMACN_MERKLE_H //for avoid multi-inclusions of header files
 #define PERMACN_MERKLE_H
+#include "common.h"
 
+#include <cmath>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
-#define LEAF_SIZE 1024
-#define HASH_SIZE 20
-typedef unsigned char leaf[LEAF_SIZE];
-typedef unsigned char digest[HASH_SIZE];
+#include <stdexcept>
+#include <iostream>
+#include <list>
+#include <iterator>
+#include <openssl/sha.h>
 
 struct path {
 	leaf item;
-	digest *siblings;
+	std::list<std_digest> siblings;
 };
 // to validate the integrity of an item
 

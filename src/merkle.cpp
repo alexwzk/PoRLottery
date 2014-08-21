@@ -1,12 +1,4 @@
 #include "merkle.h"
-#include "common.h"
-
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <stdexcept>
-#include <iostream>
-#include <openssl/sha.h>
 
 MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
 	using namespace std;
@@ -52,9 +44,9 @@ MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
 		SHA1(segmts[i], LEAF_SIZE, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
-		COMMON::printHex(segments[i]);
+		COMMON::printHash(segments[i]);
 		cout << "And its hash value: ";
-		COMMON::printHex(arrays[now_layer][i]);
+		COMMON::printHash(arrays[now_layer][i]);
 	}
 
 	// Fill the leaves into a full binary tree
@@ -68,9 +60,9 @@ MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "No. " << i << ": ";
-		COMMON::printHex(segments[i]);
+		COMMON::printHash(segments[i]);
 		cout << "And its hash value: ";
-		COMMON::printHex(arrays[now_layer][i]);
+		COMMON::printHash(arrays[now_layer][i]);
 	}
 
 	// Hash children digests
@@ -91,7 +83,7 @@ MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
 	for (size_t i = 0; i < height; i++) {
 		for (size_t j = 0; j < num_elem; j++) {
 			cout << "Print [" << i << "] [" << j << "]'s hash value: " << endl;
-			COMMON::printHex(arrays[i][j]);
+			COMMON::printHash(arrays[i][j]);
 		}
 		num_elem = num_elem << 1;
 	}
@@ -106,25 +98,17 @@ path MERKLE::buildPath(size_t loca) {
 		throw overflow_error("The location exceeds the max number of leaves.");
 	}
 	path path_rst;
+	int it_index;
 	// Get the file segment F_{loca}
 	memcpy(path_rst.item, segments[loca], LEAF_SIZE);
-
-	// Retrieve the merkle proof digests
-	try {
-		path_rst.siblings = new digest[height - 1];
-	} catch (bad_alloc& err) {
-		cerr << err.what() << " @ buildPath for [*siblings]." << endl;
-	}
 
 	now_layer = height - 1;
 	size_t now_loca = loca;
 	for (size_t i = 0; i < height - 1; i++) {
 		if (COMMON::isEven(now_loca)) {
-			memcpy(path_rst.siblings[i], arrays[now_layer][now_loca + 1],
-					HASH_SIZE);
+			path_rst.siblings.push_back(COMMON::assignStdigest(arrays[now_layer][now_loca + 1]));
 		} else {
-			memcpy(path_rst.siblings[i], arrays[now_layer][now_loca - 1],
-					HASH_SIZE);
+			path_rst.siblings.push_back(COMMON::assignStdigest(arrays[now_layer][now_loca - 1]));
 		}
 		now_loca = now_loca >> 1;
 		now_layer--;
@@ -134,9 +118,11 @@ path MERKLE::buildPath(size_t loca) {
 	cout << "Coutest the path of " << loca << " : " << endl;
 	cout << "its item is: " << path_rst.item << " and its hash siblings are: "
 			<< endl;
-	for (size_t i = 0; i < height - 1; i++) {
-		cout << "layer " << i << " : ";
-		COMMON::printHex(path_rst.siblings[i]);
+	it_index = 0;
+	for (list<std_digest>::iterator it = path_rst.siblings.begin();
+			it != path_rst.siblings.end(); it++) {
+		printf("layer %d :", it_index++);
+		COMMON::printHash(it->data());
 	}
 
 	return path_rst;
@@ -144,11 +130,11 @@ path MERKLE::buildPath(size_t loca) {
 }
 
 MERKLE::~MERKLE() {
-	delete [] segments;
+	delete[] segments;
 	for (size_t i = 0; i < height; i++) {
-		delete [] arrays[i];
+		delete[] arrays[i];
 	}
-	delete [] arrays;
+	delete[] arrays;
 }
 
 int MERKLE::returnHeight() {

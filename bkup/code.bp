@@ -204,3 +204,19 @@ int MERKLE::returnHeight(){
 	return height;
 }
 /// merkle.cpp 07.30
+
+/*
+ * Assign a std::array with a c-style array
+ * Input - c-srtring array head pointer, the length of array
+ * Return - a std::array
+ */
+template<typename T, std::size_t N>
+std::array<T, N> assignStdArray(T ca, size_t len) {
+	std::array<T, N> a;
+	size_t bound = std::min(N, len);
+	for(size_t i = 0; i < bound; i++){
+		//a[i] = ca[i];
+	}
+	return a;
+}
+/// Template method 08.20
