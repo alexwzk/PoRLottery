@@ -1,7 +1,6 @@
-//TODO - add copyright and software license
-
-#ifndef PERMACN_MERKLE_H //for avoid multi-inclusions of header files
+#ifndef PERMACN_MERKLE_H //to avoid multi-inclusions of header files
 #define PERMACN_MERKLE_H
+
 #include "common.h"
 
 #include <cmath>
@@ -12,20 +11,21 @@
 #include <stdexcept>
 #include <iostream>
 #include <list>
+#include <vector>
 #include <iterator>
 #include <openssl/sha.h>
 
 struct path {
-	leaf item;
-	std::list<std_digest> siblings;
+	zk_leaf item;
+	std::list<zk_digest> siblings;
 };
 // to validate the integrity of an item
 
 class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height;
-	leaf *segments;
-	digest **arrays;
+	leaf *segments;		//a buffer-like array
+	digest **arrays;	//Should be treated as a hierarchical chunks of buffer
 
 	int now_layer, next_layer;
 
@@ -33,10 +33,10 @@ public:
 
 	/*
 	 * Merkle tree 1st constructor
-	 * Input - the segments of entire file (segment is in fixed length) & their size;
+	 * Input - a vector of file segments
 	 * Ouput - void; Affect - initialise the private data source
 	 */
-	MERKLE(leaf *segments, size_t num_segs);
+	MERKLE(std::vector<zk_leaf> segms);
 
 	/*
 	 * buildPath - builds the Merkle proof for the corresponding segment

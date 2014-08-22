@@ -1,8 +1,8 @@
 #include "merkle.h"
 
-MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
+MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 	using namespace std;
-	num_segmts = num_segs;
+	num_segmts = segmts.size();
 	height = ceil(log2(num_segmts)) + 1; // includes the root
 
 	// Arrays memory allocation
@@ -40,8 +40,8 @@ MERKLE::MERKLE(leaf *segmts, size_t num_segs) {
 
 	// Hash the leaves (file segments)
 	for (size_t i = 0; i < num_segmts; i++) {
-		memcpy(segments[i], segmts[i], LEAF_SIZE);
-		SHA1(segmts[i], LEAF_SIZE, arrays[now_layer][i]);
+		memcpy(segments[i], segmts[i].data(), LEAF_SIZE);
+		SHA1(segments[i], LEAF_SIZE, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
 		COMMON::printHash(segments[i]);
@@ -100,29 +100,30 @@ path MERKLE::buildPath(size_t loca) {
 	path path_rst;
 	int it_index;
 	// Get the file segment F_{loca}
-	memcpy(path_rst.item, segments[loca], LEAF_SIZE);
+	path_rst.item.assign(segments[loca], LEAF_SIZE);
 
 	now_layer = height - 1;
 	size_t now_loca = loca;
+	zk_digest chngform;
 	for (size_t i = 0; i < height - 1; i++) {
 		if (COMMON::isEven(now_loca)) {
-			path_rst.siblings.push_back(COMMON::assignStdigest(arrays[now_layer][now_loca + 1]));
+			chngform.assign(arrays[now_layer][now_loca + 1], LEAF_SIZE);
 		} else {
-			path_rst.siblings.push_back(COMMON::assignStdigest(arrays[now_layer][now_loca - 1]));
+			chngform.assign(arrays[now_layer][now_loca - 1], LEAF_SIZE);
 		}
+		path_rst.siblings.push_back(chngform);
 		now_loca = now_loca >> 1;
 		now_layer--;
 	}
 
 	//Coutest path
 	cout << "Coutest the path of " << loca << " : " << endl;
-	cout << "its item is: " << path_rst.item << " and its hash siblings are: "
+	cout << "its item is: " << path_rst.item.data() << " and its hash siblings are: "
 			<< endl;
 	it_index = 0;
-	for (list<std_digest>::iterator it = path_rst.siblings.begin();
-			it != path_rst.siblings.end(); it++) {
-		printf("layer %d :", it_index++);
-		COMMON::printHash(it->data());
+	for (auto it : path_rst.siblings) {
+		cout << "layer " << (it_index++) << " ";
+		COMMON::printHash(it.data());
 	}
 
 	return path_rst;
