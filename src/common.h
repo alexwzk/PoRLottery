@@ -9,8 +9,10 @@
 #define LEAF_SIZE 1024
 #define HASH_SIZE 20
 #define KEY_SIZE 256
+#define XTRACT_SIZE 8
 
 #define FILE_ERR 1
+#define INVALID_ERR -1
 
 typedef unsigned char leaf[LEAF_SIZE];
 typedef unsigned char digest[HASH_SIZE];
@@ -19,13 +21,13 @@ typedef ZK::ARRAY<unsigned char, LEAF_SIZE> zk_leaf;
 
 namespace COMMON {
 
-/*
+/**
  * printHex - to print the unchar array in Hex form
  * Input - unchar array; Outuput - void; Affect - None
  */
 void printHash(const unsigned char *d);
 
-/*
+/**
  * template isEven - return true if the value is even
  * Input - a size_t value; output - true or false
  * Affect - none
@@ -33,6 +35,18 @@ void printHash(const unsigned char *d);
 template<typename T>
 inline bool isEven(T v) {
 	return ((v % 2) == 0 ? true : false);
+}
+
+/**
+ * extract a small number from the hashvalue
+ *
+ */
+inline size_t extractHash(digest hashv){
+	size_t number = 0;
+	for(int i = 0; i < XTRACT_SIZE; i++){
+		number += hashv[i];
+	}
+	return number;
 }
 
 }	/// namespace COMMON

@@ -44,8 +44,8 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 		SHA1(segments[i], LEAF_SIZE, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
-		COMMON::printHash(segments[i]);
-		cout << "And its hash value: ";
+//		cout << segmts[i] << " and its";
+		cout << " hash value: ";
 		COMMON::printHash(arrays[now_layer][i]);
 	}
 
@@ -92,12 +92,12 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 
 }
 
-path MERKLE::buildPath(size_t loca) {
+PATH MERKLE::buildPath(size_t loca) {
 	using namespace std;
 	if (loca >= num_leaves) {
 		throw overflow_error("The location exceeds the max number of leaves.");
 	}
-	path path_rst;
+	PATH path_rst;
 	int it_index;
 	// Get the file segment F_{loca}
 	path_rst.item.assign(segments[loca], LEAF_SIZE);
@@ -118,8 +118,8 @@ path MERKLE::buildPath(size_t loca) {
 
 	//Coutest path
 	cout << "Coutest the path of " << loca << " : " << endl;
-	cout << "its item is: " << path_rst.item.data() << " and its hash siblings are: "
-			<< endl;
+//	cout << "its item is: " << path_rst.item.data();
+	cout << " and its hash siblings are: " << endl;
 	it_index = 0;
 	for (auto it : path_rst.siblings) {
 		cout << "layer " << (it_index++) << " ";

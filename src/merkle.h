@@ -14,9 +14,19 @@
 #include <iterator>
 #include <openssl/sha.h>
 
-struct path {
+class PATH {
+public:
 	zk_leaf item;
 	std::list<zk_digest> siblings;
+	friend bool operator== (const PATH& p1, const PATH& p2){
+		return p1.item == p2.item;
+	}
+	friend bool operator< (const PATH& p1, const PATH& p2){
+		return p1.item < p2.item;
+	}
+	friend bool operator> (const PATH& p1, const PATH& p2){
+		return p1.item > p2.item;
+	}
 };
 // to validate the integrity of an item
 
@@ -44,7 +54,7 @@ public:
 	 * the segment and its Merkle proof (an array of sibling digests)
 	 * Affect - none
 	 */
-	path buildPath(size_t loca);
+	PATH buildPath(size_t loca);
 
 	/*
 	 * Merkle tree destructor
