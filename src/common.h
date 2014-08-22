@@ -10,6 +10,8 @@
 #define HASH_SIZE 20
 #define KEY_SIZE 256
 
+#define FILE_ERR 1
+
 typedef unsigned char leaf[LEAF_SIZE];
 typedef unsigned char digest[HASH_SIZE];
 typedef ZK::ARRAY<unsigned char, HASH_SIZE> zk_digest;

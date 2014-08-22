@@ -4,21 +4,22 @@
 #include "common.h"
 #include "merkle.h"
 
-#include <cstdlib>
+#include <set>
 
 class DEALER {
 private:
-	char public_key[KEY_SIZE];
-	bool is_ready;
-	MERKLE merkle_tree;
-	size_t *subset_segPt;
-	size_t num_subset, num_all;
-	path *path_list;
+
+	MERKLE *mktreePt = nullptr;
+	char pubkey[KEY_SIZE];
+	size_t num_subset = 5, num_all = 8; //TODO: set as a macro?
+	std::vector<size_t> subset_pk;
+	std::set<path> path_set;
+	bool is_ready = false;
 
 	/*
 	 * createSubset - generates the S_{pk}
-	 * Input - nothing; Output - 0 is success, otherwise -1 means is_ready == false;
-	 * Affect - subset_segPt
+	 * Input - nothing; Output - 0 is success, otherwise -1 means not ready yet (no new key);
+	 * Affect - updates subset_pk, path_set and set is_ready as false
 	 */
 	int createSubset();
 
@@ -26,7 +27,6 @@ public:
 	/*
 	 * DEALER 1st constructor - computes the Merkle tree of the entire dataset
 	 * Input - the file path; Output - void; Affect - initialise the merkle_tree
-	 * ! The file should include the total number of data segments
 	 */
 	DEALER(char *filenamePt);
 
@@ -38,7 +38,7 @@ public:
 	 *	Output - a set of file segments and their Merkle proofs (path list);
 	 *	Affect - all private data except the merkle_tree;
 	 */
-	path* createSource(char *user_pkPt);
+	std::set<path> createSource(char *user_pkPt);
 
 };
 

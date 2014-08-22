@@ -4,7 +4,6 @@
 #include "common.h"
 
 #include <cmath>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
@@ -23,11 +22,11 @@ struct path {
 
 class MERKLE {
 private:
-	size_t num_segmts, num_leaves, height;
-	leaf *segments;		//a buffer-like array
-	digest **arrays;	//Should be treated as a hierarchical chunks of buffer
+	size_t num_segmts = 0, num_leaves = 0, height = 0;
+	leaf *segments = nullptr;	//a buffer-like array
+	digest **arrays = nullptr;	//Should be treated as a hierarchical chunks of buffer
 
-	int now_layer, next_layer;
+	int now_layer = -1, next_layer = -1;
 
 public:
 
