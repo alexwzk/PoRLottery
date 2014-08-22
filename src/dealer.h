@@ -1,11 +1,10 @@
 #ifndef PERMACN_DEALER_H
 #define PERMACN_DEALER_H
 
+#include "common.h"
 #include "merkle.h"
 
 #include <cstdlib>
-
-#define KEY_SIZE 256
 
 class DEALER {
 private:
