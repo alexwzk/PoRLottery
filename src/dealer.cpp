@@ -3,24 +3,30 @@
 DEALER::DEALER(std::string filenamePt) {
 	using namespace std;
 	ifstream inputs;
+	vector<zk_leaf> file_segmts;
+	char inbuffer[LEAF_SIZE] = { };
+	zk_leaf tmp_zleaf;
 	try {
-		inputs.open(filenamePt);
+		inputs.open(filenamePt, ifstream::binary);
 	} catch (ifstream::failure& err) {
 		cerr << err.what() << " @ Opening file at Dealer 1st constructor."
 				<< endl;
 	}
-	//Get the start and end of inputs
-	//and repeatedly feed data to zk_leaves
-	istream_iterator<zk_leaf> start(inputs), end;
-	vector<zk_leaf> file_segmts(start, end);
-
-	//Coutest size
-	cout << "The file will be divided into " << file_segmts.size()
-			<< " segments" << endl;
-	//Coutest contents
-	/*cout << "File contest read in: " << endl;
-	 copy(file_segmts.begin(), file_segmts.end(),
-	 std::ostream_iterator<zk_leaf>(std::cout, "\n"));*/
+	while (inputs) {
+		inputs.read(inbuffer, LEAF_SIZE);
+		tmp_zleaf.assign(reinterpret_cast<unsigned char*>(inbuffer), LEAF_SIZE);
+		file_segmts.push_back(tmp_zleaf);
+	}
+	if (!inputs.eof()) {
+		//File size can't be divided by the LEAF_SIZE
+		//Coutest remainder of the file size
+		inputs.read(inbuffer, inputs.gcount());
+		for (int i = inputs.gcount(); i < LEAF_SIZE; i++) {
+			inbuffer[i] = 0;
+		}
+		tmp_zleaf.assign(reinterpret_cast<unsigned char*>(inbuffer), LEAF_SIZE);
+		file_segmts.push_back(tmp_zleaf);
+	}
 
 	mktreePt = new MERKLE(file_segmts);
 
@@ -33,7 +39,7 @@ int DEALER::createSubset() {
 	subset_pk.clear();
 	// Hash(pk||i) for i: 0 -> l
 	for (size_t i = 0; i < num_subset; i++) {
-		pubkey.push_back(i); //TODO: size_t truncate into char, is it save?
+		pubkey.push_back(i); //TODO: size_t is truncated into char, is it save?
 		//Coutest pubkey
 		std::cout << "The pk||i : " << pubkey << std::endl;
 		SHA1((unsigned char *) pubkey.data(), pubkey.size(), hashvalue);
@@ -42,7 +48,7 @@ int DEALER::createSubset() {
 		std::cout << "extract from hash : " << COMMON::extractHash(hashvalue)
 				<< " then mod by " << num_all << " turns out "
 				<< COMMON::extractHash(hashvalue) % num_all << std::endl;
-		subset_pk.insert(COMMON::extractHash(hashvalue) % num_all); //TODO: Duplicates?
+		subset_pk.insert(COMMON::extractHash(hashvalue) % num_all);	//TODO: Duplicates?
 		pubkey.pop_back();
 	}
 	//Coutest subset_pk

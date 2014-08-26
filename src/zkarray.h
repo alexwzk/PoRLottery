@@ -37,7 +37,7 @@ public:
 	 */
 	friend std::ostream& operator<<(std::ostream& output, const ARRAY& ary) {
 		for (size_t i = 0; i < N; i++) {
-			output << ary[i];
+			output << ary[i] << " ";
 		}
 		return output;
 	}

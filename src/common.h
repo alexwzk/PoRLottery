@@ -11,6 +11,7 @@
 #define KEY_SIZE 256
 #define XTRACT_SIZE 8
 
+#define HEAD 0
 #define FILE_ERR 1
 #define INVALID_ERR -1
 
@@ -41,13 +42,7 @@ inline bool isEven(T v) {
  * extract a small number from the hashvalue
  *
  */
-inline size_t extractHash(digest hashv){
-	size_t number = 0;
-	for(int i = 0; i < XTRACT_SIZE; i++){
-		number += hashv[i];
-	}
-	return number;
-}
+size_t extractHash(digest hashv);
 
 }	/// namespace COMMON
 

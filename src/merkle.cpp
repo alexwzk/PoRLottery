@@ -87,9 +87,6 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 		}
 		num_elem = num_elem << 1;
 	}
-
-	//TODO - Coutest correctness
-
 }
 
 PATH MERKLE::buildPath(size_t loca) {
