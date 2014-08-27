@@ -6,7 +6,7 @@ void COMMON::printHash(const unsigned char *d) {
 	printf("\n");
 }
 
-size_t COMMON::extractHash(digest hashv){
+size_t COMMON::hashToNumber(digest hashv){
 	size_t number = 0;
 	for(int i = 0; i < XTRACT_SIZE; i++){
 		number += hashv[i];

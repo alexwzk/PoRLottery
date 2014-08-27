@@ -32,25 +32,27 @@ DEALER::DEALER(std::string filenamePt) {
 
 }
 int DEALER::createSubset() {
+	size_t count = 0;
+	std::string tmp_str;
 	if (!can_update) {
 		return INVALID_ERR;
 	}
 	digest hashvalue;
 	subset_pk.clear();
-	// Hash(pk||i) for i: 0 -> l
-	for (size_t i = 0; i < num_subset; i++) {
-		pubkey.push_back(i); //TODO: size_t is truncated into char, is it save?
-		//Coutest pubkey
-		std::cout << "The pk||i : " << pubkey << std::endl;
-		SHA1((unsigned char *) pubkey.data(), pubkey.size(), hashvalue);
-		//pick part of the hash value and mod by n
-		//Coutest extractHash
-		std::cout << "extract from hash : " << COMMON::extractHash(hashvalue)
-				<< " then mod by " << num_all << " turns out "
-				<< COMMON::extractHash(hashvalue) % num_all << std::endl;
-		subset_pk.insert(COMMON::extractHash(hashvalue) % num_all);	//TODO: Duplicates?
-		pubkey.pop_back();
-	}
+	// Hash(pk||i) for i: 0, 1 ... until the subset reaches l number of segments
+	do {
+		tmp_str = pubkey + std::to_string(count++);
+		std::cout << "The pk||i : " << tmp_str << std::endl;
+		SHA1(reinterpret_cast<const unsigned char*>(tmp_str.data()), tmp_str.size(),
+				hashvalue);
+		//Extract small number from the hash
+		subset_pk.insert(COMMON::hashToNumber(hashvalue) % num_all);
+		//Coutest generate random number within num_all
+		std::cout << "The random number is : " << COMMON::hashToNumber(hashvalue)
+		<< " mod by " << num_all << " turns out: "
+		<< COMMON::hashToNumber(hashvalue) % num_all << std::endl;
+	} while (subset_pk.size() < num_subset);
+
 	//Coutest subset_pk
 	std::cout << "The size of subset_{pk}: " << subset_pk.size() << std::endl;
 	for (auto i : subset_pk) {

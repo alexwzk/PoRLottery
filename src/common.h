@@ -9,7 +9,7 @@
 #define LEAF_SIZE 1024
 #define HASH_SIZE 20
 #define KEY_SIZE 256
-#define XTRACT_SIZE 8
+#define XTRACT_SIZE 10
 
 #define HEAD 0
 #define FILE_ERR 1
@@ -42,7 +42,7 @@ inline bool isEven(T v) {
  * extract a small number from the hashvalue
  *
  */
-size_t extractHash(digest hashv);
+size_t hashToNumber(digest hashv);
 
 }	/// namespace COMMON
 
