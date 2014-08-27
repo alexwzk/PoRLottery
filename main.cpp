@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[]) {
 	using namespace std;
-	DEALER testo(argv[1]);
+	DEALER testo(argv[1]); //the path of database
 	testo.createSource("testkey");
 	return 0;
 }

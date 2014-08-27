@@ -5,11 +5,14 @@
 
 #include <cstdio>
 
-/// Macro N' typedef structure
+/// Macros N' typedef structure
 #define LEAF_SIZE 1024
 #define HASH_SIZE 20
 #define KEY_SIZE 256
 #define XTRACT_SIZE 10
+#define SUBSET_CONST 2
+#define ALL_CONST 4
+#define CHALNG_CONST 1
 
 #define HEAD 0
 #define FILE_ERR 1
