@@ -19,7 +19,6 @@ DEALER::DEALER(std::string filenamePt) {
 	}
 	if (!inputs.eof()) {
 		//File size can't be divided by the LEAF_SIZE
-		//Coutest remainder of the file size
 		inputs.read(inbuffer, inputs.gcount());
 		for (int i = inputs.gcount(); i < LEAF_SIZE; i++) {
 			inbuffer[i] = 0;
@@ -43,14 +42,15 @@ int DEALER::createSubset() {
 	do {
 		tmp_str = pubkey + std::to_string(count++);
 		std::cout << "The pk||i : " << tmp_str << std::endl;
-		SHA1(reinterpret_cast<const unsigned char*>(tmp_str.data()), tmp_str.size(),
-				hashvalue);
+		SHA1(reinterpret_cast<const unsigned char*>(tmp_str.data()),
+				tmp_str.size(), hashvalue);
 		//Extract small number from the hash
 		subset_pk.insert(COMMON::hashToNumber(hashvalue) % num_all);
 		//Coutest generate random number within num_all
-		std::cout << "The random number is : " << COMMON::hashToNumber(hashvalue)
-		<< " mod by " << num_all << " turns out: "
-		<< COMMON::hashToNumber(hashvalue) % num_all << std::endl;
+		/*std::cout << "The random number is : "
+				<< COMMON::hashToNumber(hashvalue) << " mod by " << num_all
+				<< " turns out: " << COMMON::hashToNumber(hashvalue) % num_all
+				<< std::endl;*/
 	} while (subset_pk.size() < num_subset);
 
 	//Coutest subset_pk
@@ -75,4 +75,8 @@ std::set<PATH> DEALER::createSource(std::string usr_pubkey) {
 		}
 	}
 	return path_set;
+}
+
+DEALER::~DEALER() {
+	delete mktreePt;
 }

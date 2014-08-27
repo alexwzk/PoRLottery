@@ -32,7 +32,12 @@ public:
 	 */
 	DEALER(std::string filenamePt);
 
-	//TODO - destructor, copy and assignment functions
+	/**
+	 * DEALER destructor
+	 */
+	~DEALER();
+
+	//TODO: copy and assignment functions
 
 	/**
 	 *	createSource - setup the permacoin for a participant

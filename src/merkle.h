@@ -14,8 +14,7 @@
 #include <iterator>
 #include <openssl/sha.h>
 
-class PATH {
-public:
+struct PATH {
 	zk_leaf item;
 	std::list<zk_digest> siblings;
 	friend bool operator==(const PATH& p1, const PATH& p2) {
