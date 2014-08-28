@@ -13,3 +13,13 @@ size_t COMMON::hashToNumber(digest hashv){
 	}
 	return number;
 }
+
+std::string newRandStr(size_t k){
+	std::default_random_engine rand_engine;
+	size_t nonce = rand_engine();
+	std::string randstr;
+	unsigned char hashv[HASH_SIZE];
+	SHA1(reinterpret_cast<const unsigned char*>(&nonce),sizeof(size_t),hashv);
+	//TODO: while loop until reaches k bits
+	return randstr;
+}

@@ -3,7 +3,9 @@
 
 #include "zkarray.h"
 
+#include <openssl/sha.h>
 #include <cstdio>
+#include <random>
 
 /// Macros N' typedef structure
 #define LEAF_SIZE 1024
@@ -46,6 +48,13 @@ inline bool isEven(T v) {
  *
  */
 size_t hashToNumber(digest hashv);
+
+/**
+ * generate a k-bits random std::string
+ * Input - unsigned int k; output - std::string
+ * Affect - none
+ */
+std::string newRandStr(size_t k);
 
 }	/// namespace COMMON
 

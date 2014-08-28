@@ -31,31 +31,30 @@ DEALER::DEALER(std::string filenamePt) {
 
 }
 int DEALER::createSubset() {
-	size_t count = 0;
 	std::string tmp_str;
 	if (!can_update) {
 		return INVALID_ERR;
 	}
 	digest hashvalue;
-	subset_pk.clear();
+	uarray_pk.clear();
 	// Hash(pk||i) for i: 0, 1 ... until the subset reaches l number of segments
-	do {
-		tmp_str = pubkey + std::to_string(count++);
+	for(size_t i = 0; i < num_subset; i++){
+		tmp_str = pubkey + std::to_string(i);
 		std::cout << "The pk||i : " << tmp_str << std::endl;
 		SHA1(reinterpret_cast<const unsigned char*>(tmp_str.data()),
 				tmp_str.size(), hashvalue);
 		//Extract small number from the hash
-		subset_pk.insert(COMMON::hashToNumber(hashvalue) % num_all);
+		uarray_pk.push_back(COMMON::hashToNumber(hashvalue) % num_all);
 		//Coutest generate random number within num_all
-		/*std::cout << "The random number is : "
+		std::cout << "The random number is : "
 				<< COMMON::hashToNumber(hashvalue) << " mod by " << num_all
 				<< " turns out: " << COMMON::hashToNumber(hashvalue) % num_all
-				<< std::endl;*/
-	} while (subset_pk.size() < num_subset);
+				<< std::endl;
+	}
 
 	//Coutest subset_pk
-	std::cout << "The size of subset_{pk}: " << subset_pk.size() << std::endl;
-	for (auto i : subset_pk) {
+	std::cout << "The size of subset_{pk}: " << uarray_pk.size() << std::endl;
+	for (auto i : uarray_pk) {
 		std::cout << i << " ";
 	}
 	std::cout << std::endl;
@@ -64,17 +63,17 @@ int DEALER::createSubset() {
 	return 0;
 }
 
-std::set<PATH> DEALER::createSource(std::string usr_pubkey) {
+std::vector<PATH> DEALER::createSource(std::string usr_pubkey) {
 	if (pubkey.compare(usr_pubkey) != 0) {
 		pubkey = usr_pubkey;
 		can_update = true;
 		createSubset();
-		path_set.clear();
-		for (auto it : subset_pk) {
-			path_set.insert(mktreePt->buildPath(it));
+		paths.clear();
+		for (auto it : uarray_pk) {
+			paths.push_back(mktreePt->buildPath(it));
 		}
 	}
-	return path_set;
+	return paths;
 }
 
 DEALER::~DEALER() {

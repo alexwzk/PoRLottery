@@ -4,7 +4,6 @@
 #include "common.h"
 #include "merkle.h"
 
-#include <set>
 #include <fstream>
 
 class DEALER {
@@ -13,8 +12,8 @@ private:
 	MERKLE *mktreePt = nullptr;
 	std::string pubkey;
 	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
-	std::set<size_t> subset_pk;
-	std::set<PATH> path_set;
+	std::vector<size_t> uarray_pk;
+	std::vector<PATH> paths;
 	bool can_update = false;
 
 	/**
@@ -45,7 +44,7 @@ public:
 	 *	Output - a set of file segments and their Merkle proofs (path list);
 	 *	Affect - all private data except the merkle_tree;
 	 */
-	std::set<PATH> createSource(std::string usr_pubkey);
+	std::vector<PATH> createSource(std::string usr_pubkey);
 
 };
 

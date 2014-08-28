@@ -7,7 +7,7 @@
 struct TICKET {
 	std::string pubkey;
 	std::string seed;
-	std::set<PATH> mkproofs;
+	std::vector<PATH> mkproofs;
 };
 
 class USER {
@@ -16,7 +16,7 @@ private:
 	int chalng_times = CHALNG_CONST;
 	bool ready_to_release = false;
 	std::vector<size_t> chalng_pos;
-	std::set<PATH> allmkproofs;
+	std::vector<PATH> allmkproofs;
 	TICKET myticket;
 
 	/**
@@ -53,7 +53,7 @@ public:
 	 * Output: the new size of mkproofs
 	 * Affect: this->allmkproofs
 	 */
-	int getMKProofs(std::set<PATH> inmkproofs);
+	int getMKProofs(std::vector<PATH> inmkproofs);
 
 	/**
 	 * Reveal my public key

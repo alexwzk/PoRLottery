@@ -52,7 +52,7 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 	// Fill the leaves into a full binary tree
 	num_leaves = num_segmts;
 	while (num_leaves < num_elem) {
-		memset(segments[num_leaves], 0, LEAF_SIZE); // TODO - should be a LEAF_SIZE random bits
+		memset(segments[num_leaves], 0, LEAF_SIZE);
 		SHA1(segments[num_leaves], LEAF_SIZE, arrays[now_layer][num_leaves]);
 		num_leaves++;
 	}
