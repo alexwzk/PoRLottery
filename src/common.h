@@ -6,6 +6,9 @@
 #include <openssl/sha.h>
 #include <cstdio>
 #include <random>
+#include <algorithm>
+#include <string>
+#include <stdexcept>
 
 /// Macros N' typedef structure
 #define LEAF_SIZE 1024
@@ -15,8 +18,10 @@
 #define SUBSET_CONST 2
 #define ALL_CONST 4
 #define CHALNG_CONST 1
+#define SEED_LENGTH 160
 
 #define HEAD 0
+#define SUCCESS 0
 #define FILE_ERR 1
 #define INVALID_ERR -1
 
@@ -32,6 +37,13 @@ namespace COMMON {
  * Input - unchar array; Outuput - void; Affect - None
  */
 void printHash(const unsigned char *d);
+
+/**
+ * String in Hex form
+ * http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
+ * Not tested
+ */
+std::string stringToHex(const std::string& input);
 
 /**
  * template isEven - return true if the value is even

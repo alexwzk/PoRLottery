@@ -7,10 +7,30 @@
 //============================================================================
 
 #include "src/dealer.h"
+#include "src/user.h"
 
 int main(int argc, char *argv[]) {
 	using namespace std;
 	DEALER testo(argv[1]); //the path of database
-	testo.createSource(argv[2]); // the public key
+	USER teste(argv[2]);
+	teste.getMKProofs(testo.createSource(argv[2]));
+	teste.getNewPuzzle(argv[3]); // a test unpredictable puzzle id
+	TICKET *testa = teste.releaseTicket();
+	if (testa == nullptr) {
+		cout << "ticket not ready" <<endl;
+		return -1;
+	}
+	int it_index = -1;
+	cout << "pubkey: " << COMMON::stringToHex(testa->pubkey) << endl;
+	cout << "seed: " << COMMON::stringToHex(testa->seed) << endl;
+	for (auto it : testa->mkproofs) {
+		cout << "item: " << it.item.data();
+		cout << " and its hash siblings are: " << endl;
+		it_index = 0;
+		for (auto jt : it.siblings) {
+			cout << "layer " << (it_index++) << " ";
+			COMMON::printHash(jt.data());
+		}
+	}
 	return 0;
 }
