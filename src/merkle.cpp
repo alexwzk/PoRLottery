@@ -1,6 +1,6 @@
 #include "merkle.h"
 
-MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
+MERKLE::MERKLE(std::vector<uchar *> segmts) {
 	using namespace std;
 	num_segmts = segmts.size();
 	height = ceil(log2(num_segmts)) + 1; // includes the root
@@ -20,7 +20,7 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 		// cout << "now layer: " << now_layer << " has " << num_elem << " element(s). " << endl;
 		try {
 			arrays[next_layer++] = new digest[num_elem];
-		} catch (bad_alloc& err) {
+		} catch (bad_alloc& err){
 			cerr << err.what() << " @ MERKLE 1st constructor for [arrays*]."
 					<< endl;
 		}
@@ -40,7 +40,7 @@ MERKLE::MERKLE(std::vector<zk_leaf> segmts) {
 
 	// Hash the leaves (file segments)
 	for (size_t i = 0; i < num_segmts; i++) {
-		memcpy(segments[i], segmts[i].data(), LEAF_SIZE);
+		memcpy(segments[i], segmts[i], LEAF_SIZE);
 		SHA1(segments[i], LEAF_SIZE, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
@@ -94,21 +94,18 @@ PATH MERKLE::buildPath(size_t loca) {
 	if (loca >= num_leaves) {
 		throw overflow_error("The location exceeds the max number of leaves.");
 	}
-	PATH path_rst;
 	int it_index;
 	// Get the file segment F_{loca}
-	path_rst.item.assign(segments[loca], LEAF_SIZE);
+	PATH path_rst(segments[loca]);
 
-	now_layer = height - 1;
 	size_t now_loca = loca;
-	zk_digest chngform;
+	now_layer = height - 1;
 	for (size_t i = 0; i < height - 1; i++) {
 		if (COMMON::isEven(now_loca)) {
-			chngform.assign(arrays[now_layer][now_loca + 1], LEAF_SIZE);
+			path_rst.pushDigestPt(arrays[now_layer][now_loca + 1]);
 		} else {
-			chngform.assign(arrays[now_layer][now_loca - 1], LEAF_SIZE);
+			path_rst.pushDigestPt(arrays[now_layer][now_loca - 1]);
 		}
-		path_rst.siblings.push_back(chngform);
 		now_loca = now_loca >> 1;
 		now_layer--;
 	}
@@ -118,9 +115,9 @@ PATH MERKLE::buildPath(size_t loca) {
 //	cout << "its item is: " << path_rst.item.data();
 	cout << " and its hash siblings are: " << endl;
 	it_index = 0;
-	for (auto it : path_rst.siblings) {
+	for (auto it : path_rst.returnSiblings()) {
 		cout << "layer " << (it_index++) << " ";
-		COMMON::printHash(it.data());
+		COMMON::printHash(it);
 	}
 
 	return path_rst;
@@ -133,8 +130,4 @@ MERKLE::~MERKLE() {
 		delete[] arrays[i];
 	}
 	delete[] arrays;
-}
-
-int MERKLE::returnHeight() {
-	return height;
 }

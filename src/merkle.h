@@ -2,31 +2,7 @@
 #define PERMACN_MERKLE_H
 
 #include "common.h"
-
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-
-#include <stdexcept>
-#include <iostream>
-#include <list>
-#include <vector>
-#include <iterator>
-#include <openssl/sha.h>
-
-struct PATH {
-	zk_leaf item;
-	std::list<zk_digest> siblings;
-	friend bool operator==(const PATH& p1, const PATH& p2) {
-		return p1.item == p2.item;
-	}
-	friend bool operator<(const PATH& p1, const PATH& p2) {
-		return p1.item < p2.item;
-	}
-	friend bool operator>(const PATH& p1, const PATH& p2) {
-		return p1.item > p2.item;
-	}
-};
+#include "path.h"
 
 class MERKLE {
 private:
@@ -40,33 +16,34 @@ public:
 
 	/**
 	 * Merkle tree 1st constructor
-	 * Input - a vector of file segments
-	 * Ouput - void; Affect - initialise the private data source
+	 * Input: a vector of pointers to every file segment
+	 * Affect: initialise all private data
 	 */
-	MERKLE(std::vector<zk_leaf> segms);
+	MERKLE(std::vector<uchar *> segms);
 
 	/**
-	 * buildPath - builds the Merkle proof for the corresponding segment
-	 * Input - the location of wanted segment;
-	 * Output - a self-defined data struct (path) including
-	 * the segment and its Merkle proof (an array of sibling digests)
-	 * Affect - none
+	 * Builds the Merkle proof for the corresponding segment
+	 * Input: the location of target segment;
+	 * Output: a self-defined data struct (path) including
+	 * the segment and its Merkle proof (an array of pointers to each sibling digest)
 	 */
 	PATH buildPath(size_t loca);
 
 	/**
+	 *Validates the received path is legitimate in this merkle tree
+	 *Input: a PATH data
+	 *Output: true if it's correct otherwise false
+	 */
+	bool validatePath(PATH p){ return false; }
+
+	/**
 	 * Merkle tree destructor
-	 * Input - null; Output - void; Affect - release dynamic memory allocation
+	 * Affect: release dynamic memory allocation
 	 */
 	~MERKLE();
 
-	//TODO - Need copy & assignment
+	//TODO: copy & assignment
 
-	/**
-	 * returnHeight - returns the height of this Merkle tree
-	 * Input - null; Output - the private data: height; Affect - none
-	 */
-	int returnHeight();
 };
 
 #endif
