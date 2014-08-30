@@ -2,7 +2,7 @@
 
 class PATH {
 private:
-	uchar* leafPt;	// the head pt of item
+	uchar* leafPt = nullptr;	// the head pt of item
 	std::list<uchar*> siblings; // the item's hash siblings
 
 public:

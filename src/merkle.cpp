@@ -46,7 +46,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 		cout << "No. " << i << ": ";
 //		cout << segmts[i] << " and its";
 		cout << " hash value: ";
-		COMMON::printHash(arrays[now_layer][i]);
+		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
 
 	// Fill the leaves into a full binary tree
@@ -60,9 +60,9 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "No. " << i << ": ";
-		COMMON::printHash(segments[i]);
+		COMMON::printHex(segments[i], LEAF_SIZE);
 		cout << "And its hash value: ";
-		COMMON::printHash(arrays[now_layer][i]);
+		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
 
 	// Hash children digests
@@ -83,28 +83,28 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 	for (size_t i = 0; i < height; i++) {
 		for (size_t j = 0; j < num_elem; j++) {
 			cout << "Print [" << i << "] [" << j << "]'s hash value: " << endl;
-			COMMON::printHash(arrays[i][j]);
+			COMMON::printHex(arrays[i][j], HASH_SIZE);
 		}
 		num_elem = num_elem << 1;
 	}
 }
 
-PATH MERKLE::buildPath(size_t loca) {
+PATH* MERKLE::buildPath(size_t loca) {
 	using namespace std;
 	if (loca >= num_leaves) {
 		throw overflow_error("The location exceeds the max number of leaves.");
 	}
 	int it_index;
 	// Get the file segment F_{loca}
-	PATH path_rst(segments[loca]);
+	PATH* pathPt = new PATH(segments[loca]);
 
 	size_t now_loca = loca;
 	now_layer = height - 1;
 	for (size_t i = 0; i < height - 1; i++) {
 		if (COMMON::isEven(now_loca)) {
-			path_rst.pushDigestPt(arrays[now_layer][now_loca + 1]);
+			pathPt->pushDigestPt(arrays[now_layer][now_loca + 1]);
 		} else {
-			path_rst.pushDigestPt(arrays[now_layer][now_loca - 1]);
+			pathPt->pushDigestPt(arrays[now_layer][now_loca - 1]);
 		}
 		now_loca = now_loca >> 1;
 		now_layer--;
@@ -112,15 +112,16 @@ PATH MERKLE::buildPath(size_t loca) {
 
 	//Coutest path
 	cout << "Coutest the path of " << loca << " : " << endl;
-//	cout << "its item is: " << path_rst.item.data();
+	cout << "its item is: ";
+	COMMON::printHex(pathPt->returnLeafPt(),LEAF_SIZE);
 	cout << " and its hash siblings are: " << endl;
 	it_index = 0;
-	for (auto it : path_rst.returnSiblings()) {
+	for (auto it : pathPt->returnSiblings()) {
 		cout << "layer " << (it_index++) << " ";
-		COMMON::printHash(it);
+		COMMON::printHex(it,HASH_SIZE);
 	}
 
-	return path_rst;
+	return pathPt;
 
 }
 

@@ -1,7 +1,6 @@
 #ifndef PERMACN_MERKLE_H //to avoid multi-inclusions of header files
 #define PERMACN_MERKLE_H
 
-#include "common.h"
 #include "path.h"
 
 class MERKLE {
@@ -27,7 +26,7 @@ public:
 	 * Output: a self-defined data struct (path) including
 	 * the segment and its Merkle proof (an array of pointers to each sibling digest)
 	 */
-	PATH buildPath(size_t loca);
+	PATH* buildPath(size_t loca);
 
 	/**
 	 *Validates the received path is legitimate in this merkle tree

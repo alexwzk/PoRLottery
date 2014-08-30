@@ -43,7 +43,7 @@ namespace COMMON {
  * printHex - to print the unchar array in Hex form
  * Input - unchar array; Outuput - void; Affect - None
  */
-void printHash(const digest dgst);
+void printHex(const uchar* ucstr, const size_t length);
 
 /**
  * String in Hex form

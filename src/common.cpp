@@ -1,8 +1,8 @@
 #include "common.h"
 
-void COMMON::printHash(const digest dgst) {
-	for (int i = 0; i < HASH_SIZE; i++)
-		printf("%02x", dgst[i]);
+void COMMON::printHex(const uchar* ucstr, const size_t length) {
+	for (size_t i = 0; i < length; i++)
+		printf("%02x", ucstr[i]);
 	printf("\n");
 }
 
