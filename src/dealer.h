@@ -16,14 +16,14 @@ private:
 	/**
 	 * Generates the S_{pk}
 	 * Output: 0 is success, otherwise -1 means not ready yet (no new key);
-	 * Affect - updates uarray_pk
+	 * Affect: updates uarray_pk
 	 */
 	int createSubset();
 
 public:
 
 	/**
-	 * 1st constructor - computes the Merkle tree of the entire dataset
+	 * 1st constructor: computes the Merkle tree of the entire dataset
 	 * Input: the input file path;
 	 * Affect: initialise the merkle_tree
 	 */

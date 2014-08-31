@@ -16,7 +16,6 @@
 #include <stdexcept>
 #include <iostream>
 
-
 /// Macros N' typedef structure
 #define LEAF_SIZE 1024
 #define HASH_SIZE 20
@@ -25,7 +24,7 @@
 #define SUBSET_CONST 2
 #define ALL_CONST 4
 #define CHALNG_CONST 1
-#define SEED_LENGTH 160	//bits
+#define SEED_LENGTH 20
 
 #define NO_CHANGE 2
 #define FILE_ERR 1
@@ -41,22 +40,21 @@ typedef uchar digest[HASH_SIZE];
 namespace COMMON {
 
 /**
- * printHex - to print the unchar array in Hex form
- * Input - unchar array; Outuput - void; Affect - None
+ * Print the unchar array in Hex form
+ * Input: unchar array and its length;
  */
 void printHex(const uchar* ucstr, const size_t length);
 
 /**
  * String in Hex form
- * http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
- * Not tested
+ * Ref: http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
+ * !! Not fully tested
  */
 std::string stringToHex(const std::string& input);
 
 /**
- * template isEven - return true if the value is even
- * Input - a size_t value; output - true or false
- * Affect - none
+ * Return true if the value is even
+ * Input: a size_t value; output: true if it's even
  */
 template<typename T>
 inline bool isEven(T v) {
@@ -64,15 +62,14 @@ inline bool isEven(T v) {
 }
 
 /**
- * extract a small number from the hashvalue
- *
+ *	Extract a small number from the hashvalue
+ *	Input: a digest data; Output a small number
  */
 size_t hashToNumber(digest hashv);
 
 /**
- * generate a k-bits random std::string
- * Input - unsigned int k; output - std::string
- * Affect - none
+ * Generate a k-BYTES random std::string
+ * Input: k (BYTES); output: a random str
  */
 std::string newRandStr(size_t k);
 
