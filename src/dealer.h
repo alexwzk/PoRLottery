@@ -42,6 +42,12 @@ public:
 	 */
 	int outSource(std::string usr_pubkey, std::string outfile);
 
+	/**
+	 * Release the Merkle tree root digest
+	 * Deletgate to the Merkle class
+	 */
+	uchar* releaseRoot();
+
 	//TODO: copy and assignment functions
 };
 

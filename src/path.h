@@ -1,3 +1,6 @@
+#ifndef PERMACN_PATH_H
+#define PERMACN_PATH_H
+
 #include "common.h"
 
 class PATH {
@@ -38,3 +41,17 @@ public:
 
 	//TODO: delete or insert digests, rememb to delete memory
 };
+
+#define PUZID 0
+#define ALLPROFS 1
+#define PUBKEY 2
+#define SEED 3
+#define TICPROFS 4
+
+struct TICKET {
+	std::string pubkey;
+	std::string seed;
+	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers in USER class
+};
+
+#endif

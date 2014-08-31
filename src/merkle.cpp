@@ -89,6 +89,14 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 	}
 }
 
+MERKLE::~MERKLE() {
+	delete[] segments;
+	for (size_t i = 0; i < height; i++) {
+		delete[] arrays[i];
+	}
+	delete[] arrays;
+}
+
 PATH* MERKLE::buildPath(size_t loca) {
 	using namespace std;
 	if (loca >= num_leaves) {
@@ -125,10 +133,9 @@ PATH* MERKLE::buildPath(size_t loca) {
 
 }
 
-MERKLE::~MERKLE() {
-	delete[] segments;
-	for (size_t i = 0; i < height; i++) {
-		delete[] arrays[i];
+uchar* MERKLE::releaseRoot(){
+	if(arrays == nullptr){
+		return nullptr;
 	}
-	delete[] arrays;
+	return arrays[0][0];
 }

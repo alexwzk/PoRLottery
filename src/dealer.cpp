@@ -99,3 +99,7 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	outpaths.close();
 	return FINE;
 }
+
+uchar* DEALER::releaseRoot(){
+	return mktreePt->releaseRoot();
+}

@@ -35,19 +35,16 @@ std::string COMMON::newRandStr(size_t k) {
 	size_t nonce = -1;
 	std::string randstr;
 	digest hashvalue;
-	while (remain_k > 20) {
+	while (remain_k > HASH_SIZE) {
 		nonce = rand_engine();
 		SHA1(reinterpret_cast<const unsigned char*>(&nonce), sizeof(size_t),
 				hashvalue);
-		//Coutest print each 160-bits random string
-//		COMMON::printHash(hashv);
 		randstr.append(hashvalue, hashvalue + HASH_SIZE);
-		remain_k -= (HASH_SIZE * 8);
+		remain_k -= HASH_SIZE;
 	}
 	nonce = rand_engine();
-	SHA1(reinterpret_cast<const unsigned char*>(&nonce), sizeof(size_t), hashvalue);
-	//Coutest print each 160-bits random string
-//	COMMON::printHash(hashv);
+	SHA1(reinterpret_cast<const unsigned char*>(&nonce), sizeof(size_t),
+			hashvalue);
 	randstr.append(hashvalue, hashvalue + remain_k);
 
 	return randstr;

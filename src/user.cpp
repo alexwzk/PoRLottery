@@ -4,6 +4,7 @@ USER::USER(std::string pubkey) {
 	myticket = new TICKET;
 	myticket->pubkey = pubkey;
 	myticket->seed = COMMON::newRandStr(SEED_LENGTH);
+	std::cout << "new rand str: " << myticket->seed << std::endl;
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
 }
@@ -47,7 +48,7 @@ int USER::readPathsFile(std::string inputf) {
 	PATH* pathPt;
 	leaf tmp_leaf;
 	digest tmp_dgst;
-	size_t  vec_size = -1, pth_size = -1;
+	size_t vec_size = -1, pth_size = -1;
 	try {
 		inputs.open(inputf, ifstream::binary);
 	} catch (ifstream::failure& err) {
@@ -59,7 +60,7 @@ int USER::readPathsFile(std::string inputf) {
 	cout << "vector size: " << vec_size << endl;
 	for (size_t i = 0; i < vec_size; i++) {
 		inputs.read((char *) tmp_leaf, LEAF_SIZE);
-		cout << i <<" leaf: ";
+		cout << i << " leaf: ";
 		COMMON::printHex(tmp_leaf, LEAF_SIZE);
 		pathPt = new PATH(tmp_leaf);
 		inputs.read((char *) &pth_size, sizeof(pth_size));
@@ -73,7 +74,7 @@ int USER::readPathsFile(std::string inputf) {
 		allmkproofs.push_back(pathPt);
 	}
 	inputs.close();
-	flags.set(ALLPROFS,true);
+	flags.set(ALLPROFS, true);
 	return FINE;
 }
 
@@ -104,21 +105,27 @@ int USER::releaseTicket(std::string outf) {
 		return INVALID_ERR;
 	}
 	ofstream outtic;
+	size_t tmp_size;
 	try {
-		outtic.open(outf, ofstream::trunc);
+		outtic.open(outf, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {
-		cerr << err.what() << " @ Opening file at User releaseTicket."
-				<< endl;
-		exit (FILE_ERR);
+		cerr << err.what() << " @ Opening file at User releaseTicket." << endl;
+		exit(FILE_ERR);
 	}
-	outtic << myticket->pubkey;
-	outtic << myticket->seed;
-	outtic << myticket->mkproofs.size();
-	for(auto it : myticket->mkproofs){
-		outtic.write((const char *)it->returnLeafPt(),LEAF_SIZE);
-		outtic << it->returnSiblings().size();
-		for(auto jt : it->returnSiblings()){
-			outtic.write((const char *)jt,HASH_SIZE);
+	tmp_size = myticket->pubkey.size();
+	outtic.write((const char *) &tmp_size, sizeof(size_t));
+	outtic.write(myticket->pubkey.data(), tmp_size);
+	tmp_size = myticket->seed.size();
+	outtic.write((const char *) &tmp_size, sizeof(size_t));
+	outtic.write(myticket->seed.data(), tmp_size);
+	tmp_size = myticket->mkproofs.size();
+	outtic.write((const char *) &tmp_size, sizeof(size_t));
+	for (auto it : myticket->mkproofs) {
+		outtic.write((const char *) it->returnLeafPt(), LEAF_SIZE);
+		tmp_size = it->returnSiblings().size();
+		outtic.write((const char *) &tmp_size, sizeof(size_t));
+		for (auto jt : it->returnSiblings()) {
+			outtic.write((const char *) jt, HASH_SIZE);
 		}
 	}
 	outtic.close();

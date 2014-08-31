@@ -1,22 +1,10 @@
 #ifndef PERMACN_USER_H
 #define PERMACN_USER_H
 
-#include "merkle.h"
+#include "path.h"
 
 #include <bitset>
 #include <fstream>
-
-#define PUZID 0
-#define ALLPROFS 1
-#define PUBKEY 2
-#define SEED 3
-#define TICPROFS 4
-
-struct TICKET {
-	std::string pubkey;
-	std::string seed;
-	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers
-};
 
 class USER {
 private:

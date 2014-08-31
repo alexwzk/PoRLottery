@@ -21,6 +21,12 @@ public:
 	MERKLE(std::vector<uchar *> segms);
 
 	/**
+	 * Merkle tree destructor
+	 * Affect: release dynamic memory allocation
+	 */
+	~MERKLE();
+
+	/**
 	 * Builds the Merkle proof for the corresponding segment
 	 * Input: the location of target segment;
 	 * Output: a self-defined data struct (path) including
@@ -29,17 +35,11 @@ public:
 	PATH* buildPath(size_t loca);
 
 	/**
-	 *Validates the received path is legitimate in this merkle tree
-	 *Input: a PATH data
-	 *Output: true if it's correct otherwise false
+	 * Release the root digest
+	 * Output: a uchar array pointer to the digest
+	 * 		   or nullptr if not ready
 	 */
-	bool validatePath(PATH p){ return false; }
-
-	/**
-	 * Merkle tree destructor
-	 * Affect: release dynamic memory allocation
-	 */
-	~MERKLE();
+	uchar* releaseRoot();
 
 	//TODO: copy & assignment
 
