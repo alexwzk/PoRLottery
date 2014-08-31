@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	digest root;
 	memcpy(root,testo->releaseRoot(),HASH_SIZE);
 	VERIFIER* testa = new VERIFIER(root,argv[5]);
-	cout << testa->verifyAllChallenges() << endl;
+	cout << "Result of verification: " << testa->verifyAllChallenges() << endl;
 	delete testa;
 	delete teste;
 	delete testo;
