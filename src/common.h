@@ -27,9 +27,10 @@
 #define CHALNG_CONST 1
 #define SEED_LENGTH 160	//bits
 
+#define NO_CHANGE 2
+#define FILE_ERR 1
 #define HEAD 0
 #define FINE 0
-#define FILE_ERR 1
 #define INVALID_ERR -1
 #define PTNULL_ERR -2
 

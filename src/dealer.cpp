@@ -1,13 +1,13 @@
 #include "dealer.h"
 
-DEALER::DEALER(std::string filenamePt) {
+DEALER::DEALER(std::string infile) {
 	using namespace std;
 	//Parse the file and divide them into segments
 	ifstream inputs;
 	vector<uchar *> file_segmts;
 	char* inbufferPt;
 	try {
-		inputs.open(filenamePt, ifstream::binary);
+		inputs.open(infile, ifstream::binary);
 	} catch (ifstream::failure& err) {
 		cerr << err.what() << " @ Opening file at Dealer 1st constructor."
 				<< endl;
@@ -26,7 +26,7 @@ DEALER::DEALER(std::string filenamePt) {
 		}
 		file_segmts.push_back((uchar *) inbufferPt);
 	}
-
+	inputs.close();
 	//Pass the processed segments to the Merkle tree object
 	//The Merkle tree will make a new copy of the passed-in segments
 	mktreePt = new MERKLE(file_segmts);
@@ -37,11 +37,12 @@ DEALER::DEALER(std::string filenamePt) {
 	}
 
 }
-int DEALER::createSubset() {
-	if (!can_update) {
-		return INVALID_ERR;
-	}
 
+DEALER::~DEALER() {
+	delete mktreePt;
+}
+
+int DEALER::createSubset() {
 	std::string tmp_str;
 	digest hashvalue;
 
@@ -66,24 +67,35 @@ int DEALER::createSubset() {
 		std::cout << i << " ";
 	}
 	std::cout << std::endl;
-
-	can_update = false;
-	return 0;
+	return FINE;
 }
 
-std::vector<PATH*> DEALER::createSource(std::string usr_pubkey) {
-	if (pubkey.compare(usr_pubkey) != 0) {
-		pubkey = usr_pubkey;
-		can_update = true;
-		createSubset();
-		pathPts.clear();
-		for (auto it : uarray_pk) {
-			pathPts.push_back(mktreePt->buildPath(it));
-		}
+int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
+	using namespace std;
+	ofstream outpaths;
+	PATH* pathPt;
+	size_t tmp_size;
+	pubkey = usr_pubkey;
+	try {
+		outpaths.open(outfile, ofstream::trunc | ofstream::binary);
+	} catch (ifstream::failure& err) {
+		cerr << err.what() << " @ Opening file at Dealer outSource."
+				<< endl;
+		exit (FILE_ERR);
 	}
-	return pathPts;
-}
-
-DEALER::~DEALER() {
-	delete mktreePt;
+	createSubset();
+	tmp_size = uarray_pk.size();
+	outpaths.write((const char*)&tmp_size,sizeof(tmp_size));
+	for (auto it : uarray_pk) {
+		pathPt = mktreePt->buildPath(it);
+		outpaths.write((const char*) pathPt->returnLeafPt(), LEAF_SIZE);
+		tmp_size = pathPt->returnSiblings().size();
+		outpaths.write((const char*)&tmp_size,sizeof(tmp_size));
+		for (auto it : pathPt->returnSiblings()) {
+			outpaths.write((const char*) it, HASH_SIZE);
+		}
+		delete pathPt;
+	}
+	outpaths.close();
+	return FINE;
 }

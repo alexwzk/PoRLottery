@@ -28,6 +28,7 @@
 								<option id="gnu.cpp.compiler.option.other.other.1855024835" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.510632439" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/openssl/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/boost/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.543559411" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -39,9 +40,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1493792732" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.825567880" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.libs.1591834504" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="boost_regex"/>
 									<listOptionValue builtIn="false" value="crypto"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.1229282631" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="/usr/local/boost/lib"/>
 									<listOptionValue builtIn="false" value="/usr/local/openssl/lib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1836055740" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">

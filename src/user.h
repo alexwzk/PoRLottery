@@ -4,6 +4,7 @@
 #include "merkle.h"
 
 #include <bitset>
+#include <fstream>
 
 #define PUZID 0
 #define ALLPROFS 1
@@ -14,7 +15,7 @@
 struct TICKET {
 	std::string pubkey;
 	std::string seed;
-	std::vector<PATH*> mkproofs;
+	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers
 };
 
 class USER {
@@ -23,7 +24,7 @@ private:
 	int chalng_times = CHALNG_CONST;
 	std::string puzzle_id;
 	std::vector<PATH*> allmkproofs;
-	TICKET myticket;
+	TICKET* myticket = nullptr;
 	std::bitset<5> flags;
 
 	/**
@@ -45,12 +46,18 @@ public:
 	USER(std::string pubkey);
 
 	/**
-	 * Receive the paths set from the dealer
-	 * Input: set of the item and its merkle proof;
-	 * Output: the new size of mkproofs
-	 * Affect: this->allmkproofs
+	 * Destructor
+	 * Delete memory in allmkproofs, ticket
 	 */
-	int getMKProofs(std::vector<PATH*> inmkproofs);
+	~USER();
+
+	/**
+	 * Read paths from file
+	 * Intput: file path
+	 * Output: FINE or FILE_ERR or MALLOC_ERR
+	 * Affect: allmkproofs & myticket->mkproofs
+	 */
+	int readPathsFile(std::string inputf);
 
 	/**
 	 * Receive a new puzzle ID
@@ -79,11 +86,11 @@ public:
 	std::string returnMyPubkey();
 
 	/**
-	 * Release the ticket to verifiers
-	 * Input: Null; Output: 1) nullptr if not ready 2) pointer to this->myticket if ready
-	 * Affect: None
+	 * Release the ticket to file
+	 * Input: out file path
+	 * Output: FINE or FILE_ERR
 	 */
-	TICKET* releaseTicket();
+	int releaseTicket(std::string outf);
 
 };
 
