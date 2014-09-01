@@ -51,7 +51,6 @@ VERIFIER::VERIFIER(digest root, std::string tic_file) {
 			pathPtr->pushDigestPt(tmp_digest);
 		}
 		tic_verify->mkproofs.push_back(pathPtr);
-		//TODO: some times it reads incorrectly
 	}
 	inticket.close();
 }
@@ -100,7 +99,7 @@ bool VERIFIER::verifyAllChallenges() {
 	size_t r_i;
 	for (int i = 0; i < i_ink; i++) {
 		r_i = COMMON::computeR_i(puzzle_id, tic_verify->pubkey, i,
-				tic_verify->seed, num_subset, num_total);
+				tic_verify->seed, num_subset, num_all);
 		std::cout << " challenge U_i: " << r_i << std::endl;
 		if (!validatePath(tic_verify->mkproofs[i], r_i)) {
 			return false;

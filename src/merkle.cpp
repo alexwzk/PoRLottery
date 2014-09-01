@@ -59,9 +59,9 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
-		cout << "No. " << i << ": ";
-		COMMON::printHex(segments[i], LEAF_SIZE);
-		cout << "And its hash value: ";
+		cout << "Redundant seg No. " << i << ": ";
+//		COMMON::printHex(segments[i], LEAF_SIZE);
+		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
 
@@ -97,7 +97,7 @@ MERKLE::~MERKLE() {
 	delete[] arrays;
 }
 
-PATH* MERKLE::buildPath(size_t loca) {
+PATH* MERKLE::newPath(size_t loca) {
 	using namespace std;
 	if (loca >= num_leaves) {
 		throw overflow_error("The location exceeds the max number of leaves.");

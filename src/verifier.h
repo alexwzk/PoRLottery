@@ -8,7 +8,7 @@
 class VERIFIER {
 private:
 	std::string puzzle_id;
-	size_t num_subset = SUBSET_CONST, num_total = ALL_CONST;
+	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 	uchar* root_digest = nullptr;
 	TICKET* tic_verify = nullptr;
 

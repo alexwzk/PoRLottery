@@ -74,7 +74,7 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	tmp_size = uarray_pk.size();
 	outpaths.write((const char*)&tmp_size,sizeof(tmp_size));
 	for (auto it : uarray_pk) {
-		pathPt = mktreePt->buildPath(it);
+		pathPt = mktreePt->newPath(it);
 		outpaths.write((const char*) pathPt->returnLeafPt(), LEAF_SIZE);
 		tmp_size = pathPt->returnSiblings().size();
 		outpaths.write((const char*)&tmp_size,sizeof(tmp_size));

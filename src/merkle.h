@@ -32,7 +32,7 @@ public:
 	 * Output: a self-defined data struct (path) including
 	 * the segment and its Merkle proof (an array of pointers to each sibling digest)
 	 */
-	PATH* buildPath(size_t loca);
+	PATH* newPath(size_t loca);
 
 	/**
 	 * Release the root digest

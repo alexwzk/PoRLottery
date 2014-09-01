@@ -31,13 +31,12 @@ int USER::generateTicket() {
 				myticket->seed, num_subset);
 		std::cout << "Challenge i in l :";
 		std::cout << i_inl << " " << std::endl;
-		std::cout << "Challenge i in n :";
+		/*std::cout << "Challenge i in n :";
 		std::cout << COMMON::computeU_i(myticket->pubkey,i_inl,ALL_CONST) << std::endl;
 		std::cout << "R_i : " << COMMON::computeR_i(puzzle_id, myticket->pubkey, i,
-						myticket->seed, num_subset, ALL_CONST);
+						myticket->seed, num_subset, ALL_CONST);*/
 		 myticket->mkproofs.push_back(allmkproofs[i_inl]);
 	}
-	std::cout << std::endl;
 	flags.set(TICPROFS, true);
 	return FINE;
 }
@@ -61,7 +60,7 @@ int USER::readPathsFile(std::string inputf) {
 	}
 
 	inputs.read((char *) &vec_size, sizeof(vec_size));
-	cout << "vector size: " << vec_size << endl;
+	cout << "User received vector size: " << vec_size << endl;
 	for (size_t i = 0; i < vec_size; i++) {
 		inputs.read((char *) tmp_leaf, LEAF_SIZE);
 //		cout << i << " leaf: ";

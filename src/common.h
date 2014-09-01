@@ -21,9 +21,9 @@
 #define HASH_SIZE 20
 #define KEY_SIZE 256
 #define XTRACT_SIZE 10
-#define SUBSET_CONST 2
-#define ALL_CONST 4
-#define CHALNG_CONST 1
+#define SUBSET_CONST 5
+#define ALL_CONST 16
+#define CHALNG_CONST 2
 #define SEED_LENGTH 20
 
 #define NO_CHANGE 2
