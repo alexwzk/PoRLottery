@@ -43,26 +43,13 @@ DEALER::~DEALER() {
 }
 
 int DEALER::createSubset() {
-	std::string tmp_str;
-	digest hashvalue;
-
 	uarray_pk.clear();
-	// Hash(pk||i)
 	for (size_t i = 0; i < num_subset; i++) {
-		tmp_str = pubkey + std::to_string(i);
-		std::cout << "The pk||i : " << tmp_str << std::endl;
-		SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
-		//Extract small number from the hash
-		uarray_pk.push_back(COMMON::hashToNumber(hashvalue) % num_all);
-		//Coutest generate random number within num_all
-		std::cout << "The random number is : "
-				<< COMMON::hashToNumber(hashvalue) << " mod by " << num_all
-				<< " turns out: " << COMMON::hashToNumber(hashvalue) % num_all
-				<< std::endl;
+		uarray_pk.push_back(COMMON::computeU_i(pubkey,i,num_all));
 	}
-
 	//Coutest subset_pk
 	std::cout << "The size of subset_{pk}: " << uarray_pk.size() << std::endl;
+	std::cout << "The U_i: ";
 	for (auto i : uarray_pk) {
 		std::cout << i << " ";
 	}

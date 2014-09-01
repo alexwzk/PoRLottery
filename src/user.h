@@ -9,7 +9,7 @@
 class USER {
 private:
 	size_t num_subset = SUBSET_CONST;
-	int chalng_times = CHALNG_CONST;
+	int i_ink = CHALNG_CONST;
 	std::string puzzle_id;
 	std::vector<PATH*> allmkproofs;
 	TICKET* myticket = nullptr;

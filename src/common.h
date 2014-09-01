@@ -62,6 +62,17 @@ inline bool isEven(T v) {
 }
 
 /**
+ * Print true if true otherwise print false
+ */
+inline void coutBool(bool bl){
+	if(bl){
+		std::cout << "true ";
+	}else{
+		std::cout << "false ";
+	}
+}
+
+/**
  *	Extract a small number from the hashvalue
  *	Input: a digest data; Output a small number
  */
@@ -72,6 +83,23 @@ size_t hashToNumber(digest hashv);
  * Input: k (BYTES); output: a random str
  */
 std::string newRandStr(size_t k);
+
+/**
+ * Computes u[i] := H_0(pk||i_inl) mod num_all
+ */
+size_t computeU_i(std::string pk, size_t i_inl, size_t num_all);
+
+/**
+ * Computes H(puz||pk||i_ink||s) mod num_sub
+ */
+size_t computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
+		size_t num_sub);
+
+/**
+ * Computes r[i] := computeStoreU_i(computeChlngU_i())
+ */
+size_t computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,
+		size_t num_sub, size_t num_all);
 
 }	/// namespace COMMON
 

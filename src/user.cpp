@@ -24,16 +24,20 @@ int USER::generateTicket() {
 				<< std::endl;
 		return INVALID_ERR;
 	}
-	std::string tmp_str;
-	digest hashvalue;
+	size_t i_inl = -1;
 	myticket->mkproofs.clear();
-	for (int i = 0; i < chalng_times; i++) {
-		tmp_str = puzzle_id + myticket->pubkey + std::to_string(i)
-				+ myticket->seed;
-		SHA1((const uchar*) (tmp_str.data()), tmp_str.size(), hashvalue);
-		myticket->mkproofs.push_back(
-				allmkproofs[COMMON::hashToNumber(hashvalue) % num_subset]);
+	for (int i = 0; i < i_ink; i++) {
+		i_inl = COMMON::computeI_inL(puzzle_id, myticket->pubkey, i,
+				myticket->seed, num_subset);
+		std::cout << "Challenge i in l :";
+		std::cout << i_inl << " " << std::endl;
+		std::cout << "Challenge i in n :";
+		std::cout << COMMON::computeU_i(myticket->pubkey,i_inl,ALL_CONST) << std::endl;
+		std::cout << "R_i : " << COMMON::computeR_i(puzzle_id, myticket->pubkey, i,
+						myticket->seed, num_subset, ALL_CONST);
+		 myticket->mkproofs.push_back(allmkproofs[i_inl]);
 	}
+	std::cout << std::endl;
 	flags.set(TICPROFS, true);
 	return FINE;
 }
@@ -60,8 +64,8 @@ int USER::readPathsFile(std::string inputf) {
 	cout << "vector size: " << vec_size << endl;
 	for (size_t i = 0; i < vec_size; i++) {
 		inputs.read((char *) tmp_leaf, LEAF_SIZE);
-		cout << i << " leaf: ";
-		COMMON::printHex(tmp_leaf, LEAF_SIZE);
+//		cout << i << " leaf: ";
+//		COMMON::printHex(tmp_leaf, LEAF_SIZE);
 		pathPt = new PATH(tmp_leaf);
 		inputs.read((char *) &pth_size, sizeof(pth_size));
 		cout << "path size: " << pth_size << endl;

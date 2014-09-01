@@ -39,10 +39,9 @@ VERIFIER::VERIFIER(digest root, std::string tic_file) {
 	inticket.read((char *) &chalng_times, sizeof(size_t));
 	cout << "ct: " << chalng_times << endl;
 	for (size_t i = 0; i < chalng_times; i++) {
-		cout << i << ": " << endl;
 		inticket.read((char *) tmp_leaf, LEAF_SIZE);
-		cout << "leaf: ";
-		COMMON::printHex(tmp_leaf, LEAF_SIZE);
+//		cout << "leaf: ";
+//		COMMON::printHex(tmp_leaf, LEAF_SIZE);
 		pathPtr = new PATH(tmp_leaf);
 		inticket.read((char *) &path_len, sizeof(size_t));
 		for (size_t j = 0; j < path_len; j++) {
@@ -52,6 +51,7 @@ VERIFIER::VERIFIER(digest root, std::string tic_file) {
 			pathPtr->pushDigestPt(tmp_digest);
 		}
 		tic_verify->mkproofs.push_back(pathPtr);
+		//TODO: some times it reads incorrectly
 	}
 	inticket.close();
 }
@@ -64,16 +64,9 @@ VERIFIER::~VERIFIER() {
 	delete tic_verify;
 }
 
-size_t VERIFIER::computesUElem(int k_i) {
-	std::string str_ri, str_ui;
-	digest hashv;
-	int r_i = -1;
-	str_ri = puzzle_id + tic_verify->pubkey + std::to_string(k_i) + tic_verify->seed;
-	SHA1((uchar *)str_ri.data(),str_ri.size(),hashv);
-	r_i = COMMON::hashToNumber(hashv) % num_subset;
-	str_ui = tic_verify->pubkey + std::to_string(r_i);
-	SHA1((uchar *)str_ui.data(),str_ui.size(),hashv);
-	return COMMON::hashToNumber(hashv) % num_total;
+int VERIFIER::getPuzzleID(std::string puz_id){
+	puzzle_id = puz_id;
+	return FINE;
 }
 
 bool VERIFIER::validatePath(PATH* p, size_t u_i) {
@@ -92,19 +85,24 @@ bool VERIFIER::validatePath(PATH* p, size_t u_i) {
 			memcpy(mkvalue + HASH_SIZE, pdigest, HASH_SIZE);
 		}
 		SHA1(mkvalue, HASH_SIZE * 2, pdigest);
-		remain_ri /= 2;	//int division
+		remain_ri = remain_ri >> 1;
 	}
-	if(strncmp((const char *) root_digest, (const char *) pdigest, HASH_SIZE) != 0){
+	if (strncmp((const char *) root_digest, (const char *) pdigest, HASH_SIZE)
+			!= 0) {
 		return false;
-	}else{
+	} else {
 		return true;
 	}
 }
 
-bool VERIFIER::verifyAllChallenges(){
-	int chlng_times = tic_verify->mkproofs.size();
-	for(int i = 0; i < chlng_times; i++){
-		if(!validatePath(tic_verify->mkproofs[i],computesUElem(i))){
+bool VERIFIER::verifyAllChallenges() {
+	int i_ink = tic_verify->mkproofs.size();
+	size_t r_i;
+	for (int i = 0; i < i_ink; i++) {
+		r_i = COMMON::computeR_i(puzzle_id, tic_verify->pubkey, i,
+				tic_verify->seed, num_subset, num_total);
+		std::cout << " challenge U_i: " << r_i << std::endl;
+		if (!validatePath(tic_verify->mkproofs[i], r_i)) {
 			return false;
 		}
 	}

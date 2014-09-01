@@ -49,3 +49,25 @@ std::string COMMON::newRandStr(size_t k) {
 
 	return randstr;
 }
+
+size_t COMMON::computeU_i(std::string pk, size_t i_inl, size_t num_all){
+	digest hashv;
+	std::string tmp_str = pk + std::to_string(i_inl);
+	//std::cout << "The pk||i : " << tmp_str << std::endl;
+	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashv);
+	//Extract small number from the hash then mod by num_all
+	return hashToNumber(hashv) % num_all;
+}
+
+size_t COMMON::computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
+		size_t num_sub){
+	digest hashv;
+	std::string tmp_str = puz + pk + std::to_string(i_ink) + seed;
+	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashv);
+	return hashToNumber(hashv) % num_sub;
+}
+
+size_t COMMON::computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,
+		size_t num_sub, size_t num_all){
+	return computeU_i(pk,computeI_inL(puz,pk,i_ink,seed,num_sub),num_all);
+}

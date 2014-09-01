@@ -120,8 +120,8 @@ PATH* MERKLE::buildPath(size_t loca) {
 
 	//Coutest path
 	cout << "Coutest the path of " << loca << " : " << endl;
-	cout << "its item is: ";
-	COMMON::printHex(pathPt->returnLeafPt(),LEAF_SIZE);
+//	cout << "its item is: ";
+//	COMMON::printHex(pathPt->returnLeafPt(),LEAF_SIZE);
 	cout << " and its hash siblings are: " << endl;
 	it_index = 0;
 	for (auto it : pathPt->returnSiblings()) {

@@ -34,11 +34,10 @@ public:
 	~VERIFIER();
 
 	/**
-	 * Computes the elements of u as necessary
-	 * Input: the challenge index of the subset
-	 * Output: the challenge index of entire database
+	 * get the puzzle id
+	 * Output: FINE
 	 */
-	size_t computesUElem(int k_i);
+	int getPuzzleID(std::string puz_id);
 
 	/**
 	 *Validates the received path is legitimate in this merkle tree
