@@ -59,7 +59,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
-		cout << "Redundant seg No. " << i << ": ";
+		cout << "Redundnt No. " << i << ": ";
 //		COMMON::printHex(segments[i], LEAF_SIZE);
 		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
@@ -119,10 +119,10 @@ PATH* MERKLE::newPath(size_t loca) {
 	}
 
 	//Coutest path
-	cout << "Coutest the path of " << loca << " : " << endl;
+	cout << "The path of item No." << loca << ": " << endl;
 //	cout << "its item is: ";
 //	COMMON::printHex(pathPt->returnLeafPt(),LEAF_SIZE);
-	cout << " and its hash siblings are: " << endl;
+	cout << " its hash siblings are: " << endl;
 	it_index = 0;
 	for (auto it : pathPt->returnSiblings()) {
 		cout << "layer " << (it_index++) << " ";

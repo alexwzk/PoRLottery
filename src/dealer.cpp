@@ -11,15 +11,30 @@ DEALER::DEALER(std::string infile) {
 	} catch (ifstream::failure& err) {
 		cerr << err.what() << " @ Opening file at Dealer 1st constructor."
 				<< endl;
+		exit(FILE_ERR);
 	}
 	while (inputs) {
-		inbufferPt = new char[LEAF_SIZE];
+		try {
+			inbufferPt = new char[LEAF_SIZE];
+		} catch (bad_alloc& err) {
+			cerr << err.what()
+					<< " @ assigning memory to the inbufferPt at Dealer 1st constructor"
+					<< endl;
+			exit(MALLOC_ERR);
+		}
 		inputs.read(inbufferPt, LEAF_SIZE);
 		file_segmts.push_back((uchar *) inbufferPt);
 	}
 	if (!inputs.eof()) {
 		//File size can't be divided by the LEAF_SIZE
-		inbufferPt = new char[LEAF_SIZE];
+		try {
+			inbufferPt = new char[LEAF_SIZE];
+		} catch (bad_alloc& err) {
+			cerr << err.what()
+					<< " @ assigning memory to the inbufferPt(2) at Dealer 1st constructor"
+					<< endl;
+			exit(MALLOC_ERR);
+		}
 		inputs.read(inbufferPt, inputs.gcount());
 		for (int i = inputs.gcount(); i < LEAF_SIZE; i++) {
 			inbufferPt[i] = 0;
@@ -45,7 +60,7 @@ DEALER::~DEALER() {
 int DEALER::createSubset() {
 	uarray_pk.clear();
 	for (size_t i = 0; i < num_subset; i++) {
-		uarray_pk.push_back(COMMON::computeU_i(pubkey,i,num_all));
+		uarray_pk.push_back(COMMON::computeU_i(pubkey, i, num_all));
 	}
 	//Coutest subset_pk
 	std::cout << "The size of subset_{pk}: " << uarray_pk.size() << std::endl;
@@ -66,18 +81,17 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	try {
 		outpaths.open(outfile, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {
-		cerr << err.what() << " @ Opening file at Dealer outSource."
-				<< endl;
-		exit (FILE_ERR);
+		cerr << err.what() << " @ Opening file at Dealer outSource." << endl;
+		exit(FILE_ERR);
 	}
 	createSubset();
 	tmp_size = uarray_pk.size();
-	outpaths.write((const char*)&tmp_size,sizeof(tmp_size));
+	outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 	for (auto it : uarray_pk) {
 		pathPt = mktreePt->newPath(it);
 		outpaths.write((const char*) pathPt->returnLeafPt(), LEAF_SIZE);
 		tmp_size = pathPt->returnSiblings().size();
-		outpaths.write((const char*)&tmp_size,sizeof(tmp_size));
+		outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 		for (auto it : pathPt->returnSiblings()) {
 			outpaths.write((const char*) it, HASH_SIZE);
 		}
@@ -87,6 +101,6 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	return FINE;
 }
 
-uchar* DEALER::releaseRoot(){
-	return mktreePt->releaseRoot();
+uchar* DEALER::releaseRoot() {
+	return mktreePt->releaseRoot();	//Delegate
 }

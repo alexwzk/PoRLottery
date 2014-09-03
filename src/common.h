@@ -26,12 +26,13 @@
 #define CHALNG_CONST 2
 #define SEED_LENGTH 20
 
-#define NO_CHANGE 2
-#define FILE_ERR 1
 #define HEAD 0
 #define FINE 0
+#define SAME 0
 #define INVALID_ERR -1
 #define PTNULL_ERR -2
+#define MALLOC_ERR -3
+#define FILE_ERR -4
 
 typedef unsigned char uchar;
 typedef uchar leaf[LEAF_SIZE];
@@ -59,17 +60,6 @@ std::string stringToHex(const std::string& input);
 template<typename T>
 inline bool isEven(T v) {
 	return ((v % 2) == 0 ? true : false);
-}
-
-/**
- * Print true if true otherwise print false
- */
-inline void coutBool(bool bl){
-	if(bl){
-		std::cout << "true ";
-	}else{
-		std::cout << "false ";
-	}
 }
 
 /**
