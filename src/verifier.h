@@ -26,7 +26,7 @@ public:
 	 * 2nd constructor: a root digest of the Merkle tree,
 	 * a file path from which the ticket info is read
 	 */
-	VERIFIER(digest root, std::string tic_file);
+	VERIFIER(std::string root_file, std::string tic_file);
 
 	/**
 	 * Destructor: delete root and tic_verify

@@ -133,7 +133,7 @@ PATH* MERKLE::newPath(size_t loca) {
 
 }
 
-uchar* MERKLE::releaseRoot(){
+uchar* MERKLE::releaseRootPt(){
 	if(arrays == nullptr){
 		return nullptr;
 	}

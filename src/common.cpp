@@ -21,6 +21,8 @@ std::string COMMON::stringToHex(const std::string& input) {
 }
 
 size_t COMMON::hashToNumber(digest hashv) {
+	// TODO: Uniform distribution: leftshift 256( as to accumulate bytes )
+	// bit at a time: 2
 	size_t number = 0;
 	for (int i = 0; i < XTRACT_SIZE; i++) {
 		number += hashv[i];

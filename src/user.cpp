@@ -45,7 +45,7 @@ bool USER::isReadyToRelease() {
 	return flags.all();
 }
 
-int USER::readPathsFile(std::string inputf) {
+int USER::storeFile(std::string inputf) {
 	using namespace std;
 	ifstream inputs;
 	PATH* pathPt;

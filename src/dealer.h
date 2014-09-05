@@ -43,10 +43,10 @@ public:
 	int outSource(std::string usr_pubkey, std::string outfile);
 
 	/**
-	 * Release the Merkle tree root digest
-	 * Deletgate to the Merkle class
+	 * Release the Merkle tree root digest to a file/communication channel
+	 * Deletgate to the Merkle class then write the binary file
 	 */
-	uchar* releaseRoot();
+	int releaseRoot(std::string outfile);
 
 	//TODO: copy and assignment functions
 };

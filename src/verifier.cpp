@@ -1,26 +1,35 @@
 #include "verifier.h"
 
-VERIFIER::VERIFIER(digest root, std::string tic_file) {
+VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 	using namespace std;
-	ifstream inticket;
+	ifstream inticket, inroot;
 	size_t buf_nsize = -1, buf_osize = -1, chalng_times = -1, path_len = -1;
-	char* bufferPt = nullptr;
 	leaf tmp_leaf;
 	digest tmp_digest;
-	PATH* pathPtr;
+	char* bufferPt = nullptr;
+	PATH* pathPtr = nullptr;
 	try {
 		inticket.open(tic_file);
 	} catch (ifstream::failure& err) {
-		cerr << err.what() << " @ Opening file at Verifier 2nd constructor."
+		cerr << err.what()
+				<< " @ Opening ticket file at Verifier 2nd constructor."
 				<< endl;
 		exit(FILE_ERR);
 	}
+	try {
+		inroot.open(root_file);
+	} catch (ifstream::failure& err) {
+		cerr << err.what()
+				<< " @ Opening root file at Verifier 2nd constructor." << endl;
+		exit(FILE_ERR);
+	}
 	root_digest = new digest;
-	memcpy(root_digest, root, HASH_SIZE);
+	inroot.read((char *) root_digest, HASH_SIZE);
 	cout << "root: ";
 	COMMON::printHex(root_digest, HASH_SIZE);
-	tic_verify = new TICKET;
+	inroot.close();
 
+	tic_verify = new TICKET;
 	inticket.read((char *) &buf_nsize, sizeof(size_t));
 	bufferPt = new char[buf_nsize];
 	inticket.read(bufferPt, buf_nsize);
@@ -63,7 +72,7 @@ VERIFIER::~VERIFIER() {
 	delete tic_verify;
 }
 
-int VERIFIER::getPuzzleID(std::string puz_id){
+int VERIFIER::getPuzzleID(std::string puz_id) {
 	puzzle_id = puz_id;
 	return FINE;
 }

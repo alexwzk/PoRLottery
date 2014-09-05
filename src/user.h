@@ -45,7 +45,7 @@ public:
 	 * Output: FINE or FILE_ERR or MALLOC_ERR
 	 * Affect: allmkproofs & myticket->mkproofs
 	 */
-	int readPathsFile(std::string inputf);
+	int storeFile(std::string inputf);
 
 	/**
 	 * Receive a new puzzle ID

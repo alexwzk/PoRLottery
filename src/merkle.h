@@ -39,7 +39,7 @@ public:
 	 * Output: a uchar array pointer to the digest
 	 * 		   or nullptr if not ready
 	 */
-	uchar* releaseRoot();
+	uchar* releaseRootPt();
 
 	//TODO: copy & assignment
 

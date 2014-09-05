@@ -101,6 +101,21 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	return FINE;
 }
 
-uchar* DEALER::releaseRoot() {
-	return mktreePt->releaseRoot();	//Delegate
+int DEALER::releaseRoot(std::string outfile){
+	using namespace std;
+	ofstream ofile_operat;
+	uchar* rootdigestPt =  mktreePt->releaseRootPt();	//Method Delegate
+	//Coutest
+	cout << "The root digest is: ";
+	COMMON::printHex(rootdigestPt,HASH_SIZE);
+	try {
+		ofile_operat.open(outfile, ofstream::trunc | ofstream::binary);
+	} catch (ifstream::failure& err) {
+		cerr << err.what() << " @ Opening file at Dealer releaseRoot." << endl;
+		exit(FILE_ERR);
+	}
+	cout << "The root digest will be exported to file: " << outfile << endl;
+	ofile_operat.write((const char *) rootdigestPt, sizeof(digest));
+	ofile_operat.close();
+	return FINE;
 }
