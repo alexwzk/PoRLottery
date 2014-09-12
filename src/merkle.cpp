@@ -1,6 +1,18 @@
 #include "merkle.h"
 
-MERKLE::MERKLE(std::vector<uchar *> segmts) {
+MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
+	resetMERKLE(segmts,leaf_size);
+}
+
+MERKLE::~MERKLE() {
+	delete[] segments;
+	for (size_t i = 0; i < height; i++) {
+		delete[] arrays[i];
+	}
+	delete[] arrays;
+}
+
+int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 	using namespace std;
 	num_segmts = segmts.size();
 	height = ceil(log2(num_segmts)) + 1; // includes the root
@@ -20,7 +32,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 		// cout << "now layer: " << now_layer << " has " << num_elem << " element(s). " << endl;
 		try {
 			arrays[next_layer++] = new digest[num_elem];
-		} catch (bad_alloc& err){
+		} catch (bad_alloc& err) {
 			cerr << err.what() << " @ MERKLE 1st constructor for [arrays*]."
 					<< endl;
 		}
@@ -40,8 +52,8 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 
 	// Hash the leaves (file segments)
 	for (size_t i = 0; i < num_segmts; i++) {
-		memcpy(segments[i], segmts[i], LEAF_SIZE);
-		SHA1(segments[i], LEAF_SIZE, arrays[now_layer][i]);
+		memcpy(segments[i], segmts[i], leaf_size);
+		SHA1(segments[i], leaf_size, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
 //		cout << segmts[i] << " and its";
@@ -52,15 +64,15 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 	// Fill the leaves into a full binary tree
 	num_leaves = num_segmts;
 	while (num_leaves < num_elem) {
-		memset(segments[num_leaves], 0, LEAF_SIZE);
-		SHA1(segments[num_leaves], LEAF_SIZE, arrays[now_layer][num_leaves]);
+		memset(segments[num_leaves], 0, leaf_size);
+		SHA1(segments[num_leaves], leaf_size, arrays[now_layer][num_leaves]);
 		num_leaves++;
 	}
 
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "Redundnt No. " << i << ": ";
-//		COMMON::printHex(segments[i], LEAF_SIZE);
+//		COMMON::printHex(segments[i], leaf_size);
 		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
@@ -87,21 +99,15 @@ MERKLE::MERKLE(std::vector<uchar *> segmts) {
 		}
 		num_elem = num_elem << 1;
 	}
-}
-
-MERKLE::~MERKLE() {
-	delete[] segments;
-	for (size_t i = 0; i < height; i++) {
-		delete[] arrays[i];
-	}
-	delete[] arrays;
+	return FINE;
 }
 
 PATH* MERKLE::newPath(size_t loca) {
 	using namespace std;
-	if (loca >= num_leaves) {
-		throw overflow_error("The location exceeds the max number of leaves.");
+	if (loca >= num_leaves || arrays == nullptr) {
+		return nullptr;
 	}
+
 	int it_index;
 	// Get the file segment F_{loca}
 	PATH* pathPt = new PATH(segments[loca]);
@@ -121,21 +127,50 @@ PATH* MERKLE::newPath(size_t loca) {
 	//Coutest path
 	cout << "The path of item No." << loca << ": " << endl;
 //	cout << "its item is: ";
-//	COMMON::printHex(pathPt->returnLeafPt(),LEAF_SIZE);
+//	COMMON::printHex(pathPt->returnLeafPt(),leaf_size);
 	cout << " its hash siblings are: " << endl;
 	it_index = 0;
 	for (auto it : pathPt->returnSiblings()) {
 		cout << "layer " << (it_index++) << " ";
-		COMMON::printHex(it,HASH_SIZE);
+		COMMON::printHex(it, HASH_SIZE);
 	}
 
 	return pathPt;
 
 }
 
-uchar* MERKLE::releaseRootPt(){
-	if(arrays == nullptr){
+uchar* MERKLE::releaseRootPt() {
+	if (arrays == nullptr) {
 		return nullptr;
 	}
 	return arrays[0][0];
+}
+
+bool MERKLE::validatePath(PATH* p, size_t u_i, digest root) {
+	size_t remain_ri = u_i;
+	leaf pleaf;
+	digest pdigest;
+	uchar mkvalue[HASH_SIZE * 2];
+	memcpy(pleaf, p->returnLeafPt(), LEAF_SIZE);
+	SHA1(pleaf, LEAF_SIZE, pdigest);
+	for (auto it : p->returnSiblings()) {
+		if (COMMON::isEven(remain_ri)) {
+			memcpy(mkvalue, pdigest, HASH_SIZE);
+			memcpy(mkvalue + HASH_SIZE, it, HASH_SIZE);
+		} else {
+			memcpy(mkvalue, it, HASH_SIZE);
+			memcpy(mkvalue + HASH_SIZE, pdigest, HASH_SIZE);
+		}
+		SHA1(mkvalue, HASH_SIZE * 2, pdigest);
+		remain_ri = remain_ri >> 1;
+	}
+	if (strncmp((const char *) root, (const char *) pdigest, HASH_SIZE) != 0) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+size_t MERKLE::returnNumSegmts(){
+	return num_segmts;
 }

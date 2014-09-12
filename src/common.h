@@ -25,6 +25,7 @@
 #define ALL_CONST 16
 #define CHALNG_CONST 2
 #define SEED_LENGTH 20
+#define LAMBDA 16
 
 #define HEAD 0
 #define FINE 0
@@ -42,20 +43,21 @@ namespace COMMON {
 
 /**
  * Print the unchar array in Hex form
- * Input: unchar array and its length;
+ * INPUT unchar array and its length
  */
 void printHex(const uchar* ucstr, const size_t length);
 
 /**
  * String in Hex form
- * Ref: http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
- * !! Not fully tested
+ * REF http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
+ * !!!! Not fully tested
  */
 std::string stringToHex(const std::string& input);
 
 /**
  * Return true if the value is even
- * Input: a size_t value; output: true if it's even
+ * INPUT a size_t value; OUTPUT true if it's even
+ * !!!! An inline method
  */
 template<typename T>
 inline bool isEven(T v) {
@@ -63,14 +65,15 @@ inline bool isEven(T v) {
 }
 
 /**
- *	Extract a small number from the hashvalue
- *	Input: a digest data; Output a small number
+ * A random oracle lies within [0,max-1]
+ * INPUT hashvalue as a seed
+ * OUTPUT a random number ranged [0,max-1]
  */
-size_t hashToNumber(digest hashv);
+size_t randomNum(digest hashvalue, size_t max);
 
 /**
  * Generate a k-BYTES random std::string
- * Input: k (BYTES); output: a random str
+ * INPUT k (bytes); OUTPUT a random string whose length is k
  */
 std::string newRandStr(size_t k);
 

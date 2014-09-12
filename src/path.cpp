@@ -1,14 +1,7 @@
 #include "path.h"
 
 PATH::PATH(leaf inleaf) {
-	using namespace std;
-	try {
-		leafPt = new leaf;
-	} catch (bad_alloc& err) {
-		cerr << err.what() << " @ PATH 1st constructor for leafPt." << endl;
-		exit(PTNULL_ERR);
-	}
-	memcpy(leafPt, inleaf, sizeof(leaf));
+	resetPATH(inleaf);
 }
 
 PATH::~PATH() {
@@ -18,6 +11,17 @@ PATH::~PATH() {
 	delete[] leafPt;
 }
 
+int PATH::resetPATH(leaf inleaf) {
+	try {
+		leafPt = new leaf;
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ PATH 1st constructor for leafPt."
+				<< std::endl;
+		exit(MALLOC_ERR);
+	}
+	memcpy(leafPt, inleaf, sizeof(leaf));
+	return FINE;
+}
 uchar* PATH::returnLeafPt() {
 	return leafPt;
 }
@@ -27,13 +31,16 @@ std::list<uchar*> PATH::returnSiblings() {
 }
 
 int PATH::pushDigestPt(digest hash) {
+	if (hash == nullptr) {
+		return PTNULL_ERR;
+	}
 	uchar* tmp_hashPt;
 	try {
 		tmp_hashPt = new digest;
 	} catch (std::bad_alloc& err) {
 		std::cerr << err.what() << "@ PATH pushDigestPt for tmp_hashPt."
 				<< std::endl;
-		exit(PTNULL_ERR);
+		exit(MALLOC_ERR);
 	}
 	memcpy(tmp_hashPt, hash, sizeof(digest));
 	siblings.push_back(tmp_hashPt);

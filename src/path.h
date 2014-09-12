@@ -5,41 +5,56 @@
 
 class PATH {
 private:
-	uchar* leafPt = nullptr;	// the head pt of item
+	uchar* leafPt;	// the head pt of item
 	std::list<uchar*> siblings; // the item's hash siblings
 
 public:
 
 	/**
-	 * 1st constructor: initialised by a leaf
+	 * default constructor
+	 */
+	PATH(){
+		leafPt = nullptr;
+	}
+
+	/**
+	 * 1st constructor
+	 * GOTO resetPATH
 	 */
 	PATH(leaf inleaf);
 
 	/**
-	 * Destructor: takes care of the memory collection
+	 * Destructor
+	 * Delete leafPt and pointers stored in siblings
 	 */
 	~PATH();
 
 	/**
+	 * Initialised by a leaf
+	 * OUTPUT fine
+	 */
+	int resetPATH(leaf inleaf);
+
+	/**
 	 * Return the pointer to its leaf item
-	 * Output: leafPt
+	 * OUTPUT leafPt
 	 */
 	uchar* returnLeafPt();
 
 	/**
 	 * Return the list of hash siblings pointers
-	 * Output: siblings
+	 * OUTPUT siblings
 	 */
 	std::list<uchar*> returnSiblings();
 
 	/**
 	 * Pushback the hash sibling into the siblings
-	 * Input: a head pointer of the digest
-	 * Output: FINE
+	 * INPUT a head pointer of the digest
+	 * OUTPUT FINE or NULLPT_ERR if hash is invalid
 	 */
 	int pushDigestPt(digest hash);
 
-	//TODO: delete or insert digests, rememb to delete memory
+	//TODO: delete or insert digests, remember to delete memory before deleting digests
 };
 
 #define PUZID 0

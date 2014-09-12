@@ -20,16 +20,15 @@ std::string COMMON::stringToHex(const std::string& input) {
 	return output;
 }
 
-size_t COMMON::hashToNumber(digest hashv) {
+size_t COMMON::randomNum(digest hashvalue, size_t max){
 	// TODO: Uniform distribution: leftshift 256( as to accumulate bytes )
 	// bit at a time: 2
 	size_t number = 0;
 	for (int i = 0; i < XTRACT_SIZE; i++) {
-		number += hashv[i];
+		number += hashvalue[i];
 	}
-	return number;
+	return number % max;
 }
-
 std::string COMMON::newRandStr(size_t k) {
 	std::random_device randevice;
 	std::default_random_engine rand_engine(randevice());
@@ -53,20 +52,20 @@ std::string COMMON::newRandStr(size_t k) {
 }
 
 size_t COMMON::computeU_i(std::string pk, size_t i_inl, size_t num_all){
-	digest hashv;
+	digest hashvalue;
 	std::string tmp_str = pk + std::to_string(i_inl);
 	//std::cout << "The pk||i : " << tmp_str << std::endl;
-	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashv);
+	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
 	//Extract small number from the hash then mod by num_all
-	return hashToNumber(hashv) % num_all;
+	return randomNum(hashvalue,num_all);
 }
 
 size_t COMMON::computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
 		size_t num_sub){
-	digest hashv;
+	digest hashvalue;
 	std::string tmp_str = puz + pk + std::to_string(i_ink) + seed;
-	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashv);
-	return hashToNumber(hashv) % num_sub;
+	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
+	return randomNum(hashvalue,num_sub);
 }
 
 size_t COMMON::computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,

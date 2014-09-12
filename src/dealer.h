@@ -8,10 +8,10 @@
 class DEALER {
 private:
 
-	MERKLE *mktreePt = nullptr;
+	MERKLE *mktreePt;
 	std::string pubkey;
-	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 	std::vector<size_t> uarray_pk;
+	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 
 	/**
 	 * Generates the S_{pk}
@@ -23,9 +23,15 @@ private:
 public:
 
 	/**
-	 * 1st constructor: computes the Merkle tree of the entire dataset
-	 * Input: the input file path;
-	 * Affect: initialise the merkle_tree
+	 * Default constructor
+	 */
+	DEALER(){
+		mktreePt = nullptr;
+	}
+
+	/**
+	 * 1st constructor
+	 * GOTO resetDEALER
 	 */
 	DEALER(std::string infile);
 
@@ -35,10 +41,17 @@ public:
 	~DEALER();
 
 	/**
-	 *	createSource - setup the permacoin for a participant
-	 *	Input: the public string and the output file path
-	 *	Output: FINE or FILE_ERR
-	 *	Affect: Outsource the {(F{j],PI_j)|j \belongs S_{pk}} to a file
+	 * Computes the Merkle tree of the entire dataset
+	 * INPUT the input file path;
+	 * AFFECT the mktreePt
+	 */
+	int resetDEALER(std::string infile);
+
+	/**
+	 *	Setup the permacoin for a participant
+	 *	INPUT the public string and the output file path
+	 *	OUTPUT FINE or FILE_ERR
+	 *	AFFECT Outsource the {(F{j],PI_j)|j \belongs S_{pk}} to a file
 	 */
 	int outSource(std::string usr_pubkey, std::string outfile);
 

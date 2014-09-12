@@ -1,6 +1,14 @@
 #include "dealer.h"
 
 DEALER::DEALER(std::string infile) {
+	resetDEALER(infile);
+}
+
+DEALER::~DEALER() {
+	delete mktreePt;
+}
+
+int DEALER::resetDEALER(std::string infile) {
 	using namespace std;
 	//Parse the file and divide them into segments
 	ifstream inputs;
@@ -44,17 +52,21 @@ DEALER::DEALER(std::string infile) {
 	inputs.close();
 	//Pass the processed segments to the Merkle tree object
 	//The Merkle tree will make a new copy of the passed-in segments
-	mktreePt = new MERKLE(file_segmts);
+	try {
+		mktreePt = new MERKLE(file_segmts, LEAF_SIZE);
+	} catch (bad_alloc& err) {
+		cerr << err.what()
+				<< " @ assigning memory to the mktreePt at Dealer 1st constructor"
+				<< endl;
+		exit(MALLOC_ERR);
+	}
 
 	//Delete the memory of file_segmts
 	for (auto it : file_segmts) {
 		delete[] it;
 	}
 
-}
-
-DEALER::~DEALER() {
-	delete mktreePt;
+	return FINE;
 }
 
 int DEALER::createSubset() {
@@ -101,13 +113,13 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	return FINE;
 }
 
-int DEALER::releaseRoot(std::string outfile){
+int DEALER::releaseRoot(std::string outfile) {
 	using namespace std;
 	ofstream ofile_operat;
-	uchar* rootdigestPt =  mktreePt->releaseRootPt();	//Method Delegate
+	uchar* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
 	//Coutest
 	cout << "The root digest is: ";
-	COMMON::printHex(rootdigestPt,HASH_SIZE);
+	COMMON::printHex(rootdigestPt, HASH_SIZE);
 	try {
 		ofile_operat.open(outfile, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {

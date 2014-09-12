@@ -1,21 +1,33 @@
 #include "user.h"
 
 USER::USER(std::string pubkey) {
-	myticket = new TICKET;
-	myticket->pubkey = pubkey;
-	myticket->seed = COMMON::newRandStr(SEED_LENGTH);
-	std::cout << "new rand str: " << myticket->seed << std::endl;
-	flags.set(PUBKEY, true);
-	flags.set(SEED, true);
+	resetUSER(pubkey);
 }
 
 USER::~USER() {
-	myticket->mkproofs.clear();
-	for (auto it : allmkproofs) {
+	myticketPt->mkproofs.clear();
+	for (auto it : allmkproofPts) {
 		delete it;
 	}
-	allmkproofs.clear();
-	delete myticket;
+	allmkproofPts.clear();
+	delete myticketPt;
+}
+
+int USER::resetUSER(std::string pubkey){
+	try{
+		myticketPt = new TICKET;
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what()
+				<< " @ assigning memory to the myticketPt at resetUSER"
+				<< std::endl;
+		exit(MALLOC_ERR);
+	}
+	myticketPt->pubkey = pubkey;
+	myticketPt->seed = COMMON::newRandStr(SEED_LENGTH);
+	std::cout << "new rand str: " << myticketPt->seed << std::endl;
+	flags.set(PUBKEY, true);
+	flags.set(SEED, true);
+	return FINE;
 }
 
 int USER::generateTicket() {
@@ -25,17 +37,17 @@ int USER::generateTicket() {
 		return INVALID_ERR;
 	}
 	size_t i_inl = -1;
-	myticket->mkproofs.clear();
+	myticketPt->mkproofs.clear();
 	for (int i = 0; i < i_ink; i++) {
-		i_inl = COMMON::computeI_inL(puzzle_id, myticket->pubkey, i,
-				myticket->seed, num_subset);
+		i_inl = COMMON::computeI_inL(puzzle_id, myticketPt->pubkey, i,
+				myticketPt->seed, num_subset);
 		std::cout << "Challenge i in l :";
 		std::cout << i_inl << " " << std::endl;
 		/*std::cout << "Challenge i in n :";
 		std::cout << COMMON::computeU_i(myticket->pubkey,i_inl,ALL_CONST) << std::endl;
 		std::cout << "R_i : " << COMMON::computeR_i(puzzle_id, myticket->pubkey, i,
 						myticket->seed, num_subset, ALL_CONST);*/
-		 myticket->mkproofs.push_back(allmkproofs[i_inl]);
+		 myticketPt->mkproofs.push_back(allmkproofPts[i_inl]);
 	}
 	flags.set(TICPROFS, true);
 	return FINE;
@@ -74,7 +86,7 @@ int USER::storeFile(std::string inputf) {
 			COMMON::printHex(tmp_dgst, HASH_SIZE);
 			pathPt->pushDigestPt(tmp_dgst);
 		}
-		allmkproofs.push_back(pathPt);
+		allmkproofPts.push_back(pathPt);
 	}
 	inputs.close();
 	flags.set(ALLPROFS, true);
@@ -88,17 +100,17 @@ int USER::getNewPuzzle(std::string id) {
 }
 
 void USER::resetSeed() {
-	myticket->seed = COMMON::newRandStr(SEED_LENGTH);
+	myticketPt->seed = COMMON::newRandStr(SEED_LENGTH);
 	flags.set(SEED, true);
 }
 
 void USER::resetPubkey(std::string newpbkey) {
-	myticket->pubkey = newpbkey;
+	myticketPt->pubkey = newpbkey;
 	flags.set(PUBKEY, true);
 }
 
 std::string USER::returnMyPubkey() {
-	return myticket->pubkey;
+	return myticketPt->pubkey;
 }
 
 int USER::releaseTicket(std::string outf) {
@@ -115,15 +127,15 @@ int USER::releaseTicket(std::string outf) {
 		cerr << err.what() << " @ Opening file at User releaseTicket." << endl;
 		exit(FILE_ERR);
 	}
-	tmp_size = myticket->pubkey.size();
+	tmp_size = myticketPt->pubkey.size();
 	outtic.write((const char *) &tmp_size, sizeof(size_t));
-	outtic.write(myticket->pubkey.data(), tmp_size);
-	tmp_size = myticket->seed.size();
+	outtic.write(myticketPt->pubkey.data(), tmp_size);
+	tmp_size = myticketPt->seed.size();
 	outtic.write((const char *) &tmp_size, sizeof(size_t));
-	outtic.write(myticket->seed.data(), tmp_size);
-	tmp_size = myticket->mkproofs.size();
+	outtic.write(myticketPt->seed.data(), tmp_size);
+	tmp_size = myticketPt->mkproofs.size();
 	outtic.write((const char *) &tmp_size, sizeof(size_t));
-	for (auto it : myticket->mkproofs) {
+	for (auto it : myticketPt->mkproofs) {
 		outtic.write((const char *) it->returnLeafPt(), LEAF_SIZE);
 		tmp_size = it->returnSiblings().size();
 		outtic.write((const char *) &tmp_size, sizeof(size_t));

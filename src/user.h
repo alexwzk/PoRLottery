@@ -11,8 +11,8 @@ private:
 	size_t num_subset = SUBSET_CONST;
 	int i_ink = CHALNG_CONST;
 	std::string puzzle_id;
-	std::vector<PATH*> allmkproofs;
-	TICKET* myticket = nullptr;
+	std::vector<PATH*> allmkproofPts;
+	TICKET* myticketPt;
 	std::bitset<5> flags;
 
 	/**
@@ -28,8 +28,17 @@ private:
 	bool isReadyToRelease();
 
 public:
+
 	/**
-	 * 1st constructor which must be initiated by a public key
+	 * Default constructor
+	 */
+	USER(){
+		myticketPt = nullptr;
+	}
+
+	/**
+	 * 1st constructor
+	 * GOTO resetUSER method
 	 */
 	USER(std::string pubkey);
 
@@ -38,6 +47,12 @@ public:
 	 * Delete memory in allmkproofs, ticket
 	 */
 	~USER();
+
+	/**
+	 * INPUT a public key
+	 * OUTPUT fine
+	 */
+	int resetUSER(std::string pubkey);
 
 	/**
 	 * Read paths from file

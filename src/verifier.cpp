@@ -1,6 +1,18 @@
 #include "verifier.h"
 
 VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
+	resetVERIFIER(root_file,tic_file);
+}
+
+VERIFIER::~VERIFIER() {
+	delete root_digest;
+	for (auto it : tic_verify->mkproofs) {
+		delete it;
+	}
+	delete tic_verify;
+}
+
+int VERIFIER::resetVERIFIER(std::string root_file, std::string tic_file){
 	using namespace std;
 	ifstream inticket, inroot;
 	size_t buf_nsize = -1, buf_osize = -1, chalng_times = -1, path_len = -1;
@@ -62,45 +74,12 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 		tic_verify->mkproofs.push_back(pathPtr);
 	}
 	inticket.close();
-}
-
-VERIFIER::~VERIFIER() {
-	delete root_digest;
-	for (auto it : tic_verify->mkproofs) {
-		delete it;
-	}
-	delete tic_verify;
+	return FINE;
 }
 
 int VERIFIER::getPuzzleID(std::string puz_id) {
 	puzzle_id = puz_id;
 	return FINE;
-}
-
-bool VERIFIER::validatePath(PATH* p, size_t u_i) {
-	size_t remain_ri = u_i;
-	leaf pleaf;
-	digest pdigest;
-	uchar mkvalue[HASH_SIZE * 2];
-	memcpy(pleaf, p->returnLeafPt(), LEAF_SIZE);
-	SHA1(pleaf, LEAF_SIZE, pdigest);
-	for (auto it : p->returnSiblings()) {
-		if (COMMON::isEven(remain_ri)) {
-			memcpy(mkvalue, pdigest, HASH_SIZE);
-			memcpy(mkvalue + HASH_SIZE, it, HASH_SIZE);
-		} else {
-			memcpy(mkvalue, it, HASH_SIZE);
-			memcpy(mkvalue + HASH_SIZE, pdigest, HASH_SIZE);
-		}
-		SHA1(mkvalue, HASH_SIZE * 2, pdigest);
-		remain_ri = remain_ri >> 1;
-	}
-	if (strncmp((const char *) root_digest, (const char *) pdigest, HASH_SIZE)
-			!= 0) {
-		return false;
-	} else {
-		return true;
-	}
 }
 
 bool VERIFIER::verifyAllChallenges() {
@@ -110,7 +89,7 @@ bool VERIFIER::verifyAllChallenges() {
 		r_i = COMMON::computeR_i(puzzle_id, tic_verify->pubkey, i,
 				tic_verify->seed, num_subset, num_all);
 		std::cout << " challenge U_i: " << r_i << std::endl;
-		if (!validatePath(tic_verify->mkproofs[i], r_i)) {
+		if (!MERKLE::validatePath(tic_verify->mkproofs[i], r_i, root_digest)) {
 			return false;
 		}
 	}
