@@ -14,6 +14,7 @@ private:
 	std::vector<PATH*> allmkproofPts;
 	TICKET* myticketPt;
 	std::bitset<5> flags;
+	RANDENGINE* rand_enginePt;
 
 	/**
 	 * Generate the ticket, will call the private sub-method: newChallenges()
@@ -30,15 +31,8 @@ private:
 public:
 
 	/**
-	 * Default constructor
-	 */
-	USER(){
-		myticketPt = nullptr;
-	}
-
-	/**
 	 * 1st constructor
-	 * GOTO resetUSER method
+	 * INPUT a public key
 	 */
 	USER(std::string pubkey);
 
@@ -47,12 +41,6 @@ public:
 	 * Delete memory in allmkproofs, ticket
 	 */
 	~USER();
-
-	/**
-	 * INPUT a public key
-	 * OUTPUT fine
-	 */
-	int resetUSER(std::string pubkey);
 
 	/**
 	 * Read paths from file

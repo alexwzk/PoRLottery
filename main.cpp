@@ -15,6 +15,7 @@
 #include "src/dealer.h"
 #include "src/user.h"
 #include "src/verifier.h"
+#include "src/fps.h"
 
 int main(int argc, const char *argv[]) {
 	using namespace std;
@@ -81,8 +82,38 @@ int main(int argc, const char *argv[]) {
 		VERIFIER* verifier = new VERIFIER(argv[2], argv[3]);
 		verifier->getPuzzleID(argv[4]);
 		bool result = verifier->verifyAllChallenges();
-		cout << "Result of verification: " << std::boolalpha << result << endl;
+		cout << "Result of verification: " << boolalpha << result << endl;
 		delete verifier;
+		return FINE;
+	} else if (strcmp(argv[1], "--test") == SAME) {
+		size_t num_keys = 8;
+		std::list<size_t> u_v;
+		bool result;
+		digest seed = "should_be_hashes2";
+		FPS* fpstesto = new FPS(num_keys); // 8 secret keys
+		PATH* test_signPt = fpstesto->newSignature(seed);
+		uchar* pubkeyPt = fpstesto->returnPubkey();
+		for(size_t i = 0; i < num_keys; i++){
+			u_v.push_back(i);
+		}
+		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		cout << boolalpha << result << endl;
+
+		delete test_signPt;
+		memcpy(seed,"should_be_another_hash",HASH_SIZE);
+		test_signPt = fpstesto->newSignature(seed);
+		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		cout << boolalpha << result << endl;
+
+		delete test_signPt;
+		memcpy(seed,"should_be_another_hash3",HASH_SIZE);
+		test_signPt = fpstesto->newSignature(seed);
+		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		cout << boolalpha << result << endl;
+
+		delete pubkeyPt;
+		delete test_signPt;
+		delete fpstesto;
 		return FINE;
 	}
 	cerr << "Invalid command. try --help for more tips." << endl;

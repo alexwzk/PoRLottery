@@ -4,36 +4,30 @@
 #include "merkle.h"
 
 /**
- * Floating-Preimage Signature is a signature Merkle tree
+ * Floating-Preimage Signature
  * FPS owns a Merkle tree
  */
-class FPS: public MERKLE {
+class FPS {
 
 private:
 	std::list<size_t> unrevealed_s;
+	RANDENGINE* rand_enginePt;
+	MERKLE* mktree_keysPt;
 
 public:
 
 	/**
-	 * default constructor
-	 */
-	FPS() {
-
-	}
-
-	/**
 	 * 1st constructor
-	 * GOTO resetFPS
+	 * creates a floating-preimage sginature
+	 * INPUT the number of secret keys we need
+	 * AFFECT set unrevealed_s = {0,1,2...n}
 	 */
 	FPS(size_t num_sk);
 
 	/**
-	 * creates a floating-preimage sginature
-	 * INPUT the number of secret keys we need
-	 * AFFECT set unrevealed_s = {0,1,2...n}
-	 * OUTPUT fine
+	 * Destroctor: delete rand_engine
 	 */
-	int resetFPS(size_t num_sk);
+	~FPS();
 
 	/**
 	 * Generates new FPS signature
@@ -43,15 +37,21 @@ public:
 	PATH* newSignature(digest hashvalue);
 
 	/**
+	 * Return a new copy of the public key
+	 * OUTPUT the public key digest
+	 */
+	uchar* returnPubkey();
+
+	/**
 	 * Verify the signature
-	 * INPUT User's public key, \Omiga_v (revealed keys to verifier),
-	 * 		 H(m) as a random oracle and the user's signature (mk proof)
-	 * 		 to-be-verified signature
+	 * INPUT a pointer to to-be-verified signature,
+	 *       H(m) as a random oracle and the user's signature (mk proof),
+	 * 	     User's public key, sk - \Omiga_v (indices whose keys are unrevealed)
 	 * OUTPUT true or false
 	 * !!!! static member method
 	 */
-	static bool verifySignature(std::string pubkey,
-			std::vector<PATH*> &revealed_v, digest hashvalue, PATH user_sign);
+	static bool verifySignature(PATH* signaturePt, digest hashvalue,
+			digest pubkey, std::list<size_t> &unrevealed_v);
 };
 
 #endif

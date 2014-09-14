@@ -15,18 +15,9 @@ private:
 public:
 
 	/**
-	 * a default constructor
-	 * Set constant values
-	 * Allocate memory for the private pointers
-	 */
-	VERIFIER() {
-		root_digest = new digest;
-		tic_verify = new TICKET;
-	}
-
-	/**
 	 * 1st constructor
-	 * GOTO resetVERIFIER
+	 * INTPUT a root digest of the Merkle tree,
+	 * 	      a file path from which the ticket info is read
 	 */
 	VERIFIER(std::string root_file, std::string tic_file);
 
@@ -34,13 +25,6 @@ public:
 	 * Destructor: delete root and tic_verify
 	 */
 	~VERIFIER();
-
-	/**
-	 * INTPUT a root digest of the Merkle tree,
-	 * 	      a file path from which the ticket info is read
-	 * OUTPUT fine
-	 */
-	int resetVERIFIER(std::string root_file, std::string tic_file);
 
 	/**
 	 * Get the puzzle id

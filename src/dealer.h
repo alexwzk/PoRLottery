@@ -23,15 +23,10 @@ private:
 public:
 
 	/**
-	 * Default constructor
-	 */
-	DEALER(){
-		mktreePt = nullptr;
-	}
-
-	/**
 	 * 1st constructor
-	 * GOTO resetDEALER
+	 * Computes the Merkle tree of the entire dataset
+	 * INPUT the input file path;
+	 * AFFECT the mktreePt
 	 */
 	DEALER(std::string infile);
 
@@ -39,13 +34,6 @@ public:
 	 * DEALER destructor
 	 */
 	~DEALER();
-
-	/**
-	 * Computes the Merkle tree of the entire dataset
-	 * INPUT the input file path;
-	 * AFFECT the mktreePt
-	 */
-	int resetDEALER(std::string infile);
 
 	/**
 	 *	Setup the permacoin for a participant

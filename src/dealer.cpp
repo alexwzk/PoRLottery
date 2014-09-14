@@ -1,14 +1,6 @@
 #include "dealer.h"
 
 DEALER::DEALER(std::string infile) {
-	resetDEALER(infile);
-}
-
-DEALER::~DEALER() {
-	delete mktreePt;
-}
-
-int DEALER::resetDEALER(std::string infile) {
 	using namespace std;
 	//Parse the file and divide them into segments
 	ifstream inputs;
@@ -65,8 +57,10 @@ int DEALER::resetDEALER(std::string infile) {
 	for (auto it : file_segmts) {
 		delete[] it;
 	}
+}
 
-	return FINE;
+DEALER::~DEALER() {
+	delete mktreePt;
 }
 
 int DEALER::createSubset() {
@@ -101,7 +95,7 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 	for (auto it : uarray_pk) {
 		pathPt = mktreePt->newPath(it);
-		outpaths.write((const char*) pathPt->returnLeafPt(), LEAF_SIZE);
+		outpaths.write((const char*) pathPt->releaseLeafPt(), LEAF_SIZE);
 		tmp_size = pathPt->returnSiblings().size();
 		outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 		for (auto it : pathPt->returnSiblings()) {

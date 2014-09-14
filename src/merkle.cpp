@@ -1,18 +1,6 @@
 #include "merkle.h"
 
 MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
-	resetMERKLE(segmts,leaf_size);
-}
-
-MERKLE::~MERKLE() {
-	delete[] segments;
-	for (size_t i = 0; i < height; i++) {
-		delete[] arrays[i];
-	}
-	delete[] arrays;
-}
-
-int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 	using namespace std;
 	num_segmts = segmts.size();
 	height = ceil(log2(num_segmts)) + 1; // includes the root
@@ -21,8 +9,7 @@ int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 	try {
 		arrays = new digest*[height];
 	} catch (bad_alloc& err) {
-		cerr << err.what() << " @ MERKLE 1st constructor for [arrays**]."
-				<< endl;
+		cerr << err.what() << " @ MERKLE 1st constructor for [arrays**]." << endl;
 	}
 	size_t num_elem = 1;
 	now_layer = 0;
@@ -46,8 +33,7 @@ int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 	try {
 		segments = new leaf[num_elem]; // full binary tree
 	} catch (bad_alloc& err) {
-		cerr << err.what() << " @ MERKLE 1st constructor for [segments*]."
-				<< endl;
+		cerr << err.what() << " @ MERKLE 1st constructor for [segments*]." << endl;
 	}
 
 	// Hash the leaves (file segments)
@@ -56,7 +42,8 @@ int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 		SHA1(segments[i], leaf_size, arrays[now_layer][i]);
 		// Coutest memcpy
 		cout << "No. " << i << ": ";
-//		cout << segmts[i] << " and its";
+		COMMON::printHex(segments[i], leaf_size);
+		cout << " and its";
 		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
@@ -72,7 +59,8 @@ int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 	// Coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "Redundnt No. " << i << ": ";
-//		COMMON::printHex(segments[i], leaf_size);
+		COMMON::printHex(segments[i], leaf_size);
+		cout << " and its";
 		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
 	}
@@ -99,7 +87,14 @@ int MERKLE::resetMERKLE(std::vector<uchar *> segmts, size_t leaf_size){
 		}
 		num_elem = num_elem << 1;
 	}
-	return FINE;
+}
+
+MERKLE::~MERKLE() {
+	delete[] segments;
+	for (size_t i = 0; i < height; i++) {
+		delete[] arrays[i];
+	}
+	delete[] arrays;
 }
 
 PATH* MERKLE::newPath(size_t loca) {
@@ -110,7 +105,12 @@ PATH* MERKLE::newPath(size_t loca) {
 
 	int it_index;
 	// Get the file segment F_{loca}
-	PATH* pathPt = new PATH(segments[loca]);
+	PATH* pathPt = nullptr;
+	try{
+		pathPt = new PATH(segments[loca]);
+	}catch (bad_alloc& err) {
+		cerr << err.what() << " @ MERKLE newPath for [pathPt]." << endl;
+	}
 
 	size_t now_loca = loca;
 	now_layer = height - 1;
@@ -146,15 +146,15 @@ uchar* MERKLE::releaseRootPt() {
 	return arrays[0][0];
 }
 
-bool MERKLE::validatePath(PATH* p, size_t u_i, digest root) {
-	size_t remain_ri = u_i;
+bool MERKLE::validatePath(PATH* p, size_t leaf_size, size_t index, digest root) {
+	size_t next_id = index;
 	leaf pleaf;
 	digest pdigest;
 	uchar mkvalue[HASH_SIZE * 2];
-	memcpy(pleaf, p->returnLeafPt(), LEAF_SIZE);
-	SHA1(pleaf, LEAF_SIZE, pdigest);
+	memcpy(pleaf, p->releaseLeafPt(), leaf_size);
+	SHA1(pleaf, leaf_size, pdigest);
 	for (auto it : p->returnSiblings()) {
-		if (COMMON::isEven(remain_ri)) {
+		if (COMMON::isEven(next_id)) {
 			memcpy(mkvalue, pdigest, HASH_SIZE);
 			memcpy(mkvalue + HASH_SIZE, it, HASH_SIZE);
 		} else {
@@ -162,7 +162,7 @@ bool MERKLE::validatePath(PATH* p, size_t u_i, digest root) {
 			memcpy(mkvalue + HASH_SIZE, pdigest, HASH_SIZE);
 		}
 		SHA1(mkvalue, HASH_SIZE * 2, pdigest);
-		remain_ri = remain_ri >> 1;
+		next_id = next_id >> 1;
 	}
 	if (strncmp((const char *) root, (const char *) pdigest, HASH_SIZE) != 0) {
 		return false;
@@ -171,6 +171,6 @@ bool MERKLE::validatePath(PATH* p, size_t u_i, digest root) {
 	}
 }
 
-size_t MERKLE::returnNumSegmts(){
+size_t MERKLE::returnNumSegmts() {
 	return num_segmts;
 }

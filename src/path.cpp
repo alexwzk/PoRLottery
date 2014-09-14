@@ -1,7 +1,14 @@
 #include "path.h"
 
 PATH::PATH(leaf inleaf) {
-	resetPATH(inleaf);
+	try {
+		leafPt = new leaf;
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ PATH 1st constructor for leafPt."
+				<< std::endl;
+		exit(MALLOC_ERR);
+	}
+	memcpy(leafPt, inleaf, sizeof(leaf));
 }
 
 PATH::~PATH() {
@@ -11,18 +18,7 @@ PATH::~PATH() {
 	delete[] leafPt;
 }
 
-int PATH::resetPATH(leaf inleaf) {
-	try {
-		leafPt = new leaf;
-	} catch (std::bad_alloc& err) {
-		std::cerr << err.what() << " @ PATH 1st constructor for leafPt."
-				<< std::endl;
-		exit(MALLOC_ERR);
-	}
-	memcpy(leafPt, inleaf, sizeof(leaf));
-	return FINE;
-}
-uchar* PATH::returnLeafPt() {
+uchar* PATH::releaseLeafPt() {
 	return leafPt;
 }
 

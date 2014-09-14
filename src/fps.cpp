@@ -1,33 +1,78 @@
 #include "fps.h"
 
 FPS::FPS(size_t num_sk) {
-	resetFPS(num_sk);
-}
-
-int FPS::resetFPS(size_t num_sk) {
-	std::vector<uchar *> secret_keyPts;
-	for (size_t i = 0; i < num_sk; i++) {
-		secret_keyPts.push_back((uchar *) COMMON::newRandStr(LAMBDA).data());
+	try {
+		rand_enginePt = new RANDENGINE();
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ FPS 1st constructor for [rand_enginePt]."
+				<< std::endl;
 	}
-	this->resetMERKLE(secret_keyPts, LAMBDA);
+	std::vector<uchar *> seckeyPts;
+	uchar* tmp_seckeyPt;
+	for (size_t i = 0; i < num_sk; i++) {
+		try {
+			tmp_seckeyPt = new uchar[LAMBDA];
+		} catch (std::bad_alloc& err) {
+			std::cerr << err.what()
+					<< " @ FPS 1st constructor for [tmp_seckeyPt]."
+					<< std::endl;
+		}
+		memcpy(tmp_seckeyPt, (uchar *) rand_enginePt->newRandStr(LAMBDA).data(),
+		LAMBDA);
+		seckeyPts.push_back(tmp_seckeyPt);
+	}
+	for (uchar* it : seckeyPts) {
+		COMMON::printHex(it, LAMBDA);
+	}
+	try {
+		mktree_keysPt = new MERKLE(seckeyPts, LAMBDA);
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ FPS 1st constructor for [mktree_keysPt]."
+				<< std::endl;
+	}
 	unrevealed_s.clear();
 	for (size_t i = 0; i < num_sk; i++) {
 		unrevealed_s.push_back(i);
 	}
-	return FINE;
+}
+
+FPS::~FPS() {
+	delete mktree_keysPt;
+	delete rand_enginePt;
 }
 
 PATH* FPS::newSignature(digest hashvalue) {
-	PATH* newSignPt;
-	size_t subscript = COMMON::randomNum(hashvalue, unrevealed_s.size());
+	PATH* newSignPt = nullptr;
+	size_t index = RANDENGINE::randFromHash(hashvalue, unrevealed_s.size());
 	std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
-	std::advance(torevealIt, subscript);
-	newSignPt = this->newPath(*torevealIt);
+	std::advance(torevealIt, index);
+	newSignPt = mktree_keysPt->newPath(*torevealIt);
 	torevealIt = unrevealed_s.erase(torevealIt);
 	return newSignPt;
 }
 
-bool FPS::verifySignature(std::string pubkey,
-		std::vector<PATH*> &revealed_v, digest hashvalue, PATH user_sign){
-//TODO implement it!
+uchar* FPS::returnPubkey() {
+	if (mktree_keysPt->releaseRootPt() == nullptr) {
+		return nullptr;
+	}
+	uchar* pubkeyPt = nullptr;
+	try {
+		pubkeyPt = new uchar[HASH_SIZE];
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ FPS returnPubkey for [pubkeyPt]."
+				<< std::endl;
+	}
+	memcpy(pubkeyPt, mktree_keysPt->releaseRootPt(), HASH_SIZE);
+	return pubkeyPt;
+}
+
+bool FPS::verifySignature(PATH* signaturePt, digest hashvalue, digest pubkey,
+		std::list<size_t> &unrevealed_v) {
+	bool passed = false;
+	size_t index = RANDENGINE::randFromHash(hashvalue, unrevealed_v.size());
+	std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
+	std::advance(torevealIt, index);
+	passed = MERKLE::validatePath(signaturePt, LAMBDA, (*torevealIt), pubkey);
+	torevealIt = unrevealed_v.erase(torevealIt);
+	return passed;
 }

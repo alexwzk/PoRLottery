@@ -10,17 +10,14 @@
 #include <vector>
 #include <string>
 #include <iterator>
-#include <random>
 #include <algorithm>
-#include <openssl/sha.h>
 #include <stdexcept>
-#include <iostream>
+
+#include "randengine.h"
 
 /// Macros N' typedef structure
 #define LEAF_SIZE 1024
-#define HASH_SIZE 20
 #define KEY_SIZE 256
-#define XTRACT_SIZE 10
 #define SUBSET_CONST 5
 #define ALL_CONST 16
 #define CHALNG_CONST 2
@@ -35,9 +32,7 @@
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-typedef unsigned char uchar;
 typedef uchar leaf[LEAF_SIZE];
-typedef uchar digest[HASH_SIZE];
 
 namespace COMMON {
 
@@ -63,19 +58,6 @@ template<typename T>
 inline bool isEven(T v) {
 	return ((v % 2) == 0 ? true : false);
 }
-
-/**
- * A random oracle lies within [0,max-1]
- * INPUT hashvalue as a seed
- * OUTPUT a random number ranged [0,max-1]
- */
-size_t randomNum(digest hashvalue, size_t max);
-
-/**
- * Generate a k-BYTES random std::string
- * INPUT k (bytes); OUTPUT a random string whose length is k
- */
-std::string newRandStr(size_t k);
 
 /**
  * Computes u[i] := H_0(pk||i_inl) mod num_all

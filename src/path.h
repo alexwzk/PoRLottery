@@ -11,15 +11,8 @@ private:
 public:
 
 	/**
-	 * default constructor
-	 */
-	PATH(){
-		leafPt = nullptr;
-	}
-
-	/**
 	 * 1st constructor
-	 * GOTO resetPATH
+	 * Initialised by a leaf
 	 */
 	PATH(leaf inleaf);
 
@@ -30,16 +23,10 @@ public:
 	~PATH();
 
 	/**
-	 * Initialised by a leaf
-	 * OUTPUT fine
-	 */
-	int resetPATH(leaf inleaf);
-
-	/**
-	 * Return the pointer to its leaf item
+	 * Release the pointer to its leaf item
 	 * OUTPUT leafPt
 	 */
-	uchar* returnLeafPt();
+	uchar* releaseLeafPt();
 
 	/**
 	 * Return the list of hash siblings pointers
