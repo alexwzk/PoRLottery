@@ -70,7 +70,7 @@ int main(int argc, const char *argv[]) {
 		USER* user = new USER(argv[3]);
 		user->storeFile(argv[2]);
 		user->getNewPuzzle(argv[4]);
-		user->releaseTicket(argv[5]);
+		user->writeTicket(argv[5]);
 		delete user;
 		return FINE;
 	} else if (strcmp(argv[1], "--verify") == SAME) {

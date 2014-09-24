@@ -10,78 +10,76 @@ class USER {
 private:
 	size_t num_subset = SUBSET_CONST;
 	int i_ink = CHALNG_CONST;
+	std::bitset<5> flags;
 	std::string puzzle_id;
 	std::vector<PATH*> allmkproofPts;
 	TICKET* myticketPt;
-	std::bitset<5> flags;
 	RANDENGINE* rand_enginePt;
 
 	/**
-	 * Generate the ticket, will call the private sub-method: newChallenges()
-	 * input: Null; Output: 0 success
-	 * Affect: myticket.mkproofs
+	 * 1st Constructor: generates the ticket
+	 * OUTPUT FINE
+	 * AFFECT myticket.mkproofs
 	 */
 	int generateTicket();
 
 	/**
-	 * Check is ready to release the ticket
+	 * Is ready to release the ticket?
 	 */
 	bool isReadyToRelease();
 
 public:
 
 	/**
-	 * 1st constructor
-	 * INPUT a public key
+	 * 1st constructor: starts with the user's public key
 	 */
 	USER(std::string pubkey);
 
 	/**
-	 * Destructor
-	 * Delete memory in allmkproofs, ticket
+	 * Destructor: deletes memory in allmkproofs, ticket
 	 */
 	~USER();
 
 	/**
 	 * Read paths from file
-	 * Intput: file path
-	 * Output: FINE or FILE_ERR or MALLOC_ERR
-	 * Affect: allmkproofs & myticket->mkproofs
+	 * INPUT file path
+	 * OUTPUT FINE or FILE_ERR or MALLOC_ERR
+	 * AFFECT allmkproofs & myticket->mkproofs
 	 */
 	int storeFile(std::string inputf);
 
 	/**
-	 * Receive a new puzzle ID
-	 * Input: a Puzzle id; Output: -1 if the id wasn't changed
-	 * Affect: this->puzzle_id
+	 * Receives a new puzzle ID
+	 * INTPUT a Puzzle id
+	 * OUTPUT FINE
+	 * AFFECT this->puzzle_id
 	 */
 	int getNewPuzzle(std::string id);
 
 	/**
-	 * Choose new random seed
+	 * Generates a new random seed
 	 */
 	void resetSeed();
 
 	/**
-	 * Reset user's public key
-	 * Input: a new public key; Output: Void
-	 * Affect: this->myticket.pubkey
+	 * Resets the user's public key
+	 * INPUT a new public key
+	 * AFFECT this->myticket.pubkey
 	 */
 	void resetPubkey(std::string newpbkey);
 
 	/**
-	 * Reveal my public key
-	 * Input: Null; Output: this->myticket.pubkey
-	 * Affect: None
+	 * Reveals a new copy of the user's public key
+	 * OUTPUT this->myticket.pubkey
 	 */
 	std::string returnMyPubkey();
 
 	/**
-	 * Release the ticket to file
-	 * Input: out file path
-	 * Output: FINE or FILE_ERR
+	 * Writes the ticket to file
+	 * INPUT output file path
+	 * OUTPUT FINE or FILE_ERR
 	 */
-	int releaseTicket(std::string outf);
+	int writeTicket(std::string outf);
 
 };
 

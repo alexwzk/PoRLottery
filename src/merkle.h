@@ -7,7 +7,7 @@ class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height;
 	leaf *segments;
-	digest **arrays;	//a hierarchical chunks of buffer
+	digest **arrays;	//a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 
 	int now_layer, next_layer;
 
@@ -22,7 +22,7 @@ public:
 
 	/**
 	 * Merkle tree destructor
-	 * AFFECT segments[] and arrays[][] are released
+	 * AFFECT memory of segments[] and arrays[][] are released
 	 */
 	~MERKLE();
 

@@ -11,11 +11,7 @@ RANDENGINE::RANDENGINE() {
 	rand_engine.seed(randevice());
 }
 
-RANDENGINE::~RANDENGINE() {
-}
-
 size_t RANDENGINE::randFromHash(digest hashvalue, size_t max) {
-	// TODO: Uniform distribution: leftshift 256( as to accumulate bytes )
 	// bit at a time: 2
 	size_t number = 0;
 	for (int i = 0; i < XTRACT_SIZE; i++) {

@@ -25,16 +25,20 @@ private:
 
 public:
 	/**
-	 * Turn on the default random engine
+	 * Turns on the default random engine
 	 */
 	RANDENGINE();
 
-	~RANDENGINE();
+	/**
+	 * Null destructor
+	 */
+	~RANDENGINE(){}
 
 	/**
 	 * A random oracle lies within [0,max-1]
 	 * INPUT hashvalue as a seed
 	 * OUTPUT a random number ranged [0,max-1]
+	// TODO: Uniform distribution: leftshift 256( as to accumulate bytes )
 	 */
 	static size_t randFromHash(digest hashvalue, size_t max);
 

@@ -37,20 +37,20 @@ typedef uchar leaf[LEAF_SIZE];
 namespace COMMON {
 
 /**
- * Print the unchar array in Hex form
+ * Prints the unchar array in Hex form
  * INPUT unchar array and its length
  */
 void printHex(const uchar* ucstr, const size_t length);
 
 /**
- * String in Hex form
+ * Returns string in Hex form
  * REF http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
  * !!!! Not fully tested
  */
 std::string stringToHex(const std::string& input);
 
 /**
- * Return true if the value is even
+ * Returns true if the value is even
  * INPUT a size_t value; OUTPUT true if it's even
  * !!!! An inline method
  */

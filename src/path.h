@@ -11,31 +11,29 @@ private:
 public:
 
 	/**
-	 * 1st constructor
-	 * Initialised by a leaf
+	 * 1st constructor: initialised by a leaf
 	 */
 	PATH(leaf inleaf);
 
 	/**
-	 * Destructor
-	 * Delete leafPt and pointers stored in siblings
+	 * Destructor: deletes leafPt and pointers stored in siblings
 	 */
 	~PATH();
 
 	/**
-	 * Release the pointer to its leaf item
+	 * Releases the pointer to its leaf item
 	 * OUTPUT leafPt
 	 */
 	uchar* releaseLeafPt();
 
 	/**
-	 * Return the list of hash siblings pointers
+	 * Returns the list of hash siblings pointers
 	 * OUTPUT siblings
 	 */
 	std::list<uchar*> returnSiblings();
 
 	/**
-	 * Pushback the hash sibling into the siblings
+	 * Push backs the hash sibling into the siblings
 	 * INPUT a head pointer of the digest
 	 * OUTPUT FINE or NULLPT_ERR if hash is invalid
 	 */

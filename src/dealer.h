@@ -23,20 +23,19 @@ private:
 public:
 
 	/**
-	 * 1st constructor
-	 * Computes the Merkle tree of the entire dataset
+	 * 1st constructor:computes the Merkle tree of the entire dataset
 	 * INPUT the input file path;
 	 * AFFECT the mktreePt
 	 */
 	DEALER(std::string infile);
 
 	/**
-	 * DEALER destructor
+	 * DEALER destructor: call MERKLE class destructor
 	 */
 	~DEALER();
 
 	/**
-	 *	Setup the permacoin for a participant
+	 *	Sets up the permacoin for a participant
 	 *	INPUT the public string and the output file path
 	 *	OUTPUT FINE or FILE_ERR
 	 *	AFFECT Outsource the {(F{j],PI_j)|j \belongs S_{pk}} to a file
@@ -44,7 +43,7 @@ public:
 	int outSource(std::string usr_pubkey, std::string outfile);
 
 	/**
-	 * Release the Merkle tree root digest to a file/communication channel
+	 * Releases the Merkle tree root digest to a file/communication channel
 	 * Deletgate to the Merkle class then write the binary file
 	 */
 	int releaseRoot(std::string outfile);

@@ -123,7 +123,7 @@ std::string USER::returnMyPubkey() {
 	return myticketPt->pubkey;
 }
 
-int USER::releaseTicket(std::string outf) {
+int USER::writeTicket(std::string outf) {
 	using namespace std;
 	generateTicket();
 	if (!isReadyToRelease()) {
