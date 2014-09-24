@@ -5,7 +5,7 @@ USER::USER(std::string pubkey) {
 		myticketPt = new TICKET;
 	} catch (std::bad_alloc& err) {
 		std::cerr << err.what()
-				<< " @ assigning memory to the myticketPt at User 1st constructor."
+				<< " @ User 1st constructor for myticketPt."
 				<< std::endl;
 		exit(MALLOC_ERR);
 	}
@@ -71,7 +71,7 @@ int USER::storeFile(std::string inputf) {
 	try {
 		inputs.open(inputf, ifstream::binary);
 	} catch (ifstream::failure& err) {
-		cerr << err.what() << " @ Opening file at User readPathsFile." << endl;
+		cerr << err.what() << " @ User readPathsFile opening file." << endl;
 		exit(FILE_ERR);
 	}
 
@@ -84,7 +84,7 @@ int USER::storeFile(std::string inputf) {
 		try {
 			pathPt = new PATH(tmp_leaf);
 		} catch (std::bad_alloc& err) {
-			std::cerr << err.what() << " @ creating new path in User storeFile."
+			std::cerr << err.what() << " @ User storeFile for pathPt."
 					<< std::endl;
 			exit(MALLOC_ERR);
 		}
@@ -134,7 +134,7 @@ int USER::releaseTicket(std::string outf) {
 	try {
 		outtic.open(outf, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {
-		cerr << err.what() << " @ Opening file at User releaseTicket." << endl;
+		cerr << err.what() << " @ User releaseTicket opening file." << endl;
 		exit(FILE_ERR);
 	}
 	tmp_size = myticketPt->pubkey.size();

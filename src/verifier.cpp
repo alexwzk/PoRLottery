@@ -7,12 +7,12 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 	leaf tmp_leaf;
 	digest tmp_digest;
 	char* bufferPt = nullptr;
-	PATH* pathPtr = nullptr;
+	PATH* pathPt = nullptr;
 	try {
 		inticket.open(tic_file);
 	} catch (ifstream::failure& err) {
 		cerr << err.what()
-				<< " @ Opening ticket file at Verifier 2nd constructor."
+				<< " @ Opening ticket file at Verifier 1st constructor."
 				<< endl;
 		exit(FILE_ERR);
 	}
@@ -20,18 +20,36 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 		inroot.open(root_file);
 	} catch (ifstream::failure& err) {
 		cerr << err.what()
-				<< " @ Opening root file at Verifier 2nd constructor." << endl;
+				<< " @ Opening root file at Verifier 1st constructor." << endl;
 		exit(FILE_ERR);
 	}
-	root_digest = new digest;
+	try {
+		root_digest = new digest;
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what()
+				<< " @ Verifier 1st constructor for root_digest." << std::endl;
+		exit(MALLOC_ERR);
+	}
 	inroot.read((char *) root_digest, HASH_SIZE);
 	cout << "root: ";
 	COMMON::printHex(root_digest, HASH_SIZE);
 	inroot.close();
 
-	tic_verify = new TICKET;
+	try {
+		tic_verify = new TICKET;
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ Verifier 1st constructor for tic_verify."
+				<< std::endl;
+		exit(MALLOC_ERR);
+	}
 	inticket.read((char *) &buf_nsize, sizeof(size_t));
-	bufferPt = new char[buf_nsize];
+	try {
+		bufferPt = new char[buf_nsize];
+	} catch (std::bad_alloc& err) {
+		std::cerr << err.what() << " @ Verifier 1st constructor for bufferPt."
+				<< std::endl;
+		exit(MALLOC_ERR);
+	}
 	inticket.read(bufferPt, buf_nsize);
 	tic_verify->pubkey.append(bufferPt, bufferPt + buf_nsize);
 	cout << "pk: " << tic_verify->pubkey << endl;
@@ -39,7 +57,14 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 	inticket.read((char *) &buf_nsize, sizeof(size_t));
 	if (buf_nsize > buf_osize) {
 		delete[] bufferPt;
-		bufferPt = new char[buf_nsize];
+		try {
+			bufferPt = new char[buf_nsize];
+		} catch (std::bad_alloc& err) {
+			std::cerr << err.what()
+					<< " @ Verifier 1st constructor for bufferPt(2)."
+					<< std::endl;
+			exit(MALLOC_ERR);
+		}
 	}
 	inticket.read(bufferPt, buf_nsize);
 	tic_verify->seed.append(bufferPt, bufferPt + buf_nsize);
@@ -51,15 +76,21 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 		inticket.read((char *) tmp_leaf, LEAF_SIZE);
 //		cout << "leaf: ";
 //		COMMON::printHex(tmp_leaf, LEAF_SIZE);
-		pathPtr = new PATH(tmp_leaf);
+		try {
+			pathPt = new PATH(tmp_leaf);
+		} catch (std::bad_alloc& err) {
+			std::cerr << err.what()
+					<< " @ Verifier 1st constructor for pathPt." << std::endl;
+			exit(MALLOC_ERR);
+		}
 		inticket.read((char *) &path_len, sizeof(size_t));
 		for (size_t j = 0; j < path_len; j++) {
 			inticket.read((char *) tmp_digest, HASH_SIZE);
 			cout << "hash: ";
 			COMMON::printHex(tmp_digest, HASH_SIZE);
-			pathPtr->pushDigestPt(tmp_digest);
+			pathPt->pushDigestPt(tmp_digest);
 		}
-		tic_verify->mkproofs.push_back(pathPtr);
+		tic_verify->mkproofs.push_back(pathPt);
 	}
 	inticket.close();
 }
@@ -84,7 +115,8 @@ bool VERIFIER::verifyAllChallenges() {
 		r_i = COMMON::computeR_i(puzzle_id, tic_verify->pubkey, i,
 				tic_verify->seed, num_subset, num_all);
 		std::cout << " challenge U_i: " << r_i << std::endl;
-		if (!MERKLE::validatePath(tic_verify->mkproofs[i], LEAF_SIZE, r_i, root_digest)) {
+		if (!MERKLE::validatePath(tic_verify->mkproofs[i], LEAF_SIZE, r_i,
+				root_digest)) {
 			return false;
 		}
 	}
