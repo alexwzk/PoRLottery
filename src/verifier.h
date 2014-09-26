@@ -22,7 +22,7 @@ public:
 	VERIFIER(std::string root_file, std::string tic_file);
 
 	/**
-	 * Destructor: delete root and tic_verify
+	 * Destructor: deletes root and tic_verify
 	 */
 	~VERIFIER();
 
@@ -32,7 +32,7 @@ public:
 	 */
 	int getPuzzleID(std::string puz_id);
 
-	//TODO return Puzzle ID
+	//TODO return Puzzle ID(?)
 
 	/**
 	 * Verify all challenged segments stored in tic_verify->mkproofs

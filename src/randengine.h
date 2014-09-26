@@ -38,9 +38,8 @@ public:
 	 * A random oracle lies within [0,max-1]
 	 * INPUT hashvalue as a seed
 	 * OUTPUT a random number ranged [0,max-1]
-	// TODO: Uniform distribution: leftshift 256( as to accumulate bytes )
 	 */
-	static size_t randFromHash(digest hashvalue, size_t max);
+	size_t randByHash(digest hashvalue, size_t max);
 
 	/**
 	 * Generate a k-BYTES random std::string

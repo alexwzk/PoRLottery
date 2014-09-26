@@ -22,19 +22,21 @@ std::string COMMON::stringToHex(const std::string& input) {
 
 size_t COMMON::computeU_i(std::string pk, size_t i_inl, size_t num_all){
 	digest hashvalue;
+	RANDENGINE rand_engine;
 	std::string tmp_str = pk + std::to_string(i_inl);
 	//std::cout << "The pk||i : " << tmp_str << std::endl;
 	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
 	//Extract small number from the hash then mod by num_all
-	return RANDENGINE::randFromHash(hashvalue,num_all);
+	return rand_engine.randByHash(hashvalue,num_all);
 }
 
 size_t COMMON::computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
 		size_t num_sub){
 	digest hashvalue;
+	RANDENGINE rand_engine;
 	std::string tmp_str = puz + pk + std::to_string(i_ink) + seed;
 	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
-	return RANDENGINE::randFromHash(hashvalue,num_sub);
+	return rand_engine.randByHash(hashvalue,num_sub);
 }
 
 size_t COMMON::computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,

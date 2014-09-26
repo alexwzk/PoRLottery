@@ -43,7 +43,9 @@ FPS::~FPS() {
 
 PATH* FPS::newSignature(digest hashvalue) {
 	PATH* newSignPt = nullptr;
-	size_t index = RANDENGINE::randFromHash(hashvalue, unrevealed_s.size());
+	size_t index = rand_enginePt->randByHash(hashvalue, unrevealed_s.size());
+	//Coutest
+	std::cout << "The rand subscript is : " << index << std::endl;
 	std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 	std::advance(torevealIt, index);
 	newSignPt = mktree_keysPt->newPath(*torevealIt);
@@ -69,7 +71,7 @@ uchar* FPS::returnPubkey() {
 bool FPS::verifySignature(PATH* signaturePt, digest hashvalue, digest pubkey,
 		std::list<size_t> &unrevealed_v) {
 	bool passed = false;
-	size_t index = RANDENGINE::randFromHash(hashvalue, unrevealed_v.size());
+	size_t index = rand_enginePt->randByHash(hashvalue, unrevealed_v.size());
 	std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
 	std::advance(torevealIt, index);
 	passed = MERKLE::validatePath(signaturePt, LAMBDA, (*torevealIt), pubkey);

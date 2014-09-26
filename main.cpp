@@ -89,26 +89,28 @@ int main(int argc, const char *argv[]) {
 		size_t num_keys = 8;
 		std::list<size_t> u_v;
 		bool result;
-		digest seed = "should_be_hashes2";
+		std::string text = "to_be_hashed_string";
+		digest seed;
+		SHA1((uchar*)text.data(),text.length(),seed);
 		FPS* fpstesto = new FPS(num_keys); // 8 secret keys
 		PATH* test_signPt = fpstesto->newSignature(seed);
 		uchar* pubkeyPt = fpstesto->returnPubkey();
 		for(size_t i = 0; i < num_keys; i++){
 			u_v.push_back(i);
 		}
-		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
 		cout << boolalpha << result << endl;
 
 		delete test_signPt;
-		memcpy(seed,"should_be_another_hash",HASH_SIZE);
+		SHA1(seed,HASH_SIZE,seed);
 		test_signPt = fpstesto->newSignature(seed);
-		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
 		cout << boolalpha << result << endl;
 
 		delete test_signPt;
-		memcpy(seed,"should_be_another_hash3",HASH_SIZE);
+		SHA1(seed,HASH_SIZE,seed);
 		test_signPt = fpstesto->newSignature(seed);
-		result = FPS::verifySignature(test_signPt,seed,pubkeyPt,u_v);
+		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
 		cout << boolalpha << result << endl;
 
 		delete pubkeyPt;

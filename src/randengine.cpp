@@ -11,13 +11,12 @@ RANDENGINE::RANDENGINE() {
 	rand_engine.seed(randevice());
 }
 
-size_t RANDENGINE::randFromHash(digest hashvalue, size_t max) {
-	// bit at a time: 2
-	size_t number = 0;
-	for (int i = 0; i < XTRACT_SIZE; i++) {
-		number += hashvalue[i];
-	}
-	return number % max;
+size_t RANDENGINE::randByHash(digest hashvalue, size_t max) {
+	rand_engine.seed((size_t)(*hashvalue)); //Does this affect the newRandStr? Is this way safe?
+	//Coutest
+	std::cout << "Cast the first 4 bytes into a long int: " << (size_t)(*hashvalue) << std::endl;
+	std::uniform_int_distribution<> dis(0, max-1);
+	return dis(rand_engine);
 }
 
 std::string RANDENGINE::newRandStr(size_t k) {

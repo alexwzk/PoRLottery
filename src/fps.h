@@ -47,10 +47,9 @@ public:
 	 *       H(m) as a random oracle and the user's signature (mk proof),
 	 * 	     User's public key, sk - \Omiga_v (indices whose keys are unrevealed)
 	 * OUTPUT true or false
-	 * !!!! a static member method
 	 */
-	static bool verifySignature(PATH* signaturePt, digest hashvalue,
-			digest pubkey, std::list<size_t> &unrevealed_v);
+	bool verifySignature(PATH* signaturePt, digest hashvalue, digest pubkey,
+			std::list<size_t> &unrevealed_v);
 };
 
 #endif
