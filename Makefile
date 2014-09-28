@@ -24,7 +24,7 @@ LFLAGS = -L/usr/local/openssl/lib
 LIBS = -lcrypto
 
 # define the C++ source files
-SRCS = src/randengine.cpp src/common.cpp src/path.cpp src/merkle.cpp src/dealer.cpp src/user.cpp src/verifier.cpp src/fps.cpp main.cpp
+SRCS = src/randengine.cpp src/common.cpp src/path.cpp src/ticket.cpp src/merkle.cpp src/dealer.cpp src/user.cpp src/verifier.cpp src/fps.cpp main.cpp
 
 # define the C++ object files 
 # This uses Suffix Replacement within a macro:

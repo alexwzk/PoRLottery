@@ -2,6 +2,7 @@
 #define PERMACN_VERIFIER_H
 
 #include "merkle.h"
+#include "ticket.h"
 
 #include <fstream>
 

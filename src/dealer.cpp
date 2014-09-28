@@ -107,7 +107,7 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	return FINE;
 }
 
-int DEALER::releaseRoot(std::string outfile) {
+int DEALER::writeRoot(std::string outfile) {
 	using namespace std;
 	ofstream ofile_operat;
 	uchar* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate

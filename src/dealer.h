@@ -46,7 +46,7 @@ public:
 	 * Releases the Merkle tree root digest to a file/communication channel
 	 * Deletgate to the Merkle class then write the binary file
 	 */
-	int releaseRoot(std::string outfile);
+	int writeRoot(std::string outfile);
 
 	//TODO: copy and assignment functions
 };

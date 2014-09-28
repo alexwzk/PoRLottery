@@ -55,7 +55,7 @@ int main(int argc, const char *argv[]) {
 		} else if (argc == 7 && strcmp(argv[5], "-r") == SAME) {
 			DEALER* dealer = new DEALER(argv[2]);
 			dealer->outSource(argv[3], argv[4]);
-			dealer->releaseRoot(argv[6]);
+			dealer->writeRoot(argv[6]);
 			delete dealer;
 			return FINE;
 		}
@@ -86,36 +86,18 @@ int main(int argc, const char *argv[]) {
 		delete verifier;
 		return FINE;
 	} else if (strcmp(argv[1], "--test") == SAME) {
-		size_t num_keys = 8;
-		std::list<size_t> u_v;
-		bool result;
-		std::string text = "to_be_hashed_string";
-		digest seed;
-		SHA1((uchar*)text.data(),text.length(),seed);
-		FPS* fpstesto = new FPS(num_keys); // 8 secret keys
-		PATH* test_signPt = fpstesto->newSignature(seed);
-		uchar* pubkeyPt = fpstesto->returnPubkey();
-		for(size_t i = 0; i < num_keys; i++){
-			u_v.push_back(i);
-		}
-		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
-		cout << boolalpha << result << endl;
-
-		delete test_signPt;
-		SHA1(seed,HASH_SIZE,seed);
-		test_signPt = fpstesto->newSignature(seed);
-		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
-		cout << boolalpha << result << endl;
-
-		delete test_signPt;
-		SHA1(seed,HASH_SIZE,seed);
-		test_signPt = fpstesto->newSignature(seed);
-		result = fpstesto->verifySignature(test_signPt,seed,pubkeyPt,u_v);
-		cout << boolalpha << result << endl;
-
-		delete pubkeyPt;
-		delete test_signPt;
-		delete fpstesto;
+		TICKET* testicPt = new TICKET;
+		testicPt->pubkey = "Pubkey 1.";
+		testicPt->seed = "seed 1.";
+		leaf testlf = "test leaf";
+		digest testdt = "test digest";
+		digest testdt2 = "secound digest";
+		PATH* testpathPt = new PATH(testlf);
+		testpathPt->pushDigestPt(testdt);
+		testpathPt->pushDigestPt(testdt2);
+		testicPt->mkproofs.push_back(testpathPt);
+		//Coutest
+		COMMON::printHex(testicPt->hashOfTicket(),HASH_SIZE);
 		return FINE;
 	}
 	cerr << "Invalid command. try --help for more tips." << endl;
