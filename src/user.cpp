@@ -35,6 +35,9 @@ USER::~USER() {
 }
 
 int USER::generateTicket() {
+	/*
+	 * Generate the ticket as a local-POR lottery
+	 */
 	if (flags.to_ullong() != 0x0F) { //01111
 		std::cout << "failed with flags: " << flags.to_string('0', '1')
 				<< std::endl;
