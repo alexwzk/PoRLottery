@@ -59,17 +59,21 @@ bool VERIFIER::verifyAllChallenges() {
 	using namespace std;
 	using namespace COMMON;
 	leaf empty_leaf;
-	PATH* now_signPt, init_signPt;
+	PATH* now_signPt, *init_signPt;
 	size_t r_i, chaleng_times;
 	std::string prefix, inputs, uchar_str;
+
 	chaleng_times = tic_verifyPt->mkproofs.size();
+
 	prefix = puzzle_id + tic_verifyPt->pubkey;
-	inputs = prefix + tic_verifyPt->seed;
+	//sigma_0
 	memset(empty_leaf, 0, LAMBDA);
 	init_signPt = now_signPt = new PATH(empty_leaf);
+	//r_1
+	inputs = prefix + tic_verifyPt->seed;
 	r_i = computeR_i(tic_verifyPt->pubkey, inputs, num_subset, num_all);
 
-	//TODO Add write FPS root, validate paths
+	//TODO Validate paths
 	for(int i = 0; i < i_ink; i++){
 
 	}

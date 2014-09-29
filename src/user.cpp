@@ -1,6 +1,6 @@
 #include "user.h"
 
-USER::USER(std::string pubkey) {
+USER::USER() {
 	try {
 		myticketPt = new TICKET;
 	} catch (std::bad_alloc& err) {
@@ -23,9 +23,11 @@ USER::USER(std::string pubkey) {
 				<< std::endl;
 		exit(MALLOC_ERR);
 	}
-	myticketPt->pubkey = pubkey;
+	myticketPt->pubkey.assign((char*)fps_schemePt->returnPubkey(),HASH_SIZE);
 	myticketPt->seed = rand_enginePt->newRandStr(SEED_LENGTH);
-	std::cout << "new rand str: " << myticketPt->seed << std::endl;
+	std::cout << "new rand str: ";
+	COMMON::printHex((const uchar*) myticketPt->seed.data(), SEED_LENGTH);
+	std::cout << std::endl;
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
 }
@@ -48,7 +50,7 @@ int USER::generateTicket() {
 	}
 
 	size_t i_inl = -1;
-	PATH* now_signPt, init_signPt;
+	PATH* now_signPt, *init_signPt;
 	leaf empty_leaf;
 	std::string prefix, uchar_str, inputs;
 	digest hashvalue;
@@ -115,11 +117,12 @@ int USER::storeFile(std::string inputf) {
 			exit(MALLOC_ERR);
 		}
 		inputs.read((char *) &pth_size, sizeof(pth_size));
-		cout << "path size: " << pth_size << endl;
+//		cout << "path size: " << pth_size << endl;
 		for (size_t j = 0; j < pth_size; j++) {
 			inputs.read((char *) tmp_dgst, HASH_SIZE);
-			cout << "hash : ";
-			COMMON::printHex(tmp_dgst, HASH_SIZE);
+			//coutest hashvalue of the written mkproof
+//			cout << "hash : ";
+//			COMMON::printHex(tmp_dgst, HASH_SIZE);
 			pathPt->pushDigestPt(tmp_dgst);
 		}
 		allmkproofPts.push_back(pathPt);
@@ -138,11 +141,6 @@ int USER::getNewPuzzle(std::string id) {
 void USER::resetSeed() {
 	myticketPt->seed = rand_enginePt->newRandStr(SEED_LENGTH);
 	flags.set(SEED, true);
-}
-
-void USER::resetPubkey(std::string newpbkey) {
-	myticketPt->pubkey = newpbkey;
-	flags.set(PUBKEY, true);
 }
 
 std::string USER::returnMyPubkey() {

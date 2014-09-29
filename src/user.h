@@ -34,9 +34,9 @@ private:
 public:
 
 	/**
-	 * 1st constructor: starts with the user's public key
+	 * 1st constructor
 	 */
-	USER(std::string pubkey);
+	USER();
 
 	/**
 	 * Destructor: deletes memory in allmkproofs, ticket
@@ -63,13 +63,6 @@ public:
 	 * Generates a new random seed
 	 */
 	void resetSeed();
-
-	/**
-	 * Resets the user's public key
-	 * INPUT a new public key
-	 * AFFECT this->myticket.pubkey
-	 */
-	void resetPubkey(std::string newpbkey);
 
 	/**
 	 * Reveals a new copy of the user's public key

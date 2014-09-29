@@ -21,9 +21,12 @@ FPS::FPS(size_t num_sk) {
 		LAMBDA);
 		seckeyPts.push_back(tmp_seckeyPt);
 	}
+	//coutest the secert key leaves
+	/*std::cout << "seckey leaves are: " << std::endl;
 	for (uchar* it : seckeyPts) {
 		COMMON::printHex(it, LAMBDA);
-	}
+	}*/
+
 	try {
 		mktree_keysPt = new MERKLE(seckeyPts, LAMBDA);
 	} catch (std::bad_alloc& err) {

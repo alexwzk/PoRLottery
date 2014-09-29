@@ -57,36 +57,54 @@ uchar* TICKET::hashOfTicket() {
 	return hashvaluePt;
 }
 
-std::ostream& operator<<(std::ostream &out, TICKET &tic) {
+std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
+	using namespace std;
+	using namespace COMMON;
 	size_t tmp_size;
 	tmp_size = tic.pubkey.size();
-	out.write((const char *) &tmp_size, sizeof(size_t));
-	out.write(tic.pubkey.data(), tmp_size);
+	out_obj.write((const char *) &tmp_size, sizeof(size_t));
+	out_obj.write(tic.pubkey.data(), tmp_size);
+	// coutest tic.pubkey
+	cout << "write tic pubkey: ";
+	printHex((const uchar*)tic.pubkey.data(),HASH_SIZE);
+	cout << endl;
 	tmp_size = tic.seed.size();
-	out.write((const char *) &tmp_size, sizeof(size_t));
-	out.write(tic.seed.data(), tmp_size);
+	out_obj.write((const char *) &tmp_size, sizeof(size_t));
+	out_obj.write(tic.seed.data(), tmp_size);
+	//coutest tic.seed
+	cout << "write tic seed: ";
+	printHex((const uchar*) tic.seed.data(),SEED_LENGTH);
+	cout << endl;
 	tmp_size = tic.mkproofs.size();
-	out.write((const char *) &tmp_size, sizeof(size_t));
+	out_obj.write((const char *) &tmp_size, sizeof(size_t));
 	for (PATH* it : tic.mkproofs) {
-		out.write((const char *) it->releaseLeafPt(), LEAF_SIZE);
+		out_obj.write((const char *) it->releaseLeafPt(), LEAF_SIZE);
 		tmp_size = it->returnSiblings().size();
-		out.write((const char *) &tmp_size, sizeof(size_t));
+		out_obj.write((const char *) &tmp_size, sizeof(size_t));
 		for (uchar* jt : it->returnSiblings()) {
-			out.write((const char *) jt, HASH_SIZE);
+			out_obj.write((const char *) jt, HASH_SIZE);
 		}
 	}
+
+	tmp_size = tic.fps_signs.size();
+	//coutest # of fps_sign
+	cout << "# of fps_sign: " << tmp_size << endl;
+	out_obj.write((const char *) &tmp_size, sizeof(size_t));
 	for (PATH* it : tic.fps_signs) {
-		out.write((const char *) it->releaseLeafPt(), LAMBDA);
+		out_obj.write((const char *) it->releaseLeafPt(), LAMBDA);
 		tmp_size = it->returnSiblings().size();
-		out.write((const char *) &tmp_size, sizeof(size_t));
+		out_obj.write((const char *) &tmp_size, sizeof(size_t));
 		for (uchar* jt : it->returnSiblings()) {
-			out.write((const char *) jt, HASH_SIZE);
+			out_obj.write((const char *) jt, HASH_SIZE);
 		}
 	}
-	return out;
+	return out_obj;
 }
 
 std::istream& operator>>(std::istream &in, TICKET & tic) {
+	using namespace std;
+	using namespace COMMON;
+	cout << "Reading in ticket file." << endl;
 	size_t buf_nsize = -1 /*new buffer size*/,
 			buf_osize = -1 /*old buffer size*/, num_paths = -1, path_len = -1;
 	leaf tmp_leaf;
@@ -96,38 +114,45 @@ std::istream& operator>>(std::istream &in, TICKET & tic) {
 	in.read((char *) &buf_nsize, sizeof(size_t));
 	try {
 		bufferPt = new char[buf_nsize];
-	} catch (std::bad_alloc& err) {
-		std::cerr << err.what()
-				<< " malloc bufferPt @ Verifier 1st constructor." << std::endl;
+	} catch (bad_alloc& err) {
+		cerr << err.what()
+				<< " malloc bufferPt @ Verifier 1st constructor." << endl;
 		exit(MALLOC_ERR);
 	}
 	in.read(bufferPt, buf_nsize);
 	tic.pubkey.assign(bufferPt, bufferPt + buf_nsize);
+	// coutest pubkey
+	cout << "public key: ";
+	printHex((const uchar*) tic.pubkey.data(),HASH_SIZE);
+	cout << endl;
 	buf_osize = buf_nsize;
 	in.read((char *) &buf_nsize, sizeof(size_t));
 	if (buf_nsize > buf_osize) {
 		delete[] bufferPt;
 		try {
 			bufferPt = new char[buf_nsize];
-		} catch (std::bad_alloc& err) {
-			std::cerr << err.what()
+		} catch (bad_alloc& err) {
+			cerr << err.what()
 					<< " malloc bufferPt(2) @ Verifier 1st constructor."
-					<< std::endl;
+					<< endl;
 			exit(MALLOC_ERR);
 		}
 	}
 	in.read(bufferPt, buf_nsize);
 	tic.seed.assign(bufferPt, bufferPt + buf_nsize);
-	delete[] bufferPt;
+	// coutest seed
+	cout << "seed: ";
+	printHex((const uchar*) tic.seed.data(), SEED_LENGTH);
+	cout << endl;
 	in.read((char *) &num_paths, sizeof(size_t));
 	for (size_t i = 0; i < num_paths; i++) {
 		in.read((char *) tmp_leaf, LEAF_SIZE);
 		try {
 			pathPt = new PATH(tmp_leaf);
-		} catch (std::bad_alloc& err) {
-			std::cerr << err.what()
+		} catch (bad_alloc& err) {
+			cerr << err.what()
 					<< " malloc pathPt @  Verifier 1st constructor ."
-					<< std::endl;
+					<< endl;
 			exit(MALLOC_ERR);
 		}
 		in.read((char *) &path_len, sizeof(size_t));
@@ -136,16 +161,27 @@ std::istream& operator>>(std::istream &in, TICKET & tic) {
 			pathPt->pushDigestPt(tmp_digest);
 		}
 		tic.mkproofs.push_back(pathPt);
+		//coutest mkproof
+		cout << "leaf: ";
+		printHex(pathPt->releaseLeafPt(), LEAF_SIZE);
+		cout << "proofs: " << endl;
+		int counter = 0;
+		for(uchar* it : pathPt->returnSiblings()){
+			cout << "layer " << counter++ << ":";
+			printHex(it, HASH_SIZE);
+		}
 	}
+
 	in.read((char *) &num_paths, sizeof(size_t));
+	cout << "num of fps signature: " << num_paths << endl;
 	for (size_t i = 0; i < num_paths; i++) {
 		in.read((char *) tmp_leaf, LAMBDA);
 		try {
 			pathPt = new PATH(tmp_leaf);
-		} catch (std::bad_alloc& err) {
-			std::cerr << err.what()
+		} catch (bad_alloc& err) {
+			cerr << err.what()
 					<< " malloc pathPt(2) @  Verifier 1st constructor ."
-					<< std::endl;
+					<< endl;
 			exit(MALLOC_ERR);
 		}
 		in.read((char *) &path_len, sizeof(size_t));
@@ -154,6 +190,17 @@ std::istream& operator>>(std::istream &in, TICKET & tic) {
 			pathPt->pushDigestPt(tmp_digest);
 		}
 		tic.fps_signs.push_back(pathPt);
+		//coutest fps scheme
+		cout << "fps leaf: ";
+		printHex(pathPt->releaseLeafPt(), LAMBDA);
+		cout << "fps seckey: " << endl;
+		int counter = 1;
+		for(uchar* it : pathPt->returnSiblings()){
+			cout << "layer " << counter++ << ":";
+			printHex(it, HASH_SIZE);
+		}
 	}
+	cout << "Reading ticket file ends here. " << endl;
+	delete[] bufferPt;
 	return in;
 }

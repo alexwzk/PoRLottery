@@ -41,11 +41,11 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 		memcpy(segments[i], segmts[i], leaf_size);
 		SHA1(segments[i], leaf_size, arrays[now_layer][i]);
 		// coutest memcpy
-		cout << "No. " << i << ": ";
+		/*cout << "No. " << i << ": ";
 		COMMON::printHex(segments[i], leaf_size);
 		cout << " and its";
 		cout << " hash value: ";
-		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
+		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);*/
 	}
 
 	// Fill the leaves into a full binary tree
@@ -57,13 +57,13 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 	}
 
 	// coutest the rest redundant file segments
-	for (size_t i = num_segmts; i < num_leaves; i++) {
+	/*for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "Redundnt No. " << i << ": ";
 		COMMON::printHex(segments[i], leaf_size);
 		cout << " and its";
 		cout << " hash value: ";
 		COMMON::printHex(arrays[now_layer][i], HASH_SIZE);
-	}
+	}*/
 
 	// Hash children digests
 	next_layer = now_layer - 1;
@@ -79,14 +79,14 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 	}
 
 	// coutest Merkle tree 2D array
-	num_elem = 1;
+	/*num_elem = 1;
 	for (size_t i = 0; i < height; i++) {
 		for (size_t j = 0; j < num_elem; j++) {
 			cout << "Print [" << i << "] [" << j << "]'s hash value: " << endl;
 			COMMON::printHex(arrays[i][j], HASH_SIZE);
 		}
 		num_elem = num_elem << 1;
-	}
+	}*/
 }
 
 MERKLE::~MERKLE() {

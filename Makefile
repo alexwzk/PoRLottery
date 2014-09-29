@@ -36,7 +36,7 @@ SRCS = src/randengine.cpp src/common.cpp src/path.cpp src/ticket.cpp src/merkle.
 OBJS = $(SRCS:.cpp=.o)
 
 # define the executable file 
-MAIN = SimplePoR
+MAIN = PoRLottery
 
 # The following part of the makefile is generic; it can be used to 
 # build any executable just by changing the definitions above and by
@@ -46,7 +46,7 @@ MAIN = SimplePoR
 .PHONY: depend clean
 
 all:	$(MAIN)
-	@echo  project SimplePoR has been compiled
+	@echo  project PoRLottery has been compiled
 
 $(MAIN): $(OBJS)
 	$(CPPC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
