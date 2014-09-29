@@ -21,6 +21,7 @@ public:
 	std::string pubkey;
 	std::string seed;
 	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers in USER class
+	std::vector<PATH*> fps_signs;
 
 	/**
 	 * Default constructor and deconstructor
@@ -33,6 +34,17 @@ public:
 	 * OUTPUT digest of this ticket
 	 */
 	uchar* hashOfTicket();
+
+	/**
+	 * Writes ticket data to buffer
+	 * !!!! Exclude the hash of a ticket
+	 */
+	friend std::ostream& operator<<(std::ostream &out, TICKET &tic);
+
+	/**
+	 * Reads ticket data from buffer or files
+	 */
+	friend std::istream& operator>>(std::istream &in, TICKET & tic);
 };
 
 #endif /* PERMACN_TICKET_H_ */

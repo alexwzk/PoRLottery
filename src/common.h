@@ -23,6 +23,7 @@
 #define CHALNG_CONST 2
 #define SEED_LENGTH 20
 #define LAMBDA 16
+#define HEIGHT_FPS 8
 
 #define HEAD 0
 #define FINE 0
@@ -65,16 +66,15 @@ inline bool isEven(T v) {
 size_t computeU_i(std::string pk, size_t i_inl, size_t num_all);
 
 /**
- * Computes H(puz||pk||i_ink||s) mod num_sub
+ * Computes H(inputs) mod num_sub
  */
-size_t computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
-		size_t num_sub);
+size_t computeI_inL(std::string inputs, size_t num_sub);
 
 /**
  * Computes r[i] := computeStoreU_i(computeChlngU_i())
  */
-size_t computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,
-		size_t num_sub, size_t num_all);
+size_t computeR_i(std::string pk, std::string inputs, size_t num_sub,
+		size_t num_all);
 
 }	/// namespace COMMON
 

@@ -42,3 +42,13 @@ int PATH::pushDigestPt(digest hash) {
 	siblings.push_back(tmp_hashPt);
 	return FINE;
 }
+
+std::string PATH::returnPathAsStr(){
+	std::string result, tmp_str;
+	result.assign((char*) leafPt, sizeof(leaf));
+	for(uchar* digest : siblings){
+		tmp_str.assign((char*)digest,sizeof(digest));
+		result += tmp_str;
+	}
+	return result;
+}

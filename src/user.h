@@ -2,6 +2,7 @@
 #define PERMACN_USER_H
 
 #include "ticket.h"
+#include "fps.h"
 
 #include <bitset>
 #include <fstream>
@@ -15,6 +16,8 @@ private:
 	std::vector<PATH*> allmkproofPts;
 	TICKET* myticketPt;
 	RANDENGINE* rand_enginePt;
+	FPS* fps_schemePt;
+
 
 	/**
 	 * 1st Constructor: generates the ticket

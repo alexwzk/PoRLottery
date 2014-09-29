@@ -39,6 +39,11 @@ public:
 	 */
 	int pushDigestPt(digest hash);
 
-	//TODO: delete or insert digests, remember to delete memory before deleting digests
+	/**
+	 * OUTPUT a new copy of string consisting of the leaf and Merkle proofs
+	 */
+	std::string returnPathAsStr();
+
+	//TODO delete or insert digests, remember to delete memory before deleting digests
 };
 #endif

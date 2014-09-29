@@ -9,8 +9,9 @@
 class VERIFIER {
 private:
 	std::string puzzle_id;
-	uchar* root_digest;
-	TICKET* tic_verify;
+	uchar* root_digestPt;
+	TICKET* tic_verifyPt;
+	int i_ink = CHALNG_CONST;
 	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 
 public:
