@@ -24,7 +24,8 @@ size_t COMMON::computeU_i(std::string pk, size_t i_inl, size_t num_all) {
 	digest hashvalue;
 	RANDENGINE rand_engine;
 	std::string tmp_str = pk + std::to_string(i_inl);
-	//std::cout << "The pk||i : " << tmp_str << std::endl;
+	// coutest pk||i
+//	std::cout << "The pk||i : " << tmp_str << std::endl;
 	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
 	return rand_engine.randByHash(hashvalue, num_all);
 }

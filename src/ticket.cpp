@@ -23,33 +23,33 @@ uchar* TICKET::hashOfTicket() {
 	length_count = 0;
 	memcpy(buffer + length_count, this->pubkey.data(), this->pubkey.size());
 	length_count += this->pubkey.size();
-	//Coutest
+	// coutest pubkey hex
 //	COMMON::printHex(buffer, length_count);
 	memcpy(buffer + length_count, this->seed.data(), this->seed.size());
 	length_count += this->seed.size();
-	//Coutest
+	// coutest seed hex
 //	COMMON::printHex(buffer, length_count);
 	for (PATH* mkproofPt : mkproofs) {
 		memcpy(buffer + length_count, mkproofPt->releaseLeafPt(), LEAF_SIZE);
 		length_count += LEAF_SIZE;
-		//Coutest
+		// coutest leaf hex
 //		COMMON::printHex(buffer, length_count);
 		for (uchar* nodePt : mkproofPt->returnSiblings()) {
 			memcpy(buffer + length_count, nodePt, HASH_SIZE);
 			length_count += HASH_SIZE;
-			//Coutest
+			// coutest Merkle proofs hex
 //			COMMON::printHex(buffer, length_count);
 		}
 	}
 	for (PATH* seckeyPt : fps_signs) {
 		memcpy(buffer + length_count, seckeyPt->releaseLeafPt(), LAMBDA);
 		length_count += LAMBDA;
-		//Coutest
+		// coutest seckey leaf hex
 //		COMMON::printHex(buffer, length_count);
 		for (uchar* nodePt : seckeyPt->returnSiblings()) {
 			memcpy(buffer + length_count, nodePt, HASH_SIZE);
 			length_count += HASH_SIZE;
-			//Coutest
+			// coutest seckey nodes hex
 //			COMMON::printHex(buffer, length_count);
 		}
 	}

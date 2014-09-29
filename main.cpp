@@ -96,7 +96,7 @@ int main(int argc, const char *argv[]) {
 		testpathPt->pushDigestPt(testdt);
 		testpathPt->pushDigestPt(testdt2);
 		testicPt->mkproofs.push_back(testpathPt);
-		//Coutest
+		//coutest
 		COMMON::printHex(testicPt->hashOfTicket(),HASH_SIZE);
 		return FINE;
 	}

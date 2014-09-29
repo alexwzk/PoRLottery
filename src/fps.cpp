@@ -44,7 +44,7 @@ FPS::~FPS() {
 PATH* FPS::newSignature(digest hashvalue) {
 	PATH* newSignPt = nullptr;
 	size_t index = rand_enginePt->randByHash(hashvalue, unrevealed_s.size());
-	//Coutest
+	// coutest rand subscript
 	std::cout << "The rand subscript is : " << index << std::endl;
 	std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 	std::advance(torevealIt, index);

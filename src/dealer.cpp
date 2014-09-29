@@ -68,7 +68,7 @@ int DEALER::createSubset() {
 	for (size_t i = 0; i < num_subset; i++) {
 		uarray_pk.push_back(COMMON::computeU_i(pubkey, i, num_all));
 	}
-	//Coutest subset_pk
+	//coutest subset_pk
 	std::cout << "The size of subset_{pk}: " << uarray_pk.size() << std::endl;
 	std::cout << "The U_i: ";
 	for (auto i : uarray_pk) {
@@ -111,7 +111,7 @@ int DEALER::writeRoot(std::string outfile) {
 	using namespace std;
 	ofstream ofile_operat;
 	uchar* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
-	//Coutest
+	//coutest root digest hex
 	cout << "The root digest is: ";
 	COMMON::printHex(rootdigestPt, HASH_SIZE);
 	try {

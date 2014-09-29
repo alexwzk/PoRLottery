@@ -13,7 +13,7 @@ RANDENGINE::RANDENGINE() {
 
 size_t RANDENGINE::randByHash(digest hashvalue, size_t max) {
 	rand_engine.seed((size_t)(*hashvalue)); //Does this affect the newRandStr? Is this way safe?
-	//Coutest
+	// coutest hash to size_t
 	std::cout << "Cast the first 4 bytes into a long int: " << (size_t)(*hashvalue) << std::endl;
 	std::uniform_int_distribution<> dis(0, max-1);
 	return dis(rand_engine);

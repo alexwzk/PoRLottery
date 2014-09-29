@@ -15,7 +15,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 	now_layer = 0;
 	next_layer = 0;
 	while (next_layer < height) {
-		// Coutest H arrays
+		// coutest H arrays
 		// cout << "now layer: " << now_layer << " has " << num_elem << " element(s). " << endl;
 		try {
 			arrays[next_layer++] = new digest[num_elem];
@@ -40,7 +40,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 	for (size_t i = 0; i < num_segmts; i++) {
 		memcpy(segments[i], segmts[i], leaf_size);
 		SHA1(segments[i], leaf_size, arrays[now_layer][i]);
-		// Coutest memcpy
+		// coutest memcpy
 		cout << "No. " << i << ": ";
 		COMMON::printHex(segments[i], leaf_size);
 		cout << " and its";
@@ -56,7 +56,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 		num_leaves++;
 	}
 
-	// Coutest the rest redundant file segments
+	// coutest the rest redundant file segments
 	for (size_t i = num_segmts; i < num_leaves; i++) {
 		cout << "Redundnt No. " << i << ": ";
 		COMMON::printHex(segments[i], leaf_size);
@@ -78,7 +78,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 		num_elem = num_elem >> 1;
 	}
 
-	// Coutest Merkle tree 2D array
+	// coutest Merkle tree 2D array
 	num_elem = 1;
 	for (size_t i = 0; i < height; i++) {
 		for (size_t j = 0; j < num_elem; j++) {
@@ -124,7 +124,7 @@ PATH* MERKLE::newPath(size_t loca) {
 		now_layer--;
 	}
 
-	//Coutest path
+	//coutest path
 	cout << "The path of item No." << loca << ": " << endl;
 //	cout << "its item is: ";
 //	COMMON::printHex(pathPt->returnLeafPt(),leaf_size);

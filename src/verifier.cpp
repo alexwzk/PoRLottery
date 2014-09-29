@@ -25,7 +25,7 @@ VERIFIER::VERIFIER(std::string root_file, std::string tic_file) {
 		exit(MALLOC_ERR);
 	}
 	inroot.read((char *) root_digestPt, HASH_SIZE);
-	//Coutest
+	// coutest root hex
 //	cout << "root: ";
 //	COMMON::printHex(root_digestPt, HASH_SIZE);
 	inroot.close();
