@@ -27,7 +27,6 @@ USER::USER() {
 	// coutest new rand str
 	cout << "new rand str: ";
 	COMMON::printHex((const uchar*) myticketPt->seed.data(), SEED_LENGTH);
-	cout << endl;
 
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
@@ -149,6 +148,11 @@ int USER::getNewPuzzle(std::string id) {
 	puzzle_id = id;
 	flags.set(PUZID, true);
 	return FINE;
+}
+
+std::string USER::returnPuzzleID() {
+	return puzzle_id;
+
 }
 
 void USER::resetSeed() {

@@ -13,16 +13,18 @@ RANDENGINE::RANDENGINE() {
 
 size_t RANDENGINE::randByHash(digest hashvalue, size_t max) {
 	//TODO change it into reject sampling
+	//naive approach 2
 	size_t from_hash;
-	memcpy((uchar*) &from_hash, hashvalue + 4, sizeof(size_t));
+	memcpy((uchar*) &from_hash, hashvalue, sizeof(size_t));
 	rand_engine.seed(from_hash); //Does this affect the newRandStr? Is this way safe?
 	// coutest hash to size_t
-	std::cout << "to a long int: " << (size_t) (*hashvalue) << std::endl;
+	//std::cout << "to a long int: " << (size_t) (*hashvalue) << std::endl;
 	std::uniform_int_distribution<> dis(0, max - 1);
 	return dis(rand_engine);
-	/*size_t from_hash;
-	 memcpy((uchar*)&from_hash,hashvalue+4,sizeof(size_t));
-	 return from_hash % max;*/
+	/* naive approach 1
+	 * size_t from_hash;
+	 * memcpy((uchar*)&from_hash,hashvalue+4,sizeof(size_t));
+	 * return from_hash % max;*/
 }
 
 std::string RANDENGINE::newRandStr(size_t k) {

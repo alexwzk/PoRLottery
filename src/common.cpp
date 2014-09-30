@@ -24,21 +24,24 @@ size_t COMMON::computeU_i(digest pk, size_t i_inl, size_t num_all) {
 	digest hashvalue;
 	RANDENGINE rand_engine;
 	std::string tmp_str;
+
+//	std::cout << "Here is U_i function." << std::endl;
 	tmp_str.assign((char*)pk,HASH_SIZE);
 	tmp_str += std::to_string(i_inl);
+
 	// coutest pk||i
 //	std::cout << "The pk||i : " << tmp_str << std::endl;
 	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
 	// coutest state
-	std::cout << "Here is U_i function." << std::endl;
 	return rand_engine.randByHash(hashvalue, num_all);
 }
 
 size_t COMMON::computeI_inL(std::string inputs, size_t num_sub) {
 	digest hashvalue;
 	RANDENGINE rand_engine;
+
+//	std::cout << "Here is I_inL function." << std::endl;
 	SHA1((uchar *) inputs.data(), inputs.size(), hashvalue);
-	std::cout << "Here is I_inL function." << std::endl;
 	return rand_engine.randByHash(hashvalue, num_sub);
 }
 

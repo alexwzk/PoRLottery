@@ -23,9 +23,9 @@ FPS::FPS(size_t num_sk) {
 	}
 	//coutest the secert key leaves
 	/*std::cout << "seckey leaves are: " << std::endl;
-	for (uchar* it : seckeyPts) {
-		COMMON::printHex(it, LAMBDA);
-	}*/
+	 for (uchar* it : seckeyPts) {
+	 COMMON::printHex(it, LAMBDA);
+	 }*/
 
 	try {
 		mktree_keysPt = new MERKLE(seckeyPts, LAMBDA);
@@ -46,14 +46,15 @@ FPS::~FPS() {
 
 PATH* FPS::newSignature(digest hashvalue) {
 	PATH* newSignPt = nullptr;
-	std::cout<< "Here is newSignature." << std::endl;
+//	std::cout<< "Here is newSignature." << std::endl;
 	size_t index = rand_enginePt->randByHash(hashvalue, unrevealed_s.size());
 	// coutest rand subscript
-	std::cout << "The rand subscript is : " << index << std::endl;
+	//std::cout << "The rand subscript is : " << index << std::endl;
 	std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 	std::advance(torevealIt, index);
 	newSignPt = mktree_keysPt->newPath(*torevealIt);
 	torevealIt = unrevealed_s.erase(torevealIt);
+	std::cout << "fetch No." << (*torevealIt) << " signature." << std::endl;
 	return newSignPt;
 }
 
@@ -73,13 +74,14 @@ uchar* FPS::returnPubkey() {
 }
 
 bool FPS::verifySignature(PATH* signaturePt, digest hashvalue, digest pubkey,
-		std::list<size_t> &unrevealed_v,RANDENGINE &rand_engine) {
+		std::list<size_t> &unrevealed_v, RANDENGINE &rand_engine) {
 	bool passed = false;
-	std::cout<< "Here is verifySignature." << std::endl;
+//	std::cout << "Here is verifySignature." << std::endl;
 	size_t index = rand_engine.randByHash(hashvalue, unrevealed_v.size());
 	std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
 	std::advance(torevealIt, index);
 	passed = MERKLE::verifyPath(signaturePt, (*torevealIt), pubkey);
 	torevealIt = unrevealed_v.erase(torevealIt);
+	std::cout << "verified No." << (*torevealIt) << " signature." << std::endl;
 	return passed;
 }

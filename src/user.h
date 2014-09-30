@@ -60,6 +60,11 @@ public:
 	int getNewPuzzle(std::string id);
 
 	/**
+	 * Return the puzzle id
+	 */
+	std::string returnPuzzleID();
+
+	/**
 	 * Generates a new random seed
 	 */
 	void resetSeed();

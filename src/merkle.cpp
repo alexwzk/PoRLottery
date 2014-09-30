@@ -10,7 +10,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 	try {
 		arrays = new digest*[height];
 	} catch (bad_alloc& err) {
-		cerr << err.what() << " @ MERKLE 1st constructor for [arrays**]."
+		cerr << err.what() << " arrays** @ MERKLE 1st constructor."
 				<< endl;
 	}
 
@@ -24,7 +24,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 		try {
 			arrays[next_layer++] = new digest[num_elem];
 		} catch (bad_alloc& err) {
-			cerr << err.what() << " @ MERKLE 1st constructor for [arrays*]."
+			cerr << err.what() << " arrays* @ MERKLE 1st constructor."
 					<< endl;
 		}
 		num_elem = num_elem << 1;
@@ -40,7 +40,7 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 			segments[i] = new uchar[leaf_size];
 		}
 	} catch (bad_alloc& err) {
-		cerr << err.what() << " segments** @ Merkle 1st constrcutor."
+		cerr << err.what() << " segments** @ MERKLE 1st constrcutor."
 				<< endl;
 	}
 
@@ -119,7 +119,7 @@ PATH* MERKLE::newPath(size_t loca) {
 	try {
 		pathPt = new PATH(segments[loca], leaf_size);
 	} catch (bad_alloc& err) {
-		cerr << err.what() << " malloc pathPt @ merkle newPath." << endl;
+		cerr << err.what() << " malloc pathPt @ MERKLE newPath." << endl;
 	}
 
 	now_layer = height - 1;
@@ -134,10 +134,10 @@ PATH* MERKLE::newPath(size_t loca) {
 	}
 
 	//coutest path
-	cout << "The path of item No." << loca << ": " << endl;
-//	cout << "its item is: ";
-//	COMMON::printHex(pathPt->returnLeafPt(),leaf_size);
-	/*cout << " its hash siblings are: " << endl;
+	/*cout << "The path of item No." << loca << ": " << endl;
+	cout << "its item is: ";
+	COMMON::printHex(pathPt->returnLeafPt(),leaf_size);
+	cout << " its hash siblings are: " << endl;
 	 it_index = 0;
 	 for (auto it : pathPt->returnSiblings()) {
 	 cout << "layer " << (it_index++) << " ";
@@ -157,7 +157,7 @@ uchar* MERKLE::releaseRootPt() {
 
 bool MERKLE::verifyPath(PATH* p, size_t index, digest root) {
 	if (p == nullptr) {
-		std::cerr << "nullptr of p @ merkle verifyPath." << std::endl;
+		std::cerr << "nullptr of p @ MERKLE verifyPath." << std::endl;
 		return false;
 	}
 	size_t next_id = index, leaf_size = 0;

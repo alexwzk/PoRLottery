@@ -8,15 +8,15 @@
 #include "ticket.h"
 
 uchar* TICKET::hashOfTicket() {
-	uchar* hashvaluePt = new digest, * leafPt = nullptr;
+	uchar* hashvaluePt = new digest, *leafPt = nullptr;
 	size_t length_count = 0, leaf_size = 0, path_size = 0;
 	length_count += HASH_SIZE;
 	length_count += this->seed.size();
 	path_size = LEAF_SIZE
 			+ mkproofs.at(HEAD)->returnSiblings().size() * HASH_SIZE; // each sibling should have some # of siblings
 	length_count += path_size * mkproofs.size();
-	path_size =	LAMBDA
-			+ fps_signs.at(HEAD)->returnSiblings().size() * HASH_SIZE;
+	path_size =
+			LAMBDA + fps_signs.at(HEAD)->returnSiblings().size() * HASH_SIZE;
 	length_count += path_size * fps_signs.size();
 	uchar* buffer = new uchar[length_count];
 
@@ -29,18 +29,19 @@ uchar* TICKET::hashOfTicket() {
 	length_count += SEED_LENGTH;
 	// coutest seed hex
 	COMMON::printHex(buffer, length_count);
-	pathsToBuffer(mkproofs,buffer,length_count);
-	pathsToBuffer(fps_signs,buffer,length_count);
+	pathsToBuffer(mkproofs, buffer, length_count);
+	pathsToBuffer(fps_signs, buffer, length_count);
 	SHA1(buffer, length_count, hashvaluePt);
 	return hashvaluePt;
 }
 
-int TICKET::pathsToBuffer(std::vector<PATH*> paths, uchar* buffer, size_t &length_count){
+int TICKET::pathsToBuffer(std::vector<PATH*> paths, uchar* buffer,
+		size_t &length_count) {
 	size_t leaf_size = 0;
 	uchar* leafPt;
 	for (PATH* pathPt : paths) {
 		leafPt = pathPt->releaseLeaf(leaf_size);
-		memcpy(buffer + length_count, (const uchar*)leafPt, leaf_size);
+		memcpy(buffer + length_count, (const uchar*) leafPt, leaf_size);
 		length_count += leaf_size;
 		// coutest leaf hex
 //		COMMON::printHex(buffer, length_count);
@@ -57,20 +58,18 @@ int TICKET::pathsToBuffer(std::vector<PATH*> paths, uchar* buffer, size_t &lengt
 std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 	using namespace std;
 	using namespace COMMON;
-	size_t tmp_size = 0,leaf_size = 0;
+	size_t tmp_size = 0, leaf_size = 0;
 	uchar* leafPt = nullptr;
 
 	out_obj.write((const char *) tic.pubkey, HASH_SIZE);
 	// coutest tic.pubkey
-	/*cout << "write tic pubkey: ";
-	 printHex(tic.pubkey,HASH_SIZE);
-	 cout << endl;*/
+	cout << "write tic pubkey: ";
+	printHex(tic.pubkey, HASH_SIZE);
 
 	out_obj.write(tic.seed.data(), SEED_LENGTH);
 	// coutest tic.seed
-	/*cout << "write tic seed: ";
+	cout << "write tic seed: ";
 	printHex((const uchar*) tic.seed.data(), SEED_LENGTH);
-	cout << endl;*/
 
 	tmp_size = tic.mkproofs.size();
 	out_obj.write((const char *) &tmp_size, sizeof(size_t));
@@ -116,7 +115,6 @@ std::istream& operator>>(std::istream &in, TICKET & tic) {
 	// coutest pubkey
 	cout << "public key: ";
 	printHex(tic.pubkey, HASH_SIZE);
-	cout << endl;
 	in.read(seed_buffer, SEED_LENGTH);
 	tic.seed.assign(seed_buffer, SEED_LENGTH);
 	// coutest seed

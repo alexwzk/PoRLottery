@@ -4,7 +4,7 @@ PATH::PATH(uchar* inleaf, size_t leaf_size) {
 	try {
 		leafPt = new uchar[leaf_size];
 	} catch (std::bad_alloc& err) {
-		std::cerr << err.what() << " @ PATH 1st constructor for leafPt."
+		std::cerr << err.what() << " malloc leafPt @ PATH 1st constructor."
 				<< std::endl;
 		exit(MALLOC_ERR);
 	}
@@ -36,7 +36,7 @@ int PATH::pushDigestPt(digest hash) {
 	try {
 		tmp_hashPt = new digest;
 	} catch (std::bad_alloc& err) {
-		std::cerr << err.what() << "@ PATH pushDigestPt for tmp_hashPt."
+		std::cerr << err.what() << "malloc tmp_hashPt @ PATH pushDigestPt."
 				<< std::endl;
 		exit(MALLOC_ERR);
 	}

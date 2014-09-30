@@ -58,6 +58,7 @@ std::string VERIFIER::returnPuzzleID() {
 	return puzzle_id;
 
 }
+
 bool VERIFIER::verifyAllChallenges() {
 	using namespace std;
 	using namespace COMMON;
