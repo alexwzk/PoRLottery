@@ -5,9 +5,9 @@
 
 class MERKLE {
 private:
-	size_t num_segmts, num_leaves, height;
-	leaf *segments;
-	digest **arrays;	//a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
+	size_t num_segmts, num_leaves, height, leaf_size;
+	uchar **segments;
+	digest **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 
 	int now_layer, next_layer;
 
@@ -49,13 +49,11 @@ public:
 
 	/**
 	 *Validates the received path is legitimate in a merkle tree
-	 *INPUT a pointer to the merkle proof, the leaf's size,
-	 *      its challenge index and the root digest
+	 *INPUT a pointer to the merkle proof, its challenge index and the root digest
 	 *OUTPUT true if it's correct otherwise false
 	 *!!!! a static member function
 	 */
-	static bool validatePath(PATH* p, size_t leaf_size, size_t u_i,
-			digest root);
+	static bool verifyPath(PATH* p, size_t u_i, digest root);
 
 	//TODO: copy & assignment
 

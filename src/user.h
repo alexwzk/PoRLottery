@@ -68,7 +68,7 @@ public:
 	 * Reveals a new copy of the user's public key
 	 * OUTPUT this->myticket.pubkey
 	 */
-	std::string returnMyPubkey();
+	uchar* returnMyPubkey();
 
 	/**
 	 * Writes the ticket to file

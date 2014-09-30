@@ -1,33 +1,34 @@
 #include "user.h"
 
 USER::USER() {
+	using namespace std;
 	try {
 		myticketPt = new TICKET;
-	} catch (std::bad_alloc& err) {
-		std::cerr << err.what() << " @ User 1st constructor for myticketPt."
-				<< std::endl;
+	} catch (bad_alloc& err) {
+		cerr << err.what() << " @ User 1st constructor for myticketPt." << endl;
 		exit(MALLOC_ERR);
 	}
 	try {
 		rand_enginePt = new RANDENGINE();
-	} catch (std::bad_alloc& err) {
-		std::cerr << err.what()
-				<< " @ turning on rand_engine at User 1st constructor."
-				<< std::endl;
+	} catch (bad_alloc& err) {
+		cerr << err.what()
+				<< " @ turning on rand_engine at User 1st constructor." << endl;
 		exit(MALLOC_ERR);
 	}
 	try {
 		fps_schemePt = new FPS(1 << HEIGHT_FPS);
-	} catch (std::bad_alloc& err) {
-		std::cerr << err.what() << " creating FPS @ User 1st constructor."
-				<< std::endl;
+	} catch (bad_alloc& err) {
+		cerr << err.what() << " creating FPS @ User 1st constructor." << endl;
 		exit(MALLOC_ERR);
 	}
-	myticketPt->pubkey.assign((char*)fps_schemePt->returnPubkey(),HASH_SIZE);
+	memcpy(myticketPt->pubkey, fps_schemePt->returnPubkey(), HASH_SIZE);
 	myticketPt->seed = rand_enginePt->newRandStr(SEED_LENGTH);
-	std::cout << "new rand str: ";
+
+	// coutest new rand str
+	cout << "new rand str: ";
 	COMMON::printHex((const uchar*) myticketPt->seed.data(), SEED_LENGTH);
-	std::cout << std::endl;
+	cout << endl;
+
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
 }
@@ -49,24 +50,32 @@ int USER::generateTicket() {
 		return INVALID_ERR;
 	}
 
-	size_t i_inl = -1;
-	PATH* now_signPt, *init_signPt;
-	leaf empty_leaf;
+	size_t i_inl = 0, leaf_size = 0;
+	PATH *now_signPt = nullptr, *init_signPt = nullptr;
+	uchar *leafPt = nullptr;
+	uchar empty_leaf[LAMBDA];
 	std::string prefix, uchar_str, inputs;
 	digest hashvalue;
+
 	myticketPt->mkproofs.clear();
 	memset(empty_leaf, 0, LAMBDA);
-	init_signPt = now_signPt = new PATH(empty_leaf);
-	prefix = puzzle_id + myticketPt->pubkey;
+	init_signPt = now_signPt = new PATH(empty_leaf, LAMBDA);
+
+	uchar_str.assign((char*) myticketPt->pubkey, HASH_SIZE);
+	prefix = puzzle_id + uchar_str;
 
 	inputs = prefix + myticketPt->seed;
 	i_inl = COMMON::computeI_inL(inputs, num_subset);
+
+	// coutest i_inl_0
+	std::cout << "i_inl_0: " << i_inl << std::endl;
+//	std::cout << COMMON::stringToHex(inputs) << std::endl;
+
 	for (int i = 0; i < i_ink; i++) {
 		//puz || pk || sigma_{i-1} || F[r_i]
-		inputs = prefix + now_signPt->returnPathAsStr();
-		uchar_str.assign((char*) allmkproofPts[i_inl]->releaseLeafPt(),
-				LEAF_SIZE);
-		inputs += uchar_str;
+		leafPt = allmkproofPts[i_inl]->releaseLeaf(leaf_size);
+		uchar_str.assign((char*) leafPt, leaf_size);
+		inputs = prefix + now_signPt->returnPathAsStr() + uchar_str;
 
 		//Generate a new signature
 		SHA1((uchar*) inputs.data(), inputs.size(), hashvalue);
@@ -79,6 +88,10 @@ int USER::generateTicket() {
 		//Compute r_{i+1}: puz || pk || sigma_{i}
 		inputs = prefix + now_signPt->returnPathAsStr();
 		i_inl = COMMON::computeI_inL(inputs, num_subset);
+
+		// coutest i_inl
+		std::cout << "i_inl_" << (i + 1) << ": " << i_inl << std::endl;
+//		std::cout << COMMON::stringToHex(inputs) << std::endl;
 	}
 	flags.set(TICPROFS, true);
 	delete init_signPt;
@@ -92,7 +105,7 @@ bool USER::isReadyToRelease() {
 int USER::storeFile(std::string inputf) {
 	using namespace std;
 	ifstream inputs;
-	PATH* pathPt;
+	PATH* pathPt = nullptr;
 	leaf tmp_leaf;
 	digest tmp_dgst;
 	size_t vec_size = -1, pth_size = -1;
@@ -110,7 +123,7 @@ int USER::storeFile(std::string inputf) {
 //		cout << i << " leaf: ";
 //		COMMON::printHex(tmp_leaf, LEAF_SIZE);
 		try {
-			pathPt = new PATH(tmp_leaf);
+			pathPt = new PATH(tmp_leaf, LEAF_SIZE);
 		} catch (std::bad_alloc& err) {
 			std::cerr << err.what() << " @ User storeFile for pathPt."
 					<< std::endl;
@@ -143,8 +156,10 @@ void USER::resetSeed() {
 	flags.set(SEED, true);
 }
 
-std::string USER::returnMyPubkey() {
-	return myticketPt->pubkey;
+uchar* USER::returnMyPubkey() {
+	uchar* cp_pubkey = new digest;
+	memcpy(cp_pubkey, myticketPt->pubkey, HASH_SIZE);
+	return cp_pubkey;
 }
 
 int USER::writeTicket(std::string outf) {

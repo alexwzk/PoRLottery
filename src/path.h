@@ -6,6 +6,7 @@
 class PATH {
 private:
 	uchar* leafPt;	// the head pt of item
+	size_t leaf_size;
 	std::list<uchar*> siblings; // the item's hash siblings
 
 public:
@@ -13,7 +14,7 @@ public:
 	/**
 	 * 1st constructor: initialised by a leaf
 	 */
-	PATH(leaf inleaf);
+	PATH(uchar* inleaf, size_t leaf_size);
 
 	/**
 	 * Destructor: deletes leafPt and pointers stored in siblings
@@ -22,9 +23,10 @@ public:
 
 	/**
 	 * Releases the pointer to its leaf item
+	 * INPUT get the leaf's size
 	 * OUTPUT leafPt
 	 */
-	uchar* releaseLeafPt();
+	uchar* releaseLeaf(size_t &leaf_size);
 
 	/**
 	 * Returns the list of hash siblings pointers

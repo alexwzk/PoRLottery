@@ -78,12 +78,13 @@ int DEALER::createSubset() {
 	return FINE;
 }
 
-int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
+int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 	using namespace std;
 	ofstream outpaths;
-	PATH* pathPt;
-	size_t tmp_size;
-	pubkey = usr_pubkey;
+	PATH* pathPt = nullptr;
+	uchar* leafPt = nullptr;
+	size_t tmp_size = 0, leaf_size = 0;
+	memcpy(pubkey,usr_pubkey,HASH_SIZE);
 	try {
 		outpaths.open(outfile, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {
@@ -95,7 +96,8 @@ int DEALER::outSource(std::string usr_pubkey, std::string outfile) {
 	outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 	for (auto it : uarray_pk) {
 		pathPt = mktreePt->newPath(it);
-		outpaths.write((const char*) pathPt->releaseLeafPt(), LEAF_SIZE);
+		leafPt = pathPt->releaseLeaf(leaf_size);
+		outpaths.write((const char*) leafPt, leaf_size);
 		tmp_size = pathPt->returnSiblings().size();
 		outpaths.write((const char*) &tmp_size, sizeof(tmp_size));
 		for (auto it : pathPt->returnSiblings()) {

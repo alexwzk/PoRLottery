@@ -48,8 +48,9 @@ public:
 	 * 	     User's public key, sk - \Omiga_v (indices whose keys are unrevealed)
 	 * OUTPUT true or false
 	 */
-	bool verifySignature(PATH* signaturePt, digest hashvalue, digest pubkey,
-			std::list<size_t> &unrevealed_v);
+	static bool verifySignature(PATH* signaturePt, digest hashvalue,
+			digest pubkey, std::list<size_t> &unrevealed_v,
+			RANDENGINE &rand_engine);
 };
 
 #endif

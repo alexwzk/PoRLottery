@@ -63,7 +63,7 @@ inline bool isEven(T v) {
 /**
  * Computes u[i] := H_0(pk||i_inl) mod num_all
  */
-size_t computeU_i(std::string pk, size_t i_inl, size_t num_all);
+size_t computeU_i(digest pk, size_t i_inl, size_t num_all);
 
 /**
  * Computes H(inputs) mod num_sub
@@ -73,7 +73,7 @@ size_t computeI_inL(std::string inputs, size_t num_sub);
 /**
  * Computes r[i] := computeStoreU_i(computeChlngU_i())
  */
-size_t computeR_i(std::string pk, std::string inputs, size_t num_sub,
+size_t computeR_i(digest pk, std::string inputs, size_t num_sub,
 		size_t num_all);
 
 }	/// namespace COMMON

@@ -71,8 +71,8 @@ int main(int argc, const char *argv[]) {
 		}
 		VERIFIER* verifier = new VERIFIER(argv[2], argv[3]);
 		verifier->getPuzzleID(argv[4]);
-//		bool result = verifier->verifyAllChallenges();
-//		cout << "Result of verification: " << boolalpha << result << endl;
+		bool result = verifier->verifyAllChallenges();
+		cout << "Result of verification: " << boolalpha << result << endl;
 		delete verifier;
 		return FINE;
 	} else if (strcmp(argv[1], "--test") == SAME) {

@@ -1,14 +1,15 @@
 #include "path.h"
 
-PATH::PATH(leaf inleaf) {
+PATH::PATH(uchar* inleaf, size_t leaf_size) {
 	try {
-		leafPt = new leaf;
+		leafPt = new uchar[leaf_size];
 	} catch (std::bad_alloc& err) {
 		std::cerr << err.what() << " @ PATH 1st constructor for leafPt."
 				<< std::endl;
 		exit(MALLOC_ERR);
 	}
-	memcpy(leafPt, inleaf, sizeof(leaf));
+	memcpy(leafPt, inleaf, leaf_size);
+	this->leaf_size = leaf_size;
 }
 
 PATH::~PATH() {
@@ -18,7 +19,8 @@ PATH::~PATH() {
 	delete[] leafPt;
 }
 
-uchar* PATH::releaseLeafPt() {
+uchar* PATH::releaseLeaf(size_t &leaf_size) {
+	leaf_size = this->leaf_size;
 	return leafPt;
 }
 
@@ -43,12 +45,13 @@ int PATH::pushDigestPt(digest hash) {
 	return FINE;
 }
 
-std::string PATH::returnPathAsStr(){
+std::string PATH::returnPathAsStr() {
 	std::string result, tmp_str;
-	result.assign((char*) leafPt, sizeof(leaf));
-	for(uchar* digest : siblings){
-		tmp_str.assign((char*)digest,sizeof(digest));
+	result.assign((char*) leafPt, leaf_size);
+	for (uchar* digest : siblings) {
+		tmp_str.assign((char*) digest, sizeof(digest));
 		result += tmp_str;
 	}
 	return result;
 }
+

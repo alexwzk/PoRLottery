@@ -17,8 +17,16 @@
 #define TICPROFS 4
 
 class TICKET {
+private:
+	/**
+	 * Transfer path data to buffer
+	 * INPUT
+	 * AFFECT legnth_count(parameter)
+	 */
+	int pathsToBuffer(std::vector<PATH*> paths, uchar* buffer, size_t &length_count);
+
 public:
-	std::string pubkey;
+	digest pubkey;
 	std::string seed;
 	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers in USER class
 	std::vector<PATH*> fps_signs;

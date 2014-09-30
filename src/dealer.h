@@ -9,7 +9,7 @@ class DEALER {
 private:
 
 	MERKLE *mktreePt;
-	std::string pubkey;
+	digest pubkey;
 	std::vector<size_t> uarray_pk;
 	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 
@@ -40,7 +40,7 @@ public:
 	 *	OUTPUT FINE or FILE_ERR
 	 *	AFFECT Outsource the {(F{j],PI_j)|j \belongs S_{pk}} to a file
 	 */
-	int outSource(std::string usr_pubkey, std::string outfile);
+	int outSource(digest usr_pubkey, std::string outfile);
 
 	/**
 	 * Releases the Merkle tree root digest to a file/communication channel
