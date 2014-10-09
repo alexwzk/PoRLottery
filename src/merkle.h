@@ -6,7 +6,7 @@
 class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height, leaf_size;
-	uchar **segments;
+	uint8_t **segments;
 	digest **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 
 	int now_layer, next_layer;
@@ -18,7 +18,7 @@ public:
 	 * INPUT a vector of pointers to every file segment, each segment's size
 	 * AFFECT initialise all private data
 	 */
-	MERKLE(std::vector<uchar *> segmts, size_t leaf_size);
+	MERKLE(std::vector<uint8_t *> segmts, size_t leaf_size);
 
 	/**
 	 * Merkle tree destructor
@@ -40,7 +40,7 @@ public:
 	 * OUTPUT a uchar array pointer to the digest
 	 * 		  or nullptr if not ready
 	 */
-	uchar* releaseRootPt();
+	uint8_t* releaseRootPt();
 
 	/**
 	 *OUTPUT num_segmts of the Merkle tree

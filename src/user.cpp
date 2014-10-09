@@ -26,7 +26,7 @@ USER::USER() {
 
 	// coutest new rand str
 	cout << "new rand str: ";
-	COMMON::printHex((const uchar*) myticketPt->seed.data(), SEED_LENGTH);
+	pmc::printHex((const uint8_t*) myticketPt->seed.data(), SEED_LENGTH);
 
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
@@ -51,8 +51,8 @@ int USER::generateTicket() {
 
 	size_t i_inl = 0, leaf_size = 0;
 	PATH *now_signPt = nullptr, *init_signPt = nullptr;
-	uchar *leafPt = nullptr;
-	uchar empty_leaf[LAMBDA];
+	uint8_t *leafPt = nullptr;
+	uint8_t empty_leaf[LAMBDA];
 	std::string prefix, uchar_str, inputs;
 	digest hashvalue;
 
@@ -64,7 +64,7 @@ int USER::generateTicket() {
 	prefix = puzzle_id + uchar_str;
 
 	inputs = prefix + myticketPt->seed;
-	i_inl = COMMON::computeI_inL(inputs, num_subset);
+	i_inl = pmc::computeI_inL(inputs, num_subset);
 
 	// coutest i_inl_0
 	std::cout << "i_inl_0: " << i_inl << std::endl;
@@ -77,7 +77,7 @@ int USER::generateTicket() {
 		inputs = prefix + now_signPt->returnPathAsStr() + uchar_str;
 
 		//Generate a new signature
-		SHA1((uchar*) inputs.data(), inputs.size(), hashvalue);
+		SHA1((uint8_t*) inputs.data(), inputs.size(), hashvalue);
 		now_signPt = fps_schemePt->newSignature(hashvalue);
 
 		//Push_back F[r_i] and sigma_i
@@ -86,7 +86,7 @@ int USER::generateTicket() {
 
 		//Compute r_{i+1}: puz || pk || sigma_{i}
 		inputs = prefix + now_signPt->returnPathAsStr();
-		i_inl = COMMON::computeI_inL(inputs, num_subset);
+		i_inl = pmc::computeI_inL(inputs, num_subset);
 
 		// coutest i_inl
 		std::cout << "i_inl_" << (i + 1) << ": " << i_inl << std::endl;
@@ -103,6 +103,7 @@ bool USER::isReadyToRelease() {
 
 int USER::storeFile(std::string inputf) {
 	using namespace std;
+	using namespace pmc;
 	ifstream inputs;
 	PATH* pathPt = nullptr;
 	leaf tmp_leaf;
@@ -160,8 +161,8 @@ void USER::resetSeed() {
 	flags.set(SEED, true);
 }
 
-uchar* USER::returnMyPubkey() {
-	uchar* cp_pubkey = new digest;
+uint8_t* USER::returnMyPubkey() {
+	uint8_t* cp_pubkey = new digest;
 	memcpy(cp_pubkey, myticketPt->pubkey, HASH_SIZE);
 	return cp_pubkey;
 }

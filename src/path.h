@@ -1,20 +1,20 @@
 #ifndef PERMACN_PATH_H
 #define PERMACN_PATH_H
 
-#include "common.h"
+#include "pmc.h"
 
 class PATH {
 private:
-	uchar* leafPt;	// the head pt of item
+	uint8_t* leafPt;	// the head pt of item
 	size_t leaf_size;
-	std::list<uchar*> siblings; // the item's hash siblings
+	std::list<uint8_t*> siblings; // the item's hash siblings
 
 public:
 
 	/**
 	 * 1st constructor: initialised by a leaf
 	 */
-	PATH(uchar* inleaf, size_t leaf_size);
+	PATH(uint8_t* inleaf, size_t leaf_size);
 
 	/**
 	 * Destructor: deletes leafPt and pointers stored in siblings
@@ -26,13 +26,13 @@ public:
 	 * INPUT get the leaf's size
 	 * OUTPUT leafPt
 	 */
-	uchar* releaseLeaf(size_t &leaf_size);
+	uint8_t* releaseLeaf(size_t &leaf_size);
 
 	/**
 	 * Returns the list of hash siblings pointers
 	 * OUTPUT siblings
 	 */
-	std::list<uchar*> returnSiblings();
+	std::list<uint8_t*> returnSiblings();
 
 	/**
 	 * Push backs the hash sibling into the siblings

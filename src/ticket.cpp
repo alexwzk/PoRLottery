@@ -7,8 +7,8 @@
 
 #include "ticket.h"
 
-uchar* TICKET::hashOfTicket() {
-	uchar* hashvaluePt = new digest, *leafPt = nullptr;
+uint8_t* TICKET::hashOfTicket() {
+	uint8_t* hashvaluePt = new digest, *leafPt = nullptr;
 	size_t length_count = 0, leaf_size = 0, path_size = 0;
 	length_count += HASH_SIZE;
 	length_count += this->seed.size();
@@ -18,7 +18,7 @@ uchar* TICKET::hashOfTicket() {
 	path_size =
 			LAMBDA + fps_signs.at(HEAD)->returnSiblings().size() * HASH_SIZE;
 	length_count += path_size * fps_signs.size();
-	uchar* buffer = new uchar[length_count];
+	uint8_t* buffer = new uint8_t[length_count];
 
 	length_count = 0;
 	memcpy(buffer + length_count, this->pubkey, HASH_SIZE);
@@ -28,24 +28,24 @@ uchar* TICKET::hashOfTicket() {
 	memcpy(buffer + length_count, this->seed.data(), SEED_LENGTH);
 	length_count += SEED_LENGTH;
 	// coutest seed hex
-	COMMON::printHex(buffer, length_count);
+	pmc::printHex(buffer, length_count);
 	pathsToBuffer(mkproofs, buffer, length_count);
 	pathsToBuffer(fps_signs, buffer, length_count);
 	SHA1(buffer, length_count, hashvaluePt);
 	return hashvaluePt;
 }
 
-int TICKET::pathsToBuffer(std::vector<PATH*> paths, uchar* buffer,
+int TICKET::pathsToBuffer(std::vector<PATH*> paths, uint8_t* buffer,
 		size_t &length_count) {
 	size_t leaf_size = 0;
-	uchar* leafPt;
+	uint8_t* leafPt;
 	for (PATH* pathPt : paths) {
 		leafPt = pathPt->releaseLeaf(leaf_size);
-		memcpy(buffer + length_count, (const uchar*) leafPt, leaf_size);
+		memcpy(buffer + length_count, (const uint8_t*) leafPt, leaf_size);
 		length_count += leaf_size;
 		// coutest leaf hex
 //		COMMON::printHex(buffer, length_count);
-		for (uchar* nodePt : pathPt->returnSiblings()) {
+		for (uint8_t* nodePt : pathPt->returnSiblings()) {
 			memcpy(buffer + length_count, nodePt, HASH_SIZE);
 			length_count += HASH_SIZE;
 			// coutest siblings
@@ -57,9 +57,9 @@ int TICKET::pathsToBuffer(std::vector<PATH*> paths, uchar* buffer,
 
 std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 	using namespace std;
-	using namespace COMMON;
+	using namespace pmc;
 	size_t tmp_size = 0, leaf_size = 0;
-	uchar* leafPt = nullptr;
+	uint8_t* leafPt = nullptr;
 
 	out_obj.write((const char *) tic.pubkey, HASH_SIZE);
 	// coutest tic.pubkey
@@ -69,7 +69,7 @@ std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 	out_obj.write(tic.seed.data(), SEED_LENGTH);
 	// coutest tic.seed
 	cout << "write tic seed: ";
-	printHex((const uchar*) tic.seed.data(), SEED_LENGTH);
+	printHex((const uint8_t*) tic.seed.data(), SEED_LENGTH);
 
 	tmp_size = tic.mkproofs.size();
 	out_obj.write((const char *) &tmp_size, sizeof(size_t));
@@ -78,7 +78,7 @@ std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 		out_obj.write((const char *) leafPt, leaf_size);
 		tmp_size = it->returnSiblings().size();
 		out_obj.write((const char *) &tmp_size, sizeof(size_t));
-		for (uchar* jt : it->returnSiblings()) {
+		for (uint8_t* jt : it->returnSiblings()) {
 			out_obj.write((const char *) jt, HASH_SIZE);
 		}
 	}
@@ -92,7 +92,7 @@ std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 		out_obj.write((const char *) leafPt, leaf_size);
 		tmp_size = it->returnSiblings().size();
 		out_obj.write((const char *) &tmp_size, sizeof(size_t));
-		for (uchar* jt : it->returnSiblings()) {
+		for (uint8_t* jt : it->returnSiblings()) {
 			out_obj.write((const char *) jt, HASH_SIZE);
 		}
 	}
@@ -101,12 +101,12 @@ std::ostream& operator<<(std::ostream &out_obj, TICKET &tic) {
 
 std::istream& operator>>(std::istream &in, TICKET & tic) {
 	using namespace std;
-	using namespace COMMON;
+	using namespace pmc;
 	cout << "Reading in ticket file." << endl;
 
 	size_t num_paths = -1, path_len = -1;
 	leaf tmp_leaf;
-	uchar fps_leaf[LAMBDA];
+	uint8_t fps_leaf[LAMBDA];
 	digest tmp_digest;
 	char seed_buffer[SEED_LENGTH];
 	PATH* pathPt = nullptr;

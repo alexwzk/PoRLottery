@@ -1,5 +1,5 @@
-#ifndef PERMACN_COMMN_H
-#define PERMACN_COMMN_H
+#ifndef PERMACN_H
+#define PERMACN_H
 
 #include <cmath>
 #include <cstdlib>
@@ -14,6 +14,8 @@
 #include <stdexcept>
 
 #include "randengine.h"
+
+namespace pmc {
 
 /// Macros N' typedef structure
 #define LEAF_SIZE 1024
@@ -33,15 +35,13 @@
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-typedef uchar leaf[LEAF_SIZE];
-
-namespace COMMON {
+typedef uint8_t leaf[LEAF_SIZE];
 
 /**
  * Prints the unchar array in Hex form
  * INPUT unchar array and its length
  */
-void printHex(const uchar* ucstr, const size_t length);
+void printHex(const uint8_t* ucstr, const size_t length);
 
 /**
  * Returns string in Hex form
@@ -76,6 +76,6 @@ size_t computeI_inL(std::string inputs, size_t num_sub);
 size_t computeR_i(digest pk, std::string inputs, size_t num_sub,
 		size_t num_all);
 
-}	/// namespace COMMON
+}	/// namespace PMC (shorten for Permacoin)
 
 #endif

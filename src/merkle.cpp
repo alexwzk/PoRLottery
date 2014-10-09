@@ -1,6 +1,6 @@
 #include "merkle.h"
 
-MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
+MERKLE::MERKLE(std::vector<uint8_t *> segmts, size_t leaf_size) {
 	using namespace std;
 	this->leaf_size = leaf_size;
 	num_segmts = segmts.size();
@@ -35,9 +35,9 @@ MERKLE::MERKLE(std::vector<uchar *> segmts, size_t leaf_size) {
 
 	// Process leaves
 	try {
-		segments = new uchar*[num_elem]; // full binary tree
+		segments = new uint8_t*[num_elem]; // full binary tree
 		for(size_t i = 0; i < num_elem; i++){
-			segments[i] = new uchar[leaf_size];
+			segments[i] = new uint8_t[leaf_size];
 		}
 	} catch (bad_alloc& err) {
 		cerr << err.what() << " segments** @ MERKLE 1st constrcutor."
@@ -124,7 +124,7 @@ PATH* MERKLE::newPath(size_t loca) {
 
 	now_layer = height - 1;
 	for (size_t i = 0; i < height - 1; i++) {
-		if (COMMON::isEven(now_loca)) {
+		if (pmc::isEven(now_loca)) {
 			pathPt->pushDigestPt(arrays[now_layer][now_loca + 1]);
 		} else {
 			pathPt->pushDigestPt(arrays[now_layer][now_loca - 1]);
@@ -148,7 +148,7 @@ PATH* MERKLE::newPath(size_t loca) {
 
 }
 
-uchar* MERKLE::releaseRootPt() {
+uint8_t* MERKLE::releaseRootPt() {
 	if (arrays == nullptr) {
 		return nullptr;
 	}
@@ -161,14 +161,14 @@ bool MERKLE::verifyPath(PATH* p, size_t index, digest root) {
 		return false;
 	}
 	size_t next_id = index, leaf_size = 0;
-	uchar* p_leafPt = nullptr;
+	uint8_t* p_leafPt = nullptr;
 	digest p_digest;
-	uchar mkvalue[HASH_SIZE * 2];
+	uint8_t mkvalue[HASH_SIZE * 2];
 
 	p_leafPt = p->releaseLeaf(leaf_size);
 	SHA1(p_leafPt, leaf_size, p_digest);
 	for (auto it : p->returnSiblings()) {
-		if (COMMON::isEven(next_id)) {
+		if (pmc::isEven(next_id)) {
 			memcpy(mkvalue, p_digest, HASH_SIZE);
 			memcpy(mkvalue + HASH_SIZE, it, HASH_SIZE);
 		} else {

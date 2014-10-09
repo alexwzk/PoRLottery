@@ -23,7 +23,7 @@ private:
 	 * INPUT
 	 * AFFECT legnth_count(parameter)
 	 */
-	int pathsToBuffer(std::vector<PATH*> paths, uchar* buffer, size_t &length_count);
+	int pathsToBuffer(std::vector<PATH*> paths, uint8_t* buffer, size_t &length_count);
 
 public:
 	digest pubkey;
@@ -41,7 +41,7 @@ public:
 	 * Computes the hashvalue of a ticket
 	 * OUTPUT digest of this ticket
 	 */
-	uchar* hashOfTicket();
+	uint8_t* hashOfTicket();
 
 	/**
 	 * Writes ticket data to buffer

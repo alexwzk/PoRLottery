@@ -1,12 +1,12 @@
-#include "common.h"
+#include "pmc.h"
 
-void COMMON::printHex(const uchar* ucstr, const size_t length) {
+void pmc::printHex(const uint8_t* ucstr, const size_t length) {
 	for (size_t i = 0; i < length; i++)
 		printf("%02x", ucstr[i]);
 	printf("\n");
 }
 
-std::string COMMON::stringToHex(const std::string& input) {
+std::string pmc::stringToHex(const std::string& input) {
 	static const char* const lut = "0123456789ABCDEF";
 	size_t len = input.length();
 
@@ -20,7 +20,7 @@ std::string COMMON::stringToHex(const std::string& input) {
 	return output;
 }
 
-size_t COMMON::computeU_i(digest pk, size_t i_inl, size_t num_all) {
+size_t pmc::computeU_i(digest pk, size_t i_inl, size_t num_all) {
 	digest hashvalue;
 	RANDENGINE rand_engine;
 	std::string tmp_str;
@@ -31,21 +31,21 @@ size_t COMMON::computeU_i(digest pk, size_t i_inl, size_t num_all) {
 
 	// coutest pk||i
 //	std::cout << "The pk||i : " << tmp_str << std::endl;
-	SHA1((uchar *) tmp_str.data(), tmp_str.size(), hashvalue);
+	SHA1((uint8_t *) tmp_str.data(), tmp_str.size(), hashvalue);
 	// coutest state
 	return rand_engine.randByHash(hashvalue, num_all);
 }
 
-size_t COMMON::computeI_inL(std::string inputs, size_t num_sub) {
+size_t pmc::computeI_inL(std::string inputs, size_t num_sub) {
 	digest hashvalue;
 	RANDENGINE rand_engine;
 
 //	std::cout << "Here is I_inL function." << std::endl;
-	SHA1((uchar *) inputs.data(), inputs.size(), hashvalue);
+	SHA1((uint8_t *) inputs.data(), inputs.size(), hashvalue);
 	return rand_engine.randByHash(hashvalue, num_sub);
 }
 
-size_t COMMON::computeR_i(digest pk, std::string inputs, size_t num_sub,
+size_t pmc::computeR_i(digest pk, std::string inputs, size_t num_sub,
 		size_t num_all) {
 	return computeU_i(pk, computeI_inL(inputs, num_sub), num_all);
 }

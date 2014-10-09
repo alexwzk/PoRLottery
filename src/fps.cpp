@@ -7,17 +7,17 @@ FPS::FPS(size_t num_sk) {
 		std::cerr << err.what() << " @ FPS 1st constructor for [rand_enginePt]."
 				<< std::endl;
 	}
-	std::vector<uchar *> seckeyPts;
-	uchar* tmp_seckeyPt;
+	std::vector<uint8_t *> seckeyPts;
+	uint8_t* tmp_seckeyPt;
 	for (size_t i = 0; i < num_sk; i++) {
 		try {
-			tmp_seckeyPt = new uchar[LAMBDA];
+			tmp_seckeyPt = new uint8_t[LAMBDA];
 		} catch (std::bad_alloc& err) {
 			std::cerr << err.what()
 					<< " @ FPS 1st constructor for [tmp_seckeyPt]."
 					<< std::endl;
 		}
-		memcpy(tmp_seckeyPt, (uchar *) rand_enginePt->newRandStr(LAMBDA).data(),
+		memcpy(tmp_seckeyPt, (uint8_t *) rand_enginePt->newRandStr(LAMBDA).data(),
 		LAMBDA);
 		seckeyPts.push_back(tmp_seckeyPt);
 	}
@@ -58,13 +58,22 @@ PATH* FPS::newSignature(digest hashvalue) {
 	return newSignPt;
 }
 
-uchar* FPS::returnPubkey() {
+std::vector<PATH*> FPS::rewardSignatures(size_t k_reveal, size_t k_select){
+	std::vector<PATH*> sign;
+	std::vector<size_t> selected_s;
+	sign.reserve(k_reveal);
+	selected_s.reserve(k_select);
+	//TODO continue implementing (k+1)th signature
+	return sign;
+}
+
+uint8_t* FPS::returnPubkey() {
 	if (mktree_keysPt->releaseRootPt() == nullptr) {
 		return nullptr;
 	}
-	uchar* pubkeyPt = nullptr;
+	uint8_t* pubkeyPt = nullptr;
 	try {
-		pubkeyPt = new uchar[HASH_SIZE];
+		pubkeyPt = new uint8_t[HASH_SIZE];
 	} catch (std::bad_alloc& err) {
 		std::cerr << err.what() << " @ FPS returnPubkey for [pubkeyPt]."
 				<< std::endl;

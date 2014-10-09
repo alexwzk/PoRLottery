@@ -3,6 +3,7 @@
 
 #include "merkle.h"
 
+
 /**
  * Floating-Preimage Signature Scheme
  * FPS owns a Merkle tree
@@ -36,10 +37,17 @@ public:
 	PATH* newSignature(digest hashvalue);
 
 	/**
+	 * the (k+1)th FPS signature for paying the Bitcoin reward
+	 * INPUT # of to-be-revealed keys, # of to-be-selected keys
+	 * OUTPUT k_reveal keys
+	 */
+	std::vector<PATH*> rewardSignatures(size_t k_reveal, size_t k_select);
+
+	/**
 	 * Returns a new copy of the public key
 	 * OUTPUT the public key digest
 	 */
-	uchar* returnPubkey();
+	uint8_t* returnPubkey();
 
 	/**
 	 * Verifies the signature

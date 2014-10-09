@@ -15,8 +15,8 @@
 #define XTRACT_SIZE 10
 #define HASH_SIZE 20
 
-typedef unsigned char uchar;
-typedef uchar digest[HASH_SIZE];
+typedef unsigned char uint8_t;
+typedef uint8_t digest[HASH_SIZE];
 
 class RANDENGINE {
 private:
@@ -47,6 +47,13 @@ public:
 	 */
 	std::string newRandStr(size_t k);
 
+	/**
+	 *A vector of random number sequence
+	 *All elements lie within [0, max-1]
+	 *INPUT size of the vector, maximum number
+	 *OUTPUT the random numbers sequence
+	 */
+	std::vector<size_t> randSequence(size_t size, size_t max);
 
 };
 

@@ -61,17 +61,17 @@ std::string VERIFIER::returnPuzzleID() {
 
 bool VERIFIER::verifyAllChallenges() {
 	using namespace std;
-	using namespace COMMON;
+	using namespace pmc;
 
 	bool passed = true;
-	uchar empty_leaf[LAMBDA];
+	uint8_t empty_leaf[LAMBDA];
 	digest hashvalue;
 	RANDENGINE rand_engine;
 	list<size_t> unrevealed_v;
 	size_t r_i = 0, chaleng_times = 0, leaf_size = 0;
 	string prefix, inputs, uchar_str;
 	PATH *now_signPt = nullptr, *init_signPt = nullptr;
-	uchar *leafPt = nullptr;
+	uint8_t *leafPt = nullptr;
 
 	chaleng_times = tic_verifyPt->mkproofs.size();
 	for (size_t i = 0; i < (1 << HEIGHT_FPS); i++) {
@@ -99,7 +99,7 @@ bool VERIFIER::verifyAllChallenges() {
 		inputs = prefix + now_signPt->returnPathAsStr() + uchar_str;
 
 		//Compute the signature's random seed
-		SHA1((uchar*) inputs.data(), inputs.size(), hashvalue);
+		SHA1((uint8_t*) inputs.data(), inputs.size(), hashvalue);
 
 		//Verification
 		passed &= FPS::verifySignature(tic_verifyPt->fps_signs[i], hashvalue,

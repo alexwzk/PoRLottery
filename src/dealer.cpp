@@ -4,7 +4,7 @@ DEALER::DEALER(std::string infile) {
 	using namespace std;
 	//Parse the file and divide them into segments
 	ifstream inputs;
-	vector<uchar *> file_segmts;
+	vector<uint8_t *> file_segmts;
 	char* inbufferPt = nullptr;
 	try {
 		inputs.open(infile, ifstream::binary);
@@ -24,7 +24,7 @@ DEALER::DEALER(std::string infile) {
 			exit(MALLOC_ERR);
 		}
 		inputs.read(inbufferPt, LEAF_SIZE);
-		file_segmts.push_back((uchar *) inbufferPt);
+		file_segmts.push_back((uint8_t *) inbufferPt);
 	}
 
 	if (!inputs.eof()) {
@@ -41,7 +41,7 @@ DEALER::DEALER(std::string infile) {
 		for (int i = inputs.gcount(); i < LEAF_SIZE; i++) {
 			inbufferPt[i] = 0;
 		}
-		file_segmts.push_back((uchar *) inbufferPt);
+		file_segmts.push_back((uint8_t *) inbufferPt);
 	}
 
 	inputs.close();
@@ -70,7 +70,7 @@ DEALER::~DEALER() {
 int DEALER::createSubset() {
 	uarray_pk.clear();
 	for (size_t i = 0; i < num_subset; i++) {
-		uarray_pk.push_back(COMMON::computeU_i(pubkey, i, num_all));
+		uarray_pk.push_back(pmc::computeU_i(pubkey, i, num_all));
 	}
 
 	//coutest subset_pk
@@ -88,7 +88,7 @@ int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 	using namespace std;
 	ofstream outpaths;
 	PATH* pathPt = nullptr;
-	uchar* leafPt = nullptr;
+	uint8_t* leafPt = nullptr;
 	size_t tmp_size = 0, leaf_size = 0;
 
 	memcpy(pubkey,usr_pubkey,HASH_SIZE);
@@ -122,11 +122,11 @@ int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 int DEALER::writeRoot(std::string outfile) {
 	using namespace std;
 	ofstream ofile_operat;
-	uchar* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
+	uint8_t* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
 
 	//coutest root digest hex
 	cout << "The root digest is: ";
-	COMMON::printHex(rootdigestPt, HASH_SIZE);
+	pmc::printHex(rootdigestPt, HASH_SIZE);
 	try {
 		ofile_operat.open(outfile, ofstream::trunc | ofstream::binary);
 	} catch (ifstream::failure& err) {
