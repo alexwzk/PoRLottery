@@ -1,51 +1,59 @@
-#ifndef PERMACN_PATH_H
-#define PERMACN_PATH_H
+#ifndef PMC_PATH_H_
+#define PMC_PATH_H_
 
 #include "pmc.h"
+#include "buffer.h"
 
+template<unsigned int LEAF_BYTES,class HASH_TYPE>
 class PATH {
+
 private:
-	uint8_t* leafPt;	// the head pt of item
-	size_t leaf_size;
-	std::list<uint8_t*> siblings; // the item's hash siblings
+	BUFFER<LEAF_BYTES> leaf;
+	std::vector<HASH_TYPE> vhashes; // the item's hash siblings
 
 public:
 
-	/**
-	 * 1st constructor: initialised by a leaf
-	 */
-	PATH(uint8_t* inleaf, size_t leaf_size);
+	PATH(){
+		setNull();
+	}
 
-	/**
-	 * Destructor: deletes leafPt and pointers stored in siblings
-	 */
-	~PATH();
+	~PATH(){ }
 
-	/**
-	 * Releases the pointer to its leaf item
-	 * INPUT get the leaf's size
-	 * OUTPUT leafPt
-	 */
-	uint8_t* releaseLeaf(size_t &leaf_size);
+	void setNull(){
+		leaf.clear();
+		vhashes.clear();
+	}
 
-	/**
-	 * Returns the list of hash siblings pointers
-	 * OUTPUT siblings
-	 */
-	std::list<uint8_t*> returnSiblings();
+	bool isNull() const{
+		return leaf.isEmpty();
+	}
 
-	/**
-	 * Push backs the hash sibling into the siblings
-	 * INPUT a head pointer of the digest
-	 * OUTPUT FINE or NULLPT_ERR if hash is invalid
-	 */
-	int pushDigestPt(digest hash);
+	IMPLEMENT_SERIALIZE(
+		READWRITE(leaf);
+		READWRITE(vhashes);
+	)
 
-	/**
-	 * OUTPUT a new copy of string consisting of the leaf and Merkle proofs
-	 */
-	std::string returnPathAsStr();
+	void setLeafValue(BUFFER<LEAF_BYTES> nleaf){
+		leaf = nleaf;
+	}
 
-	//TODO delete or insert digests, remember to delete memory before deleting digests
+	void pushHashDigest(HASH_TYPE hash_value){
+		vhashes.push_back(hash_value);
+	}
+
+	BUFFER<LEAF_BYTES> returnLeaf() const{
+		return leaf;
+	}
+
+	std::vector<HASH_TYPE> returnHashSiblings() const{
+		return vhashes;
+	}
+
+	PATH<LEAF_BYTES,HASH_TYPE>& operator=(const PATH<LEAF_BYTES,HASH_TYPE>& p) {
+		leaf = p.returnLeaf();
+		vhashes = p.returnHashSiblings();
+		return (*this);
+	}
+
 };
-#endif
+#endif /*PMC_PATH_H_*/

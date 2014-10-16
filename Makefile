@@ -11,12 +11,14 @@ CFLAGS = -O0 -g3 -Wall -fmessage-length=0 -std=c++11
 
 # define any directories containing header files other than /usr/include
 # Inlucde Openssl (current version is 1.0.1i)
-INCLUDES = -I/usr/local/openssl/include 
+# Include Bitcoin source file TODO include a relative path
+INCLUDES = -I/usr/local/openssl/include -I/Users/zkwen/Documents/Bitcoin/bitcoin/src 
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-LFLAGS = -L/usr/local/openssl/lib
+# include boost library
+LFLAGS = -L/usr/local/openssl/lib -L/usr/local/lib -lboost_system -lboost_filesystem -lboost_program_options-mt -lboost_thread-mt -lboost_chrono-mt
 
 # define any libraries to link into executable:
 #   if I want to link in libraries (libx.so or libx.a) I use the -llibname 
@@ -24,7 +26,8 @@ LFLAGS = -L/usr/local/openssl/lib
 LIBS = -lcrypto
 
 # define the C++ source files
-SRCS = src/randengine.cpp src/common.cpp src/path.cpp src/ticket.cpp src/merkle.cpp src/dealer.cpp src/user.cpp src/verifier.cpp src/fps.cpp main.cpp
+SRCS = /Users/zkwen/Documents/Bitcoin/bitcoin/src/utilstrencodings.cpp /Users/zkwen/Documents/Bitcoin/bitcoin/src/uint256.cpp src/randengine.cpp src/pmc.cpp src/buffer.cpp src/path.cpp src/merkle.cpp src/fps.cpp src/ticket.cpp main.cpp
+# src/ticket.cpp src/merkle.cpp src/dealer.cpp src/user.cpp src/verifier.cpp src/fps.cpp main.cpp
 
 # define the C++ object files 
 # This uses Suffix Replacement within a macro:

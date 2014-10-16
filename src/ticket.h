@@ -2,57 +2,51 @@
  * ticket.h
  *
  *  Created on: Sep 27, 2014
- *      Author: zkwen
+ *      Author: Zikai Alex Wen
  */
 
-#ifndef PERMACN_TICKET_H_
-#define PERMACN_TICKET_H_
+#ifndef PMC_TICKET_H_
+#define PMC_TICKET_H_
 
 #include "path.h"
 
-#define PUZID 0
-#define ALLPROFS 1
-#define PUBKEY 2
-#define SEED 3
-#define TICPROFS 4
-
+template<unsigned int LEAF_BYTES, class HASH_TYPE>
 class TICKET {
-private:
-	/**
-	 * Transfer path data to buffer
-	 * INPUT
-	 * AFFECT legnth_count(parameter)
-	 */
-	int pathsToBuffer(std::vector<PATH*> paths, uint8_t* buffer, size_t &length_count);
-
 public:
-	digest pubkey;
+	HASH_TYPE pubkey;
 	std::string seed;
-	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers in USER class
-	std::vector<PATH*> fps_signs;
+	std::vector<PATH<LEAF_BYTES, HASH_TYPE>> mkproofs;
+	std::vector<PATH<FPS_LEAFSIZE, HASH_TYPE>> signatures;
 
-	/**
-	 * Default constructor and deconstructor
-	 */
-	TICKET(){}
-	~TICKET(){}
+	IMPLEMENT_SERIALIZE(
+			READWRITE(pubkey);
+			READWRITE(seed);
+			READWRITE(mkproofs);
+			READWRITE(signatures);
+	)
 
-	/**
-	 * Computes the hashvalue of a ticket
-	 * OUTPUT digest of this ticket
-	 */
-	uint8_t* hashOfTicket();
+	HASH_TYPE hashOfTicket() {
+		HASH_TYPE hashvalue;
+		std::stringstream ss;
+		this->Serialize(ss, SER_DISK, CLIENT_VERSION);
+		std::string ticket_str = ss.str();
+		// Coutest ticket_str
+		/*std::cout << "Ticket String: " << ticket_str << std::endl;
+		std::cout << "Hex of Ticket: " << pmc::stringToHex(ticket_str) << std::endl;*/
+		SHA1((const unsigned char*) ticket_str.c_str(), ticket_str.length(),
+				hashvalue.begin());
+		return hashvalue;
+	}
 
-	/**
-	 * Writes ticket data to buffer
-	 * !!!! Exclude the hash of a ticket
-	 */
-	friend std::ostream& operator<<(std::ostream &out, TICKET &tic);
+	TICKET<LEAF_BYTES, HASH_TYPE>& operator=(
+			const TICKET<LEAF_BYTES, HASH_TYPE>& t) {
+		pubkey = t.pubkey;
+		seed = t.seed;
+		mkproofs = t.mkproofs;
+		signatures = t.signatures;
+		return (*this);
+	}
 
-	/**
-	 * Reads ticket data from buffer or files
-	 */
-	friend std::istream& operator>>(std::istream &in, TICKET & tic);
 };
 
-#endif /* PERMACN_TICKET_H_ */
+#endif /* PMC_TICKET_H_ */
