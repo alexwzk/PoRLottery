@@ -10,13 +10,13 @@
 
 #include "path.h"
 
-template<unsigned int LEAF_BYTES, class HASH_TYPE>
+template<unsigned int PMC_LFBYTES, unsigned int FPS_LFBYTES>
 class TICKET {
 public:
-	HASH_TYPE pubkey;
+	uint160 pubkey;
 	std::string seed;
-	std::vector<PATH<LEAF_BYTES, HASH_TYPE>> mkproofs;
-	std::vector<PATH<FPS_LEAFSIZE, HASH_TYPE>> signatures;
+	std::vector< PATH<PMC_LFBYTES> > mkproofs;
+	std::vector< PATH<FPS_LFBYTES> > signatures;
 
 	IMPLEMENT_SERIALIZE(
 			READWRITE(pubkey);
@@ -25,8 +25,8 @@ public:
 			READWRITE(signatures);
 	)
 
-	HASH_TYPE hashOfTicket() {
-		HASH_TYPE hashvalue;
+	uint160 hashOfTicket() {
+		uint160 hashvalue;
 		std::stringstream ss;
 		this->Serialize(ss, SER_DISK, CLIENT_VERSION);
 		std::string ticket_str = ss.str();
@@ -38,8 +38,8 @@ public:
 		return hashvalue;
 	}
 
-	TICKET<LEAF_BYTES, HASH_TYPE>& operator=(
-			const TICKET<LEAF_BYTES, HASH_TYPE>& t) {
+	TICKET<PMC_LFBYTES, FPS_LFBYTES>& operator=(
+			const TICKET<PMC_LFBYTES, FPS_LFBYTES>& t) {
 		pubkey = t.pubkey;
 		seed = t.seed;
 		mkproofs = t.mkproofs;

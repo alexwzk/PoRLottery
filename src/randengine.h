@@ -15,7 +15,6 @@
 
 #define XTRACT_SIZE 10
 
-template<class HASH_TYPE>
 class RANDENGINE {
 private:
 
@@ -35,7 +34,7 @@ public:
 	 * INPUT hashvalue as a seed
 	 * OUTPUT a random number ranged [0,max-1]
 	 */
-	size_t randByHash(const HASH_TYPE& hashvalue, const size_t max){
+	size_t randByHash(const uint160& hashvalue, const size_t max){
 		//TODO change it into reject sampling
 		//naive approach 2
 		size_t from_hash;
@@ -53,7 +52,7 @@ public:
 	 * OUTPUT a random string whose length is k
 	 */
 	std::string newRandStr(const size_t k){
-		HASH_TYPE hashvalue;
+		uint160 hashvalue;
 		size_t remain_k = k, nonce = -1, hash_size = hashvalue.size();
 		std::string randstr;
 		while (remain_k > hash_size) {

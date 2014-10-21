@@ -10,11 +10,11 @@
 
 #include "path.h"
 
-template<unsigned int LEAF_BYTES, class HASH_TYPE>
+template<unsigned int LEAF_BYTES>
 class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height;
-	HASH_TYPE root;
+	uint160 root;
 	uint8_t **segments;
 	uint8_t **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 	int now_layer, next_layer;
@@ -27,7 +27,7 @@ public:
 	 * INPUT a vector of buffer whose size is LEAF_BYTES
 	 * AFFECT all private variables
 	 */
-	MERKLE(const std::vector<BUFFER<LEAF_BYTES>>& segmts) {
+	MERKLE(const std::vector< BUFFER<LEAF_BYTES> >& segmts) {
 		num_segmts = segmts.size();
 		height = ceil(log2(num_segmts)) + 1; // includes the root
 		size_t num_elem = 1;
@@ -107,7 +107,7 @@ public:
 		}
 
 		tmp_vecPt = pmc::newByteVec(arrays[0] + 0, hash_size); //newptr
-		root = HASH_TYPE(*tmp_vecPt);
+		root = uint160(*tmp_vecPt);
 		delete tmp_vecPt; //deleteptr
 
 		// coutest Merkle tree 2D array
@@ -139,8 +139,8 @@ public:
 	 * INPUT locate the wanted leaf and its Merkle proof
 	 * OUTPUT a path
 	 */
-	PATH<LEAF_BYTES, HASH_TYPE> returnPath(const size_t locate) {
-		PATH<LEAF_BYTES, HASH_TYPE> npath;
+	PATH<LEAF_BYTES> returnPath(const size_t locate) {
+		PATH<LEAF_BYTES> npath;
 
 		if (locate >= num_leaves || arrays == nullptr) {
 			return npath;
@@ -164,7 +164,7 @@ public:
 			}
 			tmp_vecPt = pmc::newByteVec(arrays[now_layer] + arrays_locate,
 					hash_size); //newptr
-			npath.pushHashDigest(HASH_TYPE(*tmp_vecPt));
+			npath.pushHashDigest(uint160(*tmp_vecPt));
 			delete tmp_vecPt; //deleteptr
 			now_locate = now_locate >> 1;
 			now_layer--;
@@ -177,7 +177,7 @@ public:
 	 * Return the root digest
 	 * OUTPUT a new copy of the root
 	 */
-	HASH_TYPE returnRoot() const {
+	uint160 returnRoot() const {
 		return root;
 	}
 
@@ -193,8 +193,8 @@ public:
 	 *INPUT a pointer to the merkle proof, its challenge index and the root digest
 	 *OUTPUT true if it's correct otherwise false
 	 */
-	static bool verifyPath(const PATH<LEAF_BYTES, HASH_TYPE>& vpath, size_t u_i,
-			const HASH_TYPE& root) {
+	static bool verifyPath(const PATH<LEAF_BYTES>& vpath, size_t u_i,
+			const uint160& root) {
 		size_t next_id = u_i;
 		size_t hash_size = root.size();
 		uint8_t hashvalue[hash_size];
@@ -202,12 +202,13 @@ public:
 
 		BUFFER<LEAF_BYTES> nleaf = vpath.returnLeaf();
 		SHA1(nleaf.data, LEAF_BYTES, hashvalue);
-		for (auto it : vpath.returnHashSiblings()) {
+		std::vector<uint160> vsiblingns = vpath.returnHashSiblings();
+		for (std::vector<uint160>::iterator it = vsiblingns.begin(); it != vsiblingns.end(); ++it) {
 			if (pmc::isEven(next_id)) {
 				memcpy(mkfvalue, hashvalue, hash_size);
-				memcpy(mkfvalue + hash_size, it.begin(), hash_size);
+				memcpy(mkfvalue + hash_size, it->begin(), hash_size);
 			} else {
-				memcpy(mkfvalue, it.begin(), hash_size);
+				memcpy(mkfvalue, it->begin(), hash_size);
 				memcpy(mkfvalue + hash_size, hashvalue, hash_size);
 			}
 			SHA1(mkfvalue, hash_size * 2, hashvalue);

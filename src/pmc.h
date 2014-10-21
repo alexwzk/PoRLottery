@@ -20,10 +20,12 @@
 namespace pmc {
 
 /// Macros & typedef structure
+#define RUN_PMCLFBYTE 1024
+#define RUN_FPSLFBYTE 32
+
 #define ALL_CONST 16
 #define SUBSET_CONST 5
 #define CHALNG_CONST 2
-#define FPS_LEAFSIZE 16
 #define SEED_LENGTH 20
 
 #define HEAD 0
@@ -67,38 +69,18 @@ inline bool isEven(T v) {
 /**
  * Computes u[i] := H_0(pk||i_inl) mod num_all
  */
-template<class HASH_TYPE>
-size_t computeU_i(HASH_TYPE pk, size_t i_inl, size_t num_all) {
-	HASH_TYPE hashvalue;
-	RANDENGINE<HASH_TYPE> rand_engine;
-	std::string tmp_str = pk.ToString() + std::to_string(i_inl);
-
-	// coutest pk||i
-	SHA1((uint8_t *) tmp_str.data(), tmp_str.size(), hashvalue.begin());
-	// coutest state
-	return rand_engine.randByHash(hashvalue, num_all);
-}
+size_t computeU_i(uint160 pk, size_t i_inl, size_t num_all);
 
 /**
  * Computes H(inputs) mod num_sub
  */
-template<class HASH_TYPE>
-size_t computeI_inL(std::string inputs, size_t num_sub) {
-	HASH_TYPE hashvalue;
-	RANDENGINE<HASH_TYPE> rand_engine;
-
-	SHA1((uint8_t *) inputs.data(), inputs.size(), hashvalue.begin());
-	return rand_engine.randByHash(hashvalue, num_sub);
-}
+size_t computeI_inL(std::string inputs, size_t num_sub);
 
 /**
  * Computes r[i] := computeStoreU_i(computeChlngU_i())
  */
-template<class HASH_TYPE>
-size_t computeR_i(HASH_TYPE pk, std::string inputs, size_t num_sub,
-		size_t num_all){
-	return computeU_i(pk, computeI_inL<HASH_TYPE>(inputs, num_sub), num_all);
-}
+size_t computeR_i(uint160 pk, std::string inputs, size_t num_sub,
+		size_t num_all);
 
 }	/// namespace PMC (shorten for Permacoin)
 

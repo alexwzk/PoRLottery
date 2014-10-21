@@ -22,55 +22,57 @@
 #include "src/fps.h"
 #include "src/ticket.h"
 
-#define LFSIZE 10
+#define PMC_LFSIZE 10
+#define FPS_LFSIZE 16
+
 int main(int argc, const char *argv[]) {
 	using namespace std;
-	BUFFER<LFSIZE> tbuff;
-	uint8_t d[LFSIZE];
-	for (int i = 0; i < LFSIZE; i++) {
+	BUFFER<PMC_LFSIZE> tbuff;
+	uint8_t d[PMC_LFSIZE];
+	for (int i = 0; i < PMC_LFSIZE; i++) {
 		d[i] = 'a' + i;
 	}
-	tbuff.assign(d, LFSIZE);
+	tbuff.assign(d, PMC_LFSIZE);
 	/*tbuff.Serialize(cout,SER_DISK,CLIENT_VERSION);
 	 cout << "\n";*/
 
 	/*uint160 thash;
-	PATH<LFSIZE, uint160> tpath;
+	 PATH<LFSIZE, uint160> tpath;
 	 thash.SetHex((char*)d);
 	 tpath.setLeafValue(tbuff);
 	 tpath.pushHashDigest(thash);
 	 tpath.Serialize(cout,SER_DISK,CLIENT_VERSION); // path serialisation works!*/
 
-	std::vector<BUFFER<LFSIZE>> tsegmts;
+	std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
 	for (int i = 0; i < 4; i++) {
 		tsegmts.push_back(tbuff);
 	}
-	PATH<LFSIZE, uint160> tpath;
-	MERKLE<LFSIZE, uint160> tmerkle(tsegmts);
+	PATH<PMC_LFSIZE> tpath;
+	MERKLE<PMC_LFSIZE> tmerkle(tsegmts);
 	tpath = tmerkle.returnPath(0);
 	uint160 troot = tmerkle.returnRoot();
-	cout << boolalpha
-			<< MERKLE<LFSIZE, uint160>::verifyPath(tpath, 0, troot)
+	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 0, troot)
 			<< endl; /*successfully verified the path!*/
 
-	FPS<uint160> tfps(16,1,1);
-	PATH<FPS_LEAFSIZE,uint160> tsign;
-	RANDENGINE<uint160> trand;
+	FPS<FPS_LFSIZE> tfps(16, 1, 1);
+	PATH<FPS_LFSIZE> tsign;
+	RANDENGINE trand;
 	std::list<size_t> tunrevealed;
-	for(int i = 0; i < 16; i++){
+	for (int i = 0; i < 16; i++) {
 		tunrevealed.push_back(i);
 	}
 	uint160 trootfps = tfps.returnPubkey();
 	tsign = tfps.returnSign(trootfps);
-	bool result = FPS<uint160>::verifySignature(tsign,trootfps,trootfps,tunrevealed,trand);
+	bool result = FPS<FPS_LFSIZE>::verifySignature(tsign, trootfps, trootfps,
+			tunrevealed, trand);
 	cout << boolalpha << result << endl; /*Verify Signature done!*/
 
-	TICKET<LFSIZE,uint160> ttic;
+	TICKET<PMC_LFSIZE, FPS_LFSIZE> ttic;
 	ttic.pubkey = troot;
 	ttic.seed = "zikaiwen";
 	ttic.mkproofs.push_back(tpath);
 	ttic.signatures.push_back(tsign);
-	pmc::printHex(ttic.hashOfTicket().begin(),20); /*Ticket is set!*/
+	pmc::printHex(ttic.hashOfTicket().begin(), 20); /*Ticket is set!*/
 
 	/*	if (argc < 2) {
 	 cerr << "Invalid command. try --help for more tips." << endl;
@@ -96,7 +98,6 @@ int main(int argc, const char *argv[]) {
 	 if (argc == 6) {
 	 USER user;
 	 DEALER* dealer = new DEALER(argv[2]);
-	 //TODO write user's pubkey to file
 	 dealer->outSource(user.returnMyPubkey(), argv[3]);
 	 user.storeFile(argv[3]);
 	 user.getNewPuzzle(argv[4]);

@@ -4,12 +4,12 @@
 #include "pmc.h"
 #include "buffer.h"
 
-template<unsigned int LEAF_BYTES,class HASH_TYPE>
+template<unsigned int LEAF_BYTES>
 class PATH {
 
 private:
 	BUFFER<LEAF_BYTES> leaf;
-	std::vector<HASH_TYPE> vhashes; // the item's hash siblings
+	std::vector<uint160> vhashes; // the item's hash siblings
 
 public:
 
@@ -37,7 +37,7 @@ public:
 		leaf = nleaf;
 	}
 
-	void pushHashDigest(HASH_TYPE hash_value){
+	void pushHashDigest(uint160 hash_value){
 		vhashes.push_back(hash_value);
 	}
 
@@ -45,11 +45,11 @@ public:
 		return leaf;
 	}
 
-	std::vector<HASH_TYPE> returnHashSiblings() const{
+	std::vector<uint160> returnHashSiblings() const{
 		return vhashes;
 	}
 
-	PATH<LEAF_BYTES,HASH_TYPE>& operator=(const PATH<LEAF_BYTES,HASH_TYPE>& p) {
+	PATH<LEAF_BYTES>& operator=(const PATH<LEAF_BYTES>& p) {
 		leaf = p.returnLeaf();
 		vhashes = p.returnHashSiblings();
 		return (*this);
