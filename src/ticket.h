@@ -8,6 +8,8 @@
 #ifndef PMC_TICKET_H_
 #define PMC_TICKET_H_
 
+#include <utilstrencodings.h>
+
 #include "path.h"
 
 template<unsigned int PMC_LFBYTES, unsigned int FPS_LFBYTES>

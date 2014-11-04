@@ -10,8 +10,8 @@
 
 #include <random>
 #include <iostream>
-#include <openssl/sha.h>
 #include <uint256.h>
+#include <openssl/sha.h>
 #include <hash.h>
 
 #define XTRACT_SIZE 10

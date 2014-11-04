@@ -13,7 +13,7 @@ CFLAGS = -O0 -g3 -Wall -fmessage-length=0
 # Include Openssl (current version is 1.0.1j)
 # Include Boost library  
 # Include Bitcoin source file
-INCLUDES = -I/opt/local/include/  -I/Users/zkwen/Documents/bitcoin/src 
+INCLUDES = -I/opt/local/include/  -I/Users/zkwen/Documents/PMC/Permacoin/src 
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
@@ -27,7 +27,7 @@ LFLAGS = -L/opt/local/lib
 LIBS = -lcrypto -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt -lboost_thread-mt -lboost_chrono-mt
 
 # define the C++ source files
-SRCS = /Users/zkwen/Documents/bitcoin/src/utilstrencodings.cpp /Users/zkwen/Documents/bitcoin/src/uint256.cpp src/randengine.cpp src/pmc.cpp src/buffer.cpp src/path.cpp src/merkle.cpp src/fps.cpp src/ticket.cpp main.cpp
+SRCS = /Users/zkwen/Documents/PMC/Permacoin/src/utilstrencodings.cpp /Users/zkwen/Documents/PMC/Permacoin/src/uint256.cpp src/randengine.cpp src/pmc.cpp src/buffer.cpp src/path.cpp src/merkle.cpp src/fps.cpp src/ticket.cpp main.cpp
 # src/dealer.cpp src/user.cpp src/verifier.cpp
 
 # define the C++ object files 
