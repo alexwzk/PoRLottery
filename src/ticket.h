@@ -25,17 +25,15 @@ public:
 			READWRITE(signatures);
 	)
 
-	uint160 hashOfTicket() {
-		uint160 hashvalue;
-		std::stringstream ss;
-		this->Serialize(ss, SER_DISK, CLIENT_VERSION);
-		std::string ticket_str = ss.str();
-		// Coutest ticket_str
-		/*std::cout << "Ticket String: " << ticket_str << std::endl;
-		std::cout << "Hex of Ticket: " << pmc::stringToHex(ticket_str) << std::endl;*/
-		SHA1((const unsigned char*) ticket_str.c_str(), ticket_str.length(),
-				hashvalue.begin());
-		return hashvalue;
+	void clear(){
+		pubkey.SetHex("0");
+		seed.clear();
+		mkproofs.clear();
+		signatures.clear();
+	}
+
+	uint256 getHash() const{
+		return Hash(BEGIN(pubkey), END(signatures));
 	}
 
 	TICKET<PMC_LFBYTES, FPS_LFBYTES>& operator=(

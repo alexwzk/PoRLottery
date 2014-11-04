@@ -59,8 +59,6 @@ $(MAIN): $(OBJS)
 # it uses automatic variables $<: the name of the prerequisite of
 # the rule(a .cpp file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
-# unused argument : -cpp
-# 	$(CPPC) $(CFLAGS) $(INCLUDES) -cpp $< -c -o $@
 .cpp.o:
 	$(CPPC) $(CFLAGS) $(INCLUDES) $< -c -o $@
 

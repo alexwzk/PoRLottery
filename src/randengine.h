@@ -12,6 +12,7 @@
 #include <iostream>
 #include <openssl/sha.h>
 #include <uint256.h>
+#include <hash.h>
 
 #define XTRACT_SIZE 10
 
@@ -68,14 +69,15 @@ public:
 	}
 
 	/**
-	 *TODO A vector of random number sequence
-	 *All elements lie within [0, max-1]
-	 *INPUT size of the vector, maximum number
-	 *OUTPUT the random numbers sequence
+	 * OUTPUT a randome uint160 value
 	 */
-	/*std::vector<size_t> randSequence(size_t size, size_t max) {
-
-	}*/
+	uint160 newUint160Rand(){
+		uint160 nhash;
+		size_t nonce;
+		nonce = rand_engine();
+		SHA1((uint8_t *) (&nonce), sizeof(size_t), nhash.begin());
+		return nhash;
+	}
 
 };
 

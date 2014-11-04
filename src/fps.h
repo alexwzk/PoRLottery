@@ -80,8 +80,8 @@ public:
 		nsign = mktree_keysPt->returnPath(*torevealIt);
 		torevealIt = unrevealed_s.erase(torevealIt);
 		// coutest revealed No.
-		std::cout << "revealed No." << (*torevealIt) << " signature."
-				<< std::endl;
+		/*std::cout << "revealed No." << (*torevealIt) << " signature."
+				<< std::endl;*/
 		return nsign;
 	}
 
@@ -90,7 +90,17 @@ public:
 	 * the (k+1)th FPS signature for paying the Bitcoin reward
 	 * OUTPUT num_reveal keys
 	 */
-	std::vector< PATH<FPS_LFBYTES> > rewardSign();
+	std::vector< PATH<FPS_LFBYTES> > rewardSign(std::vector< uint160 >& reveal_seeds){
+		std::vector< PATH<FPS_LFBYTES> > nreward_signs;
+		reveal_seeds.clear();
+		reveal_seeds.reserve(num_reveal);
+		nreward_signs.reserve(num_reveal);
+		for(size_t i = 0; i < num_reveal; i++){
+			reveal_seeds[i] = rand_enginePt->newUint160Rand();
+			nreward_signs[i] = this->returnSign(reveal_seeds[i]);
+		}
+		return nreward_signs;
+	}
 
 	/**
 	 * Returns a new copy of the public key
