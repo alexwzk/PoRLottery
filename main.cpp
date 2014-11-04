@@ -26,13 +26,13 @@
 #define FPS_LFSIZE 16
 
 int main(int argc, const char *argv[]) {
-	using namespace std;
+	/*using namespace std;
 	BUFFER<PMC_LFSIZE> tbuff;
 	uint8_t d[PMC_LFSIZE];
 	for (int i = 0; i < PMC_LFSIZE; i++) {
 		d[i] = 'a' + i;
 	}
-	tbuff.assign(d, PMC_LFSIZE);
+	tbuff.assign(d, PMC_LFSIZE);*/
 	/*tbuff.Serialize(cout,SER_DISK,CLIENT_VERSION);
 	 cout << "\n";*/
 
@@ -43,7 +43,7 @@ int main(int argc, const char *argv[]) {
 	 tpath.pushHashDigest(thash);
 	 tpath.Serialize(cout,SER_DISK,CLIENT_VERSION); // path serialisation works!*/
 
-	std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
+	/*std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
 	for (int i = 0; i < 4; i++) {
 		tsegmts.push_back(tbuff);
 	}
@@ -52,9 +52,9 @@ int main(int argc, const char *argv[]) {
 	tpath = tmerkle.returnPath(0);
 	uint160 troot = tmerkle.returnRoot();
 	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 0, troot)
-			<< endl; /*successfully verified the path!*/
+			<< endl; *//*successfully verified the path!*/
 
-	FPS<FPS_LFSIZE> tfps(16, 1, 1);
+	/*FPS<FPS_LFSIZE> tfps(16, 1, 1);
 	PATH<FPS_LFSIZE> tsign;
 	RANDENGINE trand;
 	std::list<size_t> tunrevealed;
@@ -65,15 +65,15 @@ int main(int argc, const char *argv[]) {
 	tsign = tfps.returnSign(trootfps);
 	bool result = FPS<FPS_LFSIZE>::verifySignature(tsign, trootfps, trootfps,
 			tunrevealed, trand);
-	cout << boolalpha << result << endl; /*Verify Signature done!*/
+	cout << boolalpha << result << endl; *//*Verify Signature done!*/
 
-	TICKET<PMC_LFSIZE, FPS_LFSIZE> ttic;
+	/*TICKET<PMC_LFSIZE, FPS_LFSIZE> ttic;
 	ttic.pubkey = troot;
 	ttic.seed = "zikaiwen";
 	ttic.mkproofs.push_back(tpath);
 	ttic.signatures.push_back(tsign);
-	pmc::printHex(ttic.hashOfTicket().begin(), 20); /*Ticket is set!*/
-
+	pmc::printHex(ttic.hashOfTicket().begin(), 20);*/ /*Ticket is set!*/
+	return 0;
 	/*	if (argc < 2) {
 	 cerr << "Invalid command. try --help for more tips." << endl;
 	 return INVALID_ERR;
