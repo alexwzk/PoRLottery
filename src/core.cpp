@@ -1,8 +1,8 @@
 #include "core.h"
 
 std::vector<uint8_t>* PMC::newByteVec(uint8_t* a_ptr, size_t a_length) {
-	if(a_ptr == nullptr){
-		return nullptr;
+	if(a_ptr == NULL){
+		return NULL;
 	}
 	return new std::vector<uint8_t>(a_ptr, a_ptr + a_length);
 }
@@ -29,7 +29,7 @@ std::string PMC::stringToHex(const std::string& input) {
 
 size_t PMC::computeU_i(uint160 pk, size_t i_inl, size_t num_all) {
 	uint160 hashvalue;
-	std::string tmp_str = pk.ToString() + std::to_string(i_inl);
+	std::string tmp_str = pk.ToString() + boost::lexical_cast<std::string>(i_inl);
 
 	// coutest pk||i
 	SHA1((uint8_t *) tmp_str.data(), tmp_str.size(), hashvalue.begin());

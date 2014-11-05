@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <version.h> // BTC
+#include <boost/lexical_cast.hpp>
 
 #include "random.h"
 
