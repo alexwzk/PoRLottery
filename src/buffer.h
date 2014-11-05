@@ -28,7 +28,7 @@ public:
 	}
 
 	int assign(const uint8_t* bPt, const size_t inlength) {
-		if (bPt == nullptr || inlength != SIZE) {
+		if (bPt == NULL || inlength != SIZE) {
 			return INVALID_ERR;
 		}
 		for (size_t i = 0; i < SIZE; i++) {

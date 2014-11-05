@@ -58,7 +58,7 @@ public:
 	/**
 	 * Generates a new FPS signature
 	 * INPUT H(m) as a random oracle
-	 * OUTPUT signature or nullptr if any error occurs
+	 * OUTPUT signature or NULL if any error occurs
 	 */
 	PATH<FPS_LFBYTES> returnSign(const uint160& hashvalue) {
 		PATH<FPS_LFBYTES> nsign;

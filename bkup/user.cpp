@@ -50,8 +50,8 @@ int USER::generateTicket() {
 	}
 
 	size_t i_inl = 0, leaf_size = 0;
-	PATH *now_signPt = nullptr, *init_signPt = nullptr;
-	uint8_t *leafPt = nullptr;
+	PATH *now_signPt = NULL, *init_signPt = NULL;
+	uint8_t *leafPt = NULL;
 	uint8_t empty_leaf[LAMBDA];
 	std::string prefix, uchar_str, inputs;
 	digest hashvalue;
@@ -105,7 +105,7 @@ int USER::storeFile(std::string inputf) {
 	using namespace std;
 	using namespace pmc;
 	ifstream inputs;
-	PATH* pathPt = nullptr;
+	PATH* pathPt = NULL;
 	leaf tmp_leaf;
 	digest tmp_dgst;
 	size_t vec_size = -1, pth_size = -1;

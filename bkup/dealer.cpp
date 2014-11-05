@@ -5,7 +5,7 @@ DEALER::DEALER(std::string infile) {
 	//Parse the file and divide them into segments
 	ifstream inputs;
 	vector<uint8_t *> file_segmts;
-	char* inbufferPt = nullptr;
+	char* inbufferPt = NULL;
 	try {
 		inputs.open(infile, ifstream::binary);
 	} catch (ifstream::failure& err) {
@@ -87,8 +87,8 @@ int DEALER::createSubset() {
 int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 	using namespace std;
 	ofstream outpaths;
-	PATH* pathPt = nullptr;
-	uint8_t* leafPt = nullptr;
+	PATH* pathPt = NULL;
+	uint8_t* leafPt = NULL;
 	size_t tmp_size = 0, leaf_size = 0;
 
 	memcpy(pubkey,usr_pubkey,HASH_SIZE);

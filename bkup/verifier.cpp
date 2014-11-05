@@ -70,8 +70,8 @@ bool VERIFIER::verifyAllChallenges() {
 	list<size_t> unrevealed_v;
 	size_t r_i = 0, chaleng_times = 0, leaf_size = 0;
 	string prefix, inputs, uchar_str;
-	PATH *now_signPt = nullptr, *init_signPt = nullptr;
-	uint8_t *leafPt = nullptr;
+	PATH *now_signPt = NULL, *init_signPt = NULL;
+	uint8_t *leafPt = NULL;
 
 	chaleng_times = tic_verifyPt->mkproofs.size();
 	for (size_t i = 0; i < (1 << HEIGHT_FPS); i++) {

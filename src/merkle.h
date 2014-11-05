@@ -32,7 +32,7 @@ public:
 		height = ceil(log2(num_segmts)) + 1; // includes the root
 		size_t num_elem = 1;
 		size_t hash_size = root.size();
-		std::vector<uint8_t> *tmp_vecPt = nullptr;
+		std::vector<uint8_t> *tmp_vecPt = NULL;
 		now_layer = 0;
 		next_layer = 0;
 
@@ -142,7 +142,7 @@ public:
 	PATH<LEAF_BYTES> returnPath(const size_t locate) {
 		PATH<LEAF_BYTES> npath;
 
-		if (locate >= num_leaves || arrays == nullptr) {
+		if (locate >= num_leaves || arrays == NULL) {
 			return npath;
 		}
 
@@ -150,7 +150,7 @@ public:
 		size_t now_locate = locate;
 		size_t arrays_locate = 0;
 		BUFFER<LEAF_BYTES> inleaf;
-		std::vector<uint8_t> *tmp_vecPt = nullptr;
+		std::vector<uint8_t> *tmp_vecPt = NULL;
 
 		inleaf.assign(segments[locate], LEAF_BYTES);
 		npath.setLeafValue(inleaf);
