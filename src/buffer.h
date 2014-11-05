@@ -8,9 +8,9 @@
 #ifndef PMC_BUFFER_H_
 #define PMC_BUFFER_H_
 
-#include <serialize.h>
+#include <serialize.h>	//BTC
 
-#include "pmc.h"
+#include "core.h"
 
 template<size_t SIZE>
 class BUFFER {

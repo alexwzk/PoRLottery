@@ -1,8 +1,8 @@
 #ifndef PMC_PATH_H_
 #define PMC_PATH_H_
 
-#include "pmc.h"
 #include "buffer.h"
+#include "core.h"
 
 template<unsigned int LEAF_BYTES>
 class PATH {

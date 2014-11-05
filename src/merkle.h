@@ -106,7 +106,7 @@ public:
 			num_elem = num_elem >> 1;
 		}
 
-		tmp_vecPt = pmc::newByteVec(arrays[0] + 0, hash_size); //newptr
+		tmp_vecPt = PMC::newByteVec(arrays[0] + 0, hash_size); //newptr
 		root = uint160(*tmp_vecPt);
 		delete tmp_vecPt; //deleteptr
 
@@ -157,12 +157,12 @@ public:
 
 		now_layer = height - 1;
 		for (size_t i = 0; i < height - 1; i++) {
-			if (pmc::isEven(now_locate)) {
+			if (PMC::isEven(now_locate)) {
 				arrays_locate = (now_locate + 1) * hash_size;
 			} else {
 				arrays_locate = (now_locate - 1) * hash_size;
 			}
-			tmp_vecPt = pmc::newByteVec(arrays[now_layer] + arrays_locate,
+			tmp_vecPt = PMC::newByteVec(arrays[now_layer] + arrays_locate,
 					hash_size); //newptr
 			npath.pushHashDigest(uint160(*tmp_vecPt));
 			delete tmp_vecPt; //deleteptr
@@ -204,7 +204,7 @@ public:
 		SHA1(nleaf.data, LEAF_BYTES, hashvalue);
 		std::vector<uint160> vsiblingns = vpath.returnHashSiblings();
 		for (std::vector<uint160>::iterator it = vsiblingns.begin(); it != vsiblingns.end(); ++it) {
-			if (pmc::isEven(next_id)) {
+			if (PMC::isEven(next_id)) {
 				memcpy(mkfvalue, hashvalue, hash_size);
 				memcpy(mkfvalue + hash_size, it->begin(), hash_size);
 			} else {

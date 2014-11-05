@@ -13,11 +13,11 @@
 #include <iterator>
 #include <algorithm>
 #include <stdexcept>
-#include <version.h> // CLIENT_VERSION
+#include <version.h> // BTC
 
-#include "randengine.h"
+#include "random.h"
 
-namespace pmc {
+namespace PMC {
 
 /// Macros & typedef structure
 #define RUN_PMCLFBYTE 1024

@@ -13,7 +13,6 @@ class FPS {
 private:
 	std::list<size_t> unrevealed_s;
 	size_t num_leaves, num_select, num_reveal;
-	RANDENGINE* rand_enginePt;
 	MERKLE<FPS_LFBYTES>* mktree_keysPt;
 
 public:
@@ -29,19 +28,10 @@ public:
 		this->num_select = num_select;
 		this->num_reveal = num_reveal;
 
-		try {
-			rand_enginePt = new RANDENGINE();
-		} catch (std::bad_alloc& err) {
-			std::cerr << err.what() << " new rand_engine @ FPS 1st constructor."
-					<< std::endl;
-		}
-
 		std::vector< BUFFER<FPS_LFBYTES> > fps_leaves;
 		fps_leaves.resize(num_leaves);
 		for (size_t i = 0; i < num_leaves; i++) {
-			memcpy(fps_leaves[i].data,
-					(uint8_t *) rand_enginePt->newRandStr(FPS_LFBYTES).data(),
-					FPS_LFBYTES);
+			GetRandBytes(fps_leaves[i].data, FPS_LFBYTES);
 		}
 
 		try {
@@ -62,7 +52,6 @@ public:
 	 * Destroctor: deletes rand_engine and mktree_keys
 	 */
 	~FPS() {
-		delete rand_enginePt;
 		delete mktree_keysPt;
 	}
 
@@ -73,7 +62,7 @@ public:
 	 */
 	PATH<FPS_LFBYTES> returnSign(const uint160& hashvalue) {
 		PATH<FPS_LFBYTES> nsign;
-		size_t index = rand_enginePt->randByHash(hashvalue,
+		size_t index = PMC::getRandByHash(hashvalue,
 				unrevealed_s.size());
 		std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 		std::advance(torevealIt, index);
@@ -96,7 +85,7 @@ public:
 		reveal_seeds.reserve(num_reveal);
 		nreward_signs.reserve(num_reveal);
 		for(size_t i = 0; i < num_reveal; i++){
-			reveal_seeds[i] = rand_enginePt->newUint160Rand();
+			reveal_seeds[i] = PMC::getRandHash();
 			nreward_signs[i] = this->returnSign(reveal_seeds[i]);
 		}
 		return nreward_signs;
@@ -119,10 +108,9 @@ public:
 	 */
 	static bool verifySignature(const PATH<FPS_LFBYTES>& vsign,
 			const uint160& hashvalue, const uint160& pubkey,
-			std::list<size_t>& unrevealed_v,
-			RANDENGINE& rand_engine) {
+			std::list<size_t>& unrevealed_v) {
 		bool passed = false;
-		size_t index = rand_engine.randByHash(hashvalue, unrevealed_v.size());
+		size_t index = PMC::getRandByHash(hashvalue, unrevealed_v.size());
 		std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
 		std::advance(torevealIt, index);
 		passed = MERKLE<FPS_LFBYTES>::verifyPath(vsign,
