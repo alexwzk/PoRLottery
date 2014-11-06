@@ -1,5 +1,5 @@
 /*
- * randengine.h
+ * random.h
  *
  *  Created on: Sep 14, 2014
  *      Author: Zikai Alex Wen

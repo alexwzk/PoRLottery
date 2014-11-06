@@ -1,4 +1,4 @@
-#include "core.h"
+#include "common.h"
 
 std::vector<uint8_t>* PMC::newByteVec(uint8_t* a_ptr, size_t a_length) {
 	if (a_ptr == NULL) {

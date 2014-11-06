@@ -1,5 +1,11 @@
-#ifndef PERMACOIN_H_
-#define PERMACOIN_H_
+/*
+ * common.h
+ *
+ *  Created on: Sep 27, 2014
+ *      Author: Zikai Alex Wen
+ */
+#ifndef PMC_COMMON_H_
+#define PMC_COMMON_H_
 
 #include <cmath>
 #include <cstdlib>
@@ -86,6 +92,6 @@ size_t computeI_inL(std::string inputs, size_t num_sub);
 size_t computeR_i(uint256 pk, std::string inputs, size_t num_sub,
 		size_t num_all);
 
-}	/// namespace PMC (shorten for Permacoin)
+}
 
-#endif /*PERMACOIN_H_*/
+#endif /*PMC_COMMON_H_*/

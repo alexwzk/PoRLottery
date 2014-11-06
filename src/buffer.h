@@ -10,7 +10,7 @@
 
 #include <serialize.h>	//BTC
 
-#include "core.h"
+#include "common.h"
 
 template<size_t SIZE>
 class BUFFER {

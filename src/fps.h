@@ -1,3 +1,9 @@
+/*
+ * fps.h
+ *
+ *  Created on: Sep 27, 2014
+ *      Author: Zikai Alex Wen
+ */
 #ifndef PMC_FPS_H_
 #define PMC_FPS_H_
 
@@ -69,8 +75,8 @@ public:
 		nsign = mktree_keysPt->returnPath(*torevealIt);
 		torevealIt = unrevealed_s.erase(torevealIt);
 		// coutest revealed No.
-		std::cout << "revealed No." << (*torevealIt) << " signature."
-				<< std::endl;
+		/*std::cout << "revealed No." << (*torevealIt) << " signature."
+				<< std::endl;*/
 		return nsign;
 	}
 
@@ -117,8 +123,8 @@ public:
 				(*torevealIt), pubkey);
 		torevealIt = unrevealed_v.erase(torevealIt);
 		// coutest verified No.
-		std::cout << "verified No." << (*torevealIt) << " signature."
-				<< std::endl;
+		/*std::cout << "verified No." << (*torevealIt) << " signature."
+				<< std::endl;*/
 		return passed;
 	}
 };

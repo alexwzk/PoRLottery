@@ -1,8 +1,15 @@
+/*
+ * path.h
+ *
+ *  Created on: Sep 27, 2014
+ *      Author: Zikai Alex Wen
+ */
+
 #ifndef PMC_PATH_H_
 #define PMC_PATH_H_
 
 #include "buffer.h"
-#include "core.h"
+#include "common.h"
 
 template<unsigned int LEAF_BYTES>
 class PATH {
