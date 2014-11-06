@@ -9,14 +9,12 @@
 #define PMC_MERKLE_H_
 
 #include "path.h"
-
 template<unsigned int LEAF_BYTES>
 class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height;
-	uint160 root;
 	uint8_t **segments;
-	uint8_t **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
+	uint256 **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 	int now_layer, next_layer;
 
 public:
@@ -27,18 +25,16 @@ public:
 	 * INPUT a vector of buffer whose size is LEAF_BYTES
 	 * AFFECT all private variables
 	 */
-	MERKLE(const std::vector< BUFFER<LEAF_BYTES> >& segmts) {
+	MERKLE(const std::vector<BUFFER<LEAF_BYTES> >& segmts) {
 		num_segmts = segmts.size();
 		height = ceil(log2(num_segmts)) + 1; // includes the root
 		size_t num_elem = 1;
-		size_t hash_size = root.size();
-		std::vector<uint8_t> *tmp_vecPt = NULL;
 		now_layer = 0;
 		next_layer = 0;
 
 		// Arrays memory allocation
 		try {
-			arrays = new uint8_t*[height];
+			arrays = new uint256*[height];
 		} catch (std::bad_alloc& err) {
 			std::cerr << err.what() << " malloc arrays** height: " << height
 					<< " @ MERKLE 1st constructor." << std::endl;
@@ -48,7 +44,7 @@ public:
 			// coutest H arrays
 			// cout << "now layer: " << now_layer << " has " << num_elem << " element(s). " << endl;
 			try {
-				arrays[next_layer] = new uint8_t[num_elem * hash_size];
+				arrays[next_layer] = new uint256[num_elem];
 			} catch (std::bad_alloc& err) {
 				std::cerr << err.what()
 						<< "malloc arrays* @ MERKLE 1st constructor."
@@ -75,51 +71,49 @@ public:
 		// Hash the leaves (file segments)
 		for (size_t i = 0; i < num_segmts; i++) {
 			memcpy(segments[i], segmts[i].data, LEAF_BYTES);
-			SHA1(segments[i], LEAF_BYTES, arrays[now_layer] + i * hash_size);
+			arrays[now_layer][i] = Hash(segments[i], segments[i] + LEAF_BYTES);
 			// coutest memcpy
 			/*std::cout << "No. " << i << ": ";
-			 pmc::printHex(segments[i], LEAF_BYTES);
-			 std::cout << " and its";
-			 std::cout << " hash value: ";
-			 pmc::printHex(arrays[now_layer][i], hash_size);*/
+			PMC::printHex(segments[i], LEAF_BYTES);
+			std::cout << " and its";
+			std::cout << " hash value: ";
+			std::cout << arrays[now_layer][i].GetHex() << std::endl;*/
 		}
 
 		// Fill the leaves into a full binary tree
 		num_leaves = num_segmts;
 		while (num_leaves < num_elem) {
 			memset(segments[num_leaves], 0, LEAF_BYTES);
-			SHA1(segments[num_leaves], LEAF_BYTES,
-					(arrays[now_layer] + num_leaves * hash_size));
+			arrays[now_layer][num_leaves] = Hash(segments[num_leaves],
+					segments[num_leaves] + LEAF_BYTES);
 			num_leaves++;
 		}
 
 		// Hash children digests
 		next_layer = now_layer - 1;
 		num_elem = num_leaves >> 1;
+		size_t loc_input = 0;
 		while (next_layer >= 0) {
 			for (size_t i = 0; i < num_elem; i++) {
-				SHA1(arrays[now_layer] + i * 2 * hash_size, 2 * hash_size,
-						arrays[next_layer] + i * hash_size);
+				loc_input = i << 1;
+				arrays[next_layer][i] = Hash(arrays[now_layer][loc_input].begin(),
+						arrays[now_layer][loc_input].end(),
+						arrays[now_layer][loc_input + 1].begin(),
+						arrays[now_layer][loc_input + 1].end());
 			}
 			now_layer--;
 			next_layer = now_layer - 1;
 			num_elem = num_elem >> 1;
 		}
-
-		tmp_vecPt = PMC::newByteVec(arrays[0] + 0, hash_size); //newptr
-		root = uint160(*tmp_vecPt);
-		delete tmp_vecPt; //deleteptr
-
 		// coutest Merkle tree 2D array
 		/*num_elem = 1;
-		 for (size_t i = 0; i < height; i++) {
-		 for (size_t j = 0; j < num_elem; j++) {
-		 std::cout << "Print [" << i << "] [" << j << "]'s hash value: "
-		 << std::endl;
-		 pmc::printHex(arrays[i] + j * hash_size, hash_size);
-		 }
-		 num_elem = num_elem << 1;
-		 }*/
+		for (size_t i = 0; i < height; i++) {
+			for (size_t j = 0; j < num_elem; j++) {
+				std::cout << "Print [" << i << "] [" << j << "]'s hash value: "
+						<< arrays[i][j].GetHex() << std::endl;
+			}
+			num_elem = num_elem << 1;
+		}*/
 	}
 
 	/**
@@ -146,26 +140,21 @@ public:
 			return npath;
 		}
 
-		size_t hash_size = root.size();
 		size_t now_locate = locate;
 		size_t arrays_locate = 0;
 		BUFFER<LEAF_BYTES> inleaf;
-		std::vector<uint8_t> *tmp_vecPt = NULL;
 
 		inleaf.assign(segments[locate], LEAF_BYTES);
 		npath.setLeafValue(inleaf);
 
 		now_layer = height - 1;
-		for (size_t i = 0; i < height - 1; i++) {
+		while (now_layer > 0) {
 			if (PMC::isEven(now_locate)) {
-				arrays_locate = (now_locate + 1) * hash_size;
+				arrays_locate = now_locate + 1;
 			} else {
-				arrays_locate = (now_locate - 1) * hash_size;
+				arrays_locate = now_locate - 1;
 			}
-			tmp_vecPt = PMC::newByteVec(arrays[now_layer] + arrays_locate,
-					hash_size); //newptr
-			npath.pushHashDigest(uint160(*tmp_vecPt));
-			delete tmp_vecPt; //deleteptr
+			npath.pushHashDigest(arrays[now_layer][arrays_locate]);
 			now_locate = now_locate >> 1;
 			now_layer--;
 		}
@@ -177,8 +166,8 @@ public:
 	 * Return the root digest
 	 * OUTPUT a new copy of the root
 	 */
-	uint160 returnRoot() const {
-		return root;
+	uint256 returnRoot() const {
+		return arrays[0][0];
 	}
 
 	/**
@@ -194,27 +183,22 @@ public:
 	 *OUTPUT true if it's correct otherwise false
 	 */
 	static bool verifyPath(const PATH<LEAF_BYTES>& vpath, size_t u_i,
-			const uint160& root) {
+			const uint256& root) {
 		size_t next_id = u_i;
-		size_t hash_size = root.size();
-		uint8_t hashvalue[hash_size];
-		uint8_t mkfvalue[hash_size * 2];
-
 		BUFFER<LEAF_BYTES> nleaf = vpath.returnLeaf();
-		SHA1(nleaf.data, LEAF_BYTES, hashvalue);
-		std::vector<uint160> vsiblingns = vpath.returnHashSiblings();
-		for (std::vector<uint160>::iterator it = vsiblingns.begin(); it != vsiblingns.end(); ++it) {
+		uint256 hashvalue = Hash(BEGIN(nleaf.data), END(nleaf.data));
+		std::vector<uint256> hash_siblings = vpath.returnHashSiblings();
+		for (size_t i = 0; i < hash_siblings.size(); i++) {
 			if (PMC::isEven(next_id)) {
-				memcpy(mkfvalue, hashvalue, hash_size);
-				memcpy(mkfvalue + hash_size, it->begin(), hash_size);
+				hashvalue = Hash(hashvalue.begin(), hashvalue.end(),
+						hash_siblings[i].begin(), hash_siblings[i].end());
 			} else {
-				memcpy(mkfvalue, it->begin(), hash_size);
-				memcpy(mkfvalue + hash_size, hashvalue, hash_size);
+				hashvalue = Hash(hash_siblings[i].begin(), hash_siblings[i].end(),
+						hashvalue.begin(), hashvalue.end());
 			}
-			SHA1(mkfvalue, hash_size * 2, hashvalue);
 			next_id = next_id >> 1;
 		}
-		if (memcmp(root.begin(), hashvalue, hash_size) != 0) {
+		if (root.CompareTo(hashvalue) != 0) {
 			return false;
 		} else {
 			return true;

@@ -26,53 +26,49 @@
 #define FPS_LFSIZE 16
 
 int main(int argc, const char *argv[]) {
-	/*using namespace std;
+	using namespace std;
 	BUFFER<PMC_LFSIZE> tbuff;
 	uint8_t d[PMC_LFSIZE];
 	for (int i = 0; i < PMC_LFSIZE; i++) {
-		d[i] = 'a' + i;
+		d[i] = 'a';
 	}
-	tbuff.assign(d, PMC_LFSIZE);*/
 	/*tbuff.Serialize(cout,SER_DISK,CLIENT_VERSION);
 	 cout << "\n";*/
 
-	/*uint160 thash;
-	 PATH<LFSIZE, uint160> tpath;
-	 thash.SetHex((char*)d);
-	 tpath.setLeafValue(tbuff);
-	 tpath.pushHashDigest(thash);
-	 tpath.Serialize(cout,SER_DISK,CLIENT_VERSION); // path serialisation works!*/
-
-	/*std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
+	std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
 	for (int i = 0; i < 4; i++) {
+		d[0] = 'a' + i;
+		tbuff.assign(d, PMC_LFSIZE);
 		tsegmts.push_back(tbuff);
 	}
 	PATH<PMC_LFSIZE> tpath;
 	MERKLE<PMC_LFSIZE> tmerkle(tsegmts);
-	tpath = tmerkle.returnPath(0);
-	uint160 troot = tmerkle.returnRoot();
-	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 0, troot)
-			<< endl; *//*successfully verified the path!*/
+	tpath = tmerkle.returnPath(2);
+	/*cout << "Test Path info: " << endl;
+	PMC::printHex(tpath.returnLeaf().data,PMC_LFSIZE);
+	cout << "Hash siblings: (size)" << tpath.returnHashSiblings().size() << endl;
+	for(size_t i = 0; i < tpath.returnHashSiblings().size(); i++){
+		cout << tpath.returnHashSiblings().at(i).GetHex() << endl;
+	}*/
+	uint256 troot = tmerkle.returnRoot();
 
-	/*FPS<FPS_LFSIZE> tfps(16, 1, 1);
+	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 2, troot)
+			<< endl;
+	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 3, troot)
+				<< endl; /*successfully verified the path!*/
+
+	FPS<FPS_LFSIZE> tfps(16, 1, 1);
 	PATH<FPS_LFSIZE> tsign;
-	RANDENGINE trand;
 	std::list<size_t> tunrevealed;
 	for (int i = 0; i < 16; i++) {
 		tunrevealed.push_back(i);
 	}
-	uint160 trootfps = tfps.returnPubkey();
+	uint256 trootfps = tfps.returnPubkey();
 	tsign = tfps.returnSign(trootfps);
+	cout << tsign.toString() << endl;
 	bool result = FPS<FPS_LFSIZE>::verifySignature(tsign, trootfps, trootfps,
-			tunrevealed, trand);
-	cout << boolalpha << result << endl; *//*Verify Signature done!*/
-
-	/*TICKET<PMC_LFSIZE, FPS_LFSIZE> ttic;
-	ttic.pubkey = troot;
-	ttic.seed = "zikaiwen";
-	ttic.mkproofs.push_back(tpath);
-	ttic.signatures.push_back(tsign);
-	pmc::printHex(ttic.hashOfTicket().begin(), 20);*/ /*Ticket is set!*/
+			tunrevealed);
+	cout << boolalpha << result << endl; /*Verify Signature done!*/
 	return 0;
 	/*	if (argc < 2) {
 	 cerr << "Invalid command. try --help for more tips." << endl;

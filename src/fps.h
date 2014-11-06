@@ -60,17 +60,17 @@ public:
 	 * INPUT H(m) as a random oracle
 	 * OUTPUT signature or NULL if any error occurs
 	 */
-	PATH<FPS_LFBYTES> returnSign(const uint160& hashvalue) {
+	PATH<FPS_LFBYTES> returnSign(const uint256& hashvalue) {
 		PATH<FPS_LFBYTES> nsign;
 		size_t index = PMC::getRandByHash(hashvalue,
-				unrevealed_s.size());
+				unrevealed_s.size()-1);
 		std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 		std::advance(torevealIt, index);
 		nsign = mktree_keysPt->returnPath(*torevealIt);
 		torevealIt = unrevealed_s.erase(torevealIt);
 		// coutest revealed No.
-		/*std::cout << "revealed No." << (*torevealIt) << " signature."
-				<< std::endl;*/
+		std::cout << "revealed No." << (*torevealIt) << " signature."
+				<< std::endl;
 		return nsign;
 	}
 
@@ -79,13 +79,13 @@ public:
 	 * the (k+1)th FPS signature for paying the Bitcoin reward
 	 * OUTPUT num_reveal keys
 	 */
-	std::vector< PATH<FPS_LFBYTES> > rewardSign(std::vector< uint160 >& reveal_seeds){
+	std::vector< PATH<FPS_LFBYTES> > rewardSign(std::vector< uint256 >& reveal_seeds){
 		std::vector< PATH<FPS_LFBYTES> > nreward_signs;
 		reveal_seeds.clear();
 		reveal_seeds.reserve(num_reveal);
 		nreward_signs.reserve(num_reveal);
 		for(size_t i = 0; i < num_reveal; i++){
-			reveal_seeds[i] = PMC::getRandHash();
+			reveal_seeds[i] = GetRandHash();
 			nreward_signs[i] = this->returnSign(reveal_seeds[i]);
 		}
 		return nreward_signs;
@@ -95,7 +95,7 @@ public:
 	 * Returns a new copy of the public key
 	 * OUTPUT the public key digest
 	 */
-	uint160 returnPubkey() const {
+	uint256 returnPubkey() const {
 		return mktree_keysPt->returnRoot();
 	}
 
@@ -107,10 +107,10 @@ public:
 	 * OUTPUT true or false
 	 */
 	static bool verifySignature(const PATH<FPS_LFBYTES>& vsign,
-			const uint160& hashvalue, const uint160& pubkey,
+			const uint256& hashvalue, const uint256& pubkey,
 			std::list<size_t>& unrevealed_v) {
 		bool passed = false;
-		size_t index = PMC::getRandByHash(hashvalue, unrevealed_v.size());
+		size_t index = PMC::getRandByHash(hashvalue, unrevealed_v.size()-1);
 		std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
 		std::advance(torevealIt, index);
 		passed = MERKLE<FPS_LFBYTES>::verifyPath(vsign,

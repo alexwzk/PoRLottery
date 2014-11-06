@@ -16,11 +16,9 @@ template<size_t SIZE>
 class BUFFER {
 public:
 	uint8_t data[SIZE];
-	std::vector<int> test;
 
 	IMPLEMENT_SERIALIZE(
-			READWRITE(test);
-//		READWRITE(std::vector<uint8_t>(data,data + SIZE));
+			READWRITE(std::string((const char*)data));
 	)
 
 	void clear() {
@@ -44,6 +42,10 @@ public:
 			}
 		}
 		return true;
+	}
+
+	std::string toString() const {
+		return std::string((const char*)data);
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {

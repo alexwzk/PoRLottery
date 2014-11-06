@@ -9,7 +9,7 @@ class PATH {
 
 private:
 	BUFFER<LEAF_BYTES> leaf;
-	std::vector<uint160> vhashes; // the item's hash siblings
+	std::vector<uint256> vhashes; // the item's hash siblings
 
 public:
 
@@ -37,16 +37,25 @@ public:
 		leaf = nleaf;
 	}
 
-	void pushHashDigest(uint160 hash_value){
+	void pushHashDigest(uint256 hash_value){
 		vhashes.push_back(hash_value);
 	}
 
-	BUFFER<LEAF_BYTES> returnLeaf() const{
+	BUFFER<LEAF_BYTES> returnLeaf() const {
 		return leaf;
 	}
 
-	std::vector<uint160> returnHashSiblings() const{
+	std::vector<uint256> returnHashSiblings() const {
 		return vhashes;
+	}
+
+	std::string toString() const {
+		std::string nString;
+		nString = leaf.toString();
+		for(size_t i = 0; i < vhashes.size(); i++) {
+			nString += vhashes[i].ToString();
+		}
+		return nString;
 	}
 
 	PATH<LEAF_BYTES>& operator=(const PATH<LEAF_BYTES>& p) {

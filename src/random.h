@@ -8,20 +8,17 @@
 #ifndef PMC_RANDOM_H_
 #define PMC_RANDOM_H_
 
-#include <openssl/sha.h>
 #include <uint256.h>	//BTC
 #include <hash.h>		//BTC
 #include <random.h>		//BTC
 
 namespace PMC {
 	/**
-	 * A random oracle lies within [0,max-1]
+	 * A random oracle lies within [0,max]
 	 * INPUT hashvalue as a seed
-	 * OUTPUT a random number ranged [0,max-1]
+	 * OUTPUT a random number ranged [0,max]
 	 */
-	size_t getRandByHash(const uint160& hashvalue, const size_t max);
-
-	uint160 getRandHash();
+	size_t getRandByHash(const uint256& hashvalue, const size_t max);
 
 };
 

@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <version.h> // BTC
+#include <utilstrencodings.h> //BTC
 #include <boost/lexical_cast.hpp>
 
 #include "random.h"
@@ -23,11 +24,11 @@ namespace PMC {
 /// Macros & typedef structure
 #define RUN_PMCLFBYTE 1024
 #define RUN_FPSLFBYTE 32
+#define RUN_FPSLFNUM  1024
 
 #define ALL_CONST 16
 #define SUBSET_CONST 5
 #define CHALNG_CONST 2
-#define SEED_LENGTH 20
 
 #define HEAD 0
 #define FINE 0
@@ -36,6 +37,8 @@ namespace PMC {
 #define PTNULL_ERR -2
 #define MALLOC_ERR -3
 #define FILE_ERR -4
+
+static uint256 db_rootdigest; //TODO TBA
 
 /**
  * Convert an array of unsigned char to the vector form
@@ -70,7 +73,7 @@ inline bool isEven(T v) {
 /**
  * Computes u[i] := H_0(pk||i_inl) mod num_all
  */
-size_t computeU_i(uint160 pk, size_t i_inl, size_t num_all);
+size_t computeU_i(uint256 pk, size_t i_inl, size_t num_all);
 
 /**
  * Computes H(inputs) mod num_sub
@@ -80,7 +83,7 @@ size_t computeI_inL(std::string inputs, size_t num_sub);
 /**
  * Computes r[i] := computeStoreU_i(computeChlngU_i())
  */
-size_t computeR_i(uint160 pk, std::string inputs, size_t num_sub,
+size_t computeR_i(uint256 pk, std::string inputs, size_t num_sub,
 		size_t num_all);
 
 }	/// namespace PMC (shorten for Permacoin)

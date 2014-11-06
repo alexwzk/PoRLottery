@@ -1,7 +1,7 @@
 #include "core.h"
 
 std::vector<uint8_t>* PMC::newByteVec(uint8_t* a_ptr, size_t a_length) {
-	if(a_ptr == NULL){
+	if (a_ptr == NULL) {
 		return NULL;
 	}
 	return new std::vector<uint8_t>(a_ptr, a_ptr + a_length);
@@ -27,23 +27,20 @@ std::string PMC::stringToHex(const std::string& input) {
 	return output;
 }
 
-size_t PMC::computeU_i(uint160 pk, size_t i_inl, size_t num_all) {
-	uint160 hashvalue;
-	std::string tmp_str = pk.ToString() + boost::lexical_cast<std::string>(i_inl);
-
+size_t PMC::computeU_i(uint256 pk, size_t i_inl, size_t num_all) {
 	// coutest pk||i
-	SHA1((uint8_t *) tmp_str.data(), tmp_str.size(), hashvalue.begin());
-	// coutest state
+	std::string inputs = pk.ToString() + itostr(i_inl);
+	uint256 hashvalue = Hash(inputs.begin(),inputs.end());
+
 	return PMC::getRandByHash(hashvalue, num_all);
 }
 
 size_t PMC::computeI_inL(std::string inputs, size_t num_sub) {
-	uint160 hashvalue;
-	SHA1((uint8_t *) inputs.data(), inputs.size(), hashvalue.begin());
+	uint256 hashvalue = Hash(inputs.begin(),inputs.end());
 	return PMC::getRandByHash(hashvalue, num_sub);
 }
 
-size_t PMC::computeR_i(uint160 pk, std::string inputs, size_t num_sub,
-		size_t num_all){
+size_t PMC::computeR_i(uint256 pk, std::string inputs,
+		size_t num_sub, size_t num_all) {
 	return computeU_i(pk, computeI_inL(inputs, num_sub), num_all);
 }

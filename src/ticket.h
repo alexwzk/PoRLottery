@@ -15,8 +15,8 @@
 template<unsigned int PMC_LFBYTES, unsigned int FPS_LFBYTES>
 class TICKET {
 public:
-	uint160 pubkey;
-	std::string seed;
+	uint256 pubkey;
+	unsigned int seed;
 	std::vector< PATH<PMC_LFBYTES> > mkproofs;
 	std::vector< PATH<FPS_LFBYTES> > signatures;
 
@@ -29,13 +29,17 @@ public:
 
 	void clear(){
 		pubkey.SetHex("0");
-		seed.clear();
+		seed = 0;
 		mkproofs.clear();
 		signatures.clear();
 	}
 
+	std::string seedToString() const{
+		return itostr(seed);
+	}
+
 	uint256 getHash() const{
-		return Hash(BEGIN(pubkey), END(signatures));
+		return SerializeHash(*this);
 	}
 
 	TICKET<PMC_LFBYTES, FPS_LFBYTES>& operator=(
