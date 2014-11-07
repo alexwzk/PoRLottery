@@ -8,8 +8,6 @@
 #ifndef PMC_BUFFER_H_
 #define PMC_BUFFER_H_
 
-#include <serialize.h>	//BTC
-
 #include "common.h"
 
 template<size_t SIZE>
@@ -18,7 +16,8 @@ public:
 	uint8_t data[SIZE];
 
 	IMPLEMENT_SERIALIZE(
-			READWRITE(std::string((const char*)data));
+			std::string nstr = this->toString();
+			READWRITE(nstr);
 	)
 
 	void clear() {

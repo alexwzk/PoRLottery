@@ -19,11 +19,18 @@
 #include <iterator>
 #include <algorithm>
 #include <stdexcept>
-#include <version.h> // BTC
-#include <utilstrencodings.h> //BTC
+
 #include <boost/lexical_cast.hpp>
 
+/*BTC Dependent Headers*/
+#include "utilstrencodings.h"
+#include "uint256.h"
+#include "hash.h"
 #include "random.h"
+#include "version.h"
+#include "serialize.h"
+
+
 
 namespace PMC {
 
@@ -45,6 +52,15 @@ namespace PMC {
 #define FILE_ERR -4
 
 static uint256 db_rootdigest; //TODO TBA
+
+/**
+ * A random oracle lies within [0,max]
+ * INPUT hashvalue as a seed
+ * OUTPUT a random number ranged [0,max]
+ */
+inline size_t getRandByHash(const uint256& hashvalue, const size_t max){
+	return hashvalue.GetLow64() % max;
+}
 
 /**
  * Convert an array of unsigned char to the vector form
