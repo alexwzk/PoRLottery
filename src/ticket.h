@@ -2,37 +2,55 @@
  * ticket.h
  *
  *  Created on: Sep 27, 2014
- *      Author: zkwen
+ *      Author: Zikai Alex Wen
  */
 
-#ifndef PERMACN_TICKET_H_
-#define PERMACN_TICKET_H_
+#ifndef PMC_TICKET_H_
+#define PMC_TICKET_H_
+
+#include <utilstrencodings.h>
 
 #include "path.h"
 
-#define PUZID 0
-#define ALLPROFS 1
-#define PUBKEY 2
-#define SEED 3
-#define TICPROFS 4
-
+template<unsigned int PMC_LFBYTES, unsigned int FPS_LFBYTES>
 class TICKET {
 public:
-	std::string pubkey;
-	std::string seed;
-	std::vector<PATH*> mkproofs; //uses allmkproofs' pointers in USER class
+	uint256 pubkey;
+	unsigned int seed;
+	std::vector< PATH<PMC_LFBYTES> > mkproofs;
+	std::vector< PATH<FPS_LFBYTES> > signatures;
 
-	/**
-	 * Default constructor and deconstructor
-	 */
-	TICKET(){}
-	~TICKET(){}
+	IMPLEMENT_SERIALIZE(
+			READWRITE(pubkey);
+			READWRITE(seed);
+			READWRITE(mkproofs);
+			READWRITE(signatures);
+	)
 
-	/**
-	 * Computes the hashvalue of a ticket
-	 * OUTPUT digest of this ticket
-	 */
-	uchar* hashOfTicket();
+	void clear(){
+		pubkey.SetHex("0");
+		seed = 0;
+		mkproofs.clear();
+		signatures.clear();
+	}
+
+	std::string seedToString() const{
+		return itostr(seed);
+	}
+
+	uint256 getHash() const{
+		return SerializeHash(*this);
+	}
+
+	TICKET<PMC_LFBYTES, FPS_LFBYTES>& operator=(
+			const TICKET<PMC_LFBYTES, FPS_LFBYTES>& t) {
+		pubkey = t.pubkey;
+		seed = t.seed;
+		mkproofs = t.mkproofs;
+		signatures = t.signatures;
+		return (*this);
+	}
+
 };
 
-#endif /* PERMACN_TICKET_H_ */
+#endif /* PMC_TICKET_H_ */

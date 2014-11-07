@@ -1,5 +1,11 @@
-#ifndef PERMACN_COMMN_H
-#define PERMACN_COMMN_H
+/*
+ * common.h
+ *
+ *  Created on: Sep 27, 2014
+ *      Author: Zikai Alex Wen
+ */
+#ifndef PMC_COMMON_H_
+#define PMC_COMMON_H_
 
 #include <cmath>
 #include <cstdlib>
@@ -9,20 +15,33 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iterator>
 #include <algorithm>
 #include <stdexcept>
 
-#include "randengine.h"
+#include <boost/lexical_cast.hpp>
 
-/// Macros N' typedef structure
-#define LEAF_SIZE 1024
-#define KEY_SIZE 256
-#define SUBSET_CONST 5
+/*BTC Dependent Headers*/
+#include "utilstrencodings.h"
+#include "uint256.h"
+#include "hash.h"
+#include "random.h"
+#include "version.h"
+#include "serialize.h"
+
+
+
+namespace PMC {
+
+/// Macros & typedef structure
+#define RUN_PMCLFBYTE 1024
+#define RUN_FPSLFBYTE 32
+#define RUN_FPSLFNUM  1024
+
 #define ALL_CONST 16
+#define SUBSET_CONST 5
 #define CHALNG_CONST 2
-#define SEED_LENGTH 20
-#define LAMBDA 16
 
 #define HEAD 0
 #define FINE 0
@@ -32,15 +51,29 @@
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-typedef uchar leaf[LEAF_SIZE];
+static uint256 db_rootdigest; //TODO TBA
 
-namespace COMMON {
+/**
+ * A random oracle lies within [0,max]
+ * INPUT hashvalue as a seed
+ * OUTPUT a random number ranged [0,max]
+ */
+inline size_t getRandByHash(const uint256& hashvalue, const size_t max){
+	return hashvalue.GetLow64() % max;
+}
+
+/**
+ * Convert an array of unsigned char to the vector form
+ * INPUT pointer to the built-in array, the length of the array
+ * OUTPUT the vector form of an array
+ */
+std::vector<uint8_t>* newByteVec(uint8_t* a_pointer, size_t a_length);
 
 /**
  * Prints the unchar array in Hex form
  * INPUT unchar array and its length
  */
-void printHex(const uchar* ucstr, const size_t length);
+void printHex(const uint8_t* ucstr, const size_t length);
 
 /**
  * Returns string in Hex form
@@ -62,20 +95,19 @@ inline bool isEven(T v) {
 /**
  * Computes u[i] := H_0(pk||i_inl) mod num_all
  */
-size_t computeU_i(std::string pk, size_t i_inl, size_t num_all);
+size_t computeU_i(uint256 pk, size_t i_inl, size_t num_all);
 
 /**
- * Computes H(puz||pk||i_ink||s) mod num_sub
+ * Computes H(inputs) mod num_sub
  */
-size_t computeI_inL(std::string puz, std::string pk, int i_ink, std::string seed,
-		size_t num_sub);
+size_t computeI_inL(std::string inputs, size_t num_sub);
 
 /**
  * Computes r[i] := computeStoreU_i(computeChlngU_i())
  */
-size_t computeR_i(std::string puz, std::string pk, int i_ink, std::string seed,
-		size_t num_sub, size_t num_all);
+size_t computeR_i(uint256 pk, std::string inputs, size_t num_sub,
+		size_t num_all);
 
-}	/// namespace COMMON
+}
 
-#endif
+#endif /*PMC_COMMON_H_*/

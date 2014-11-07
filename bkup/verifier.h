@@ -1,7 +1,7 @@
 #ifndef PERMACN_VERIFIER_H
 #define PERMACN_VERIFIER_H
 
-#include "merkle.h"
+#include "fps.h"
 #include "ticket.h"
 
 #include <fstream>
@@ -9,8 +9,9 @@
 class VERIFIER {
 private:
 	std::string puzzle_id;
-	uchar* root_digest;
-	TICKET* tic_verify;
+	uint8_t* root_digestPt;
+	TICKET* tic_verifyPt;
+	int i_ink = CHALNG_CONST;
 	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;
 
 public:
@@ -33,7 +34,10 @@ public:
 	 */
 	int getPuzzleID(std::string puz_id);
 
-	//TODO return Puzzle ID(?)
+	/**
+	 * Return the puzzle id
+	 */
+	std::string returnPuzzleID();
 
 	/**
 	 * Verify all challenged segments stored in tic_verify->mkproofs

@@ -1,44 +1,75 @@
-#ifndef PERMACN_PATH_H
-#define PERMACN_PATH_H
+/*
+ * path.h
+ *
+ *  Created on: Sep 27, 2014
+ *      Author: Zikai Alex Wen
+ */
 
+#ifndef PMC_PATH_H_
+#define PMC_PATH_H_
+
+#include "buffer.h"
 #include "common.h"
 
+template<unsigned int LEAF_BYTES>
 class PATH {
+
 private:
-	uchar* leafPt;	// the head pt of item
-	std::list<uchar*> siblings; // the item's hash siblings
+	BUFFER<LEAF_BYTES> leaf;
+	std::vector<uint256> vhashes; // the item's hash siblings
 
 public:
 
-	/**
-	 * 1st constructor: initialised by a leaf
-	 */
-	PATH(leaf inleaf);
+	PATH(){
+		setNull();
+	}
 
-	/**
-	 * Destructor: deletes leafPt and pointers stored in siblings
-	 */
-	~PATH();
+	~PATH(){ }
 
-	/**
-	 * Releases the pointer to its leaf item
-	 * OUTPUT leafPt
-	 */
-	uchar* releaseLeafPt();
+	void setNull(){
+		leaf.clear();
+		vhashes.clear();
+	}
 
-	/**
-	 * Returns the list of hash siblings pointers
-	 * OUTPUT siblings
-	 */
-	std::list<uchar*> returnSiblings();
+	bool isNull() const{
+		return leaf.isEmpty();
+	}
 
-	/**
-	 * Push backs the hash sibling into the siblings
-	 * INPUT a head pointer of the digest
-	 * OUTPUT FINE or NULLPT_ERR if hash is invalid
-	 */
-	int pushDigestPt(digest hash);
+	IMPLEMENT_SERIALIZE(
+		READWRITE(leaf);
+		READWRITE(vhashes);
+	)
 
-	//TODO: delete or insert digests, remember to delete memory before deleting digests
+	void setLeafValue(BUFFER<LEAF_BYTES> nleaf){
+		leaf = nleaf;
+	}
+
+	void pushHashDigest(uint256 hash_value){
+		vhashes.push_back(hash_value);
+	}
+
+	BUFFER<LEAF_BYTES> returnLeaf() const {
+		return leaf;
+	}
+
+	std::vector<uint256> returnHashSiblings() const {
+		return vhashes;
+	}
+
+	std::string toString() const {
+		std::string nString;
+		nString = leaf.toString();
+		for(size_t i = 0; i < vhashes.size(); i++) {
+			nString += vhashes[i].ToString();
+		}
+		return nString;
+	}
+
+	PATH<LEAF_BYTES>& operator=(const PATH<LEAF_BYTES>& p) {
+		leaf = p.returnLeaf();
+		vhashes = p.returnHashSiblings();
+		return (*this);
+	}
+
 };
-#endif
+#endif /*PMC_PATH_H_*/
