@@ -23,6 +23,7 @@
 #include <boost/lexical_cast.hpp>
 
 /*BTC Dependent Headers*/
+#include "util.h"
 #include "utilstrencodings.h"
 #include "uint256.h"
 #include "hash.h"

@@ -36,8 +36,7 @@ public:
 		try {
 			arrays = new uint256*[height];
 		} catch (std::bad_alloc& err) {
-			std::cerr << err.what() << " malloc arrays** height: " << height
-					<< " @ MERKLE 1st constructor." << std::endl;
+			throw error(err.what());
 		}
 
 		while (next_layer < height) {
@@ -46,9 +45,7 @@ public:
 			try {
 				arrays[next_layer] = new uint256[num_elem];
 			} catch (std::bad_alloc& err) {
-				std::cerr << err.what()
-						<< "malloc arrays* @ MERKLE 1st constructor."
-						<< std::endl;
+				throw error(err.what());
 			}
 			next_layer += 1;
 			num_elem = num_elem << 1;
@@ -64,8 +61,7 @@ public:
 				segments[i] = new uint8_t[LEAF_BYTES];
 			}
 		} catch (std::bad_alloc& err) {
-			std::cerr << err.what()
-					<< "malloc segments @ MERKLE 1st constrcutor." << std::endl;
+			throw error(err.what());
 		}
 
 		// Hash the leaves (file segments)

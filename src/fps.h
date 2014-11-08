@@ -43,9 +43,7 @@ public:
 		try {
 			mktree_keysPt = new MERKLE<FPS_LFBYTES>(fps_leaves);
 		} catch (std::bad_alloc& err) {
-			std::cerr << err.what()
-					<< " malloc mktree_keysPt @ FPS 1st constructor."
-					<< std::endl;
+			throw error(err.what());
 		}
 
 		unrevealed_s.clear();

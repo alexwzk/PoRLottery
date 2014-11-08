@@ -20,12 +20,15 @@ public:
 	std::vector< PATH<PMC_LFBYTES> > mkproofs;
 	std::vector< PATH<FPS_LFBYTES> > signatures;
 
-	IMPLEMENT_SERIALIZE(
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
 			READWRITE(pubkey);
 			READWRITE(seed);
 			READWRITE(mkproofs);
 			READWRITE(signatures);
-	)
+    }
 
 	void clear(){
 		pubkey.SetHex("0");

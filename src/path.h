@@ -35,10 +35,13 @@ public:
 		return leaf.isEmpty();
 	}
 
-	IMPLEMENT_SERIALIZE(
-		READWRITE(leaf);
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+	READWRITE(leaf);
 		READWRITE(vhashes);
-	)
+    }
 
 	void setLeafValue(BUFFER<LEAF_BYTES> nleaf){
 		leaf = nleaf;
