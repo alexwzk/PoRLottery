@@ -65,7 +65,7 @@ public:
 	}
 
 	std::string toString() const {
-		return std::string((const char*) data);
+		return std::string(this->begin());
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {

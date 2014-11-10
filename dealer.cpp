@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
 	vector< BUFFER<LEAF_SIZE> > file_segmts;
 	BUFFER<LEAF_SIZE> temp_buffer;
 
-	//Open File
+	printf("Init Message: %s","Opening a SINGLE file...");
 	//TODO input validation check
 	/*
 	 size_t  num_files;
@@ -52,7 +52,7 @@ int main(int argc, const char *argv[]) {
 		exit(INVALID_FILE);
 	}
 
-	//Process the file with seek()
+	printf("Init Message: %s","Reading from the open file...");
 	//TODO concatenate the Merkle node digests (since the size of leaves is 2 large)
 	while (finput) {
 		finput.read(temp_buffer.begin(), LEAF_SIZE);
@@ -72,7 +72,7 @@ int main(int argc, const char *argv[]) {
 		}
 		file_segmts.push_back(temp_buffer);
 	}
-	//TODO Fix other situations
+	//TODO Fix other input branches
 	num_segmts = file_segmts.size();
 	finput.close();
 
