@@ -64,7 +64,6 @@ public:
 		return (char *) &data[SIZE];
 	}
 
-
 	std::string toString() const {
 		return std::string((const char*) data);
 	}
