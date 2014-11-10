@@ -174,6 +174,12 @@ public:
 	}
 
 	/**
+	 * OUTPUT num_segmts of the Merkle tree
+	 */
+	size_t returnNumLeaves() const {
+		return num_leaves;
+	}
+	/**
 	 *Validates the received path is legitimate in a merkle tree
 	 *INPUT a pointer to the merkle proof, its challenge index and the root digest
 	 *OUTPUT true if it's correct otherwise false

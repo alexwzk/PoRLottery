@@ -20,8 +20,8 @@ public:
 	template<typename Stream, typename Operation>
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
 			int nVersion) {
-		std::string nstr = this->toString();
-		READWRITE(nstr);
+		std::vector<unsigned char> nvtr (&data[0],&data[SIZE]);
+		READWRITE(nvtr);
 	}
 
 	void clear() {
@@ -62,10 +62,6 @@ public:
 
 	const char* end() const{
 		return (char *) &data[SIZE];
-	}
-
-	std::string toString() const {
-		return std::string(this->begin());
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {

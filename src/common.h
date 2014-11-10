@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include <cassert>
 
 #include <list>
 #include <vector>
@@ -52,7 +53,7 @@ namespace PMC {
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-static uint256 db_rootdigest; //TODO TBA
+static uint256 db_rootdigest("9261080d5dc4e8d2eedc69847a0486c18236efbf06e153d73b89b07359f13d81");
 
 /**
  * A random oracle lies within [0,max]

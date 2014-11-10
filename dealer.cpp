@@ -7,7 +7,9 @@
 
 #include "src/merkle.h"
 #include "tinyformat.h"
+#include "clientversion.h"
 
+#define FINE 0
 #define INVALID_INPUT -1
 #define INVALID_FILE -2
 #define MALLOC_ERROR -3
@@ -26,12 +28,12 @@ int main(int argc, const char *argv[]) {
 	ofstream foutput;
 	string file_path;
 	bool runout_memory = false;
-	size_t num_segmts = 0;
+	size_t num_segmts = 0, size_segmts = 0;
 	MERKLE<LEAF_SIZE> *setup_treePt = NULL;
 	vector< BUFFER<LEAF_SIZE> > file_segmts;
 	BUFFER<LEAF_SIZE> temp_buffer;
 
-	printf("Init Message: %s","Opening a SINGLE file...");
+	printf("Init Message: %s \n","Opening a SINGLE file...");
 	//TODO input validation check
 	/*
 	 size_t  num_files;
@@ -52,7 +54,7 @@ int main(int argc, const char *argv[]) {
 		exit(INVALID_FILE);
 	}
 
-	printf("Init Message: %s","Reading from the open file...");
+	printf("Init Message: %s \n","Reading from the open file...");
 	//TODO concatenate the Merkle node digests (since the size of leaves is 2 large)
 	while (finput) {
 		finput.read(temp_buffer.begin(), LEAF_SIZE);
@@ -73,22 +75,39 @@ int main(int argc, const char *argv[]) {
 		file_segmts.push_back(temp_buffer);
 	}
 	//TODO Fix other input branches
-	num_segmts = file_segmts.size();
 	finput.close();
 
-	printf("Init Message: %s","Building the Merkle tree...");
+	printf("Init Message: \n reach the end of file? %d \n run out of memory? %d \n %s...\n",finput.eof(),runout_memory,"Building the Merkle tree");
 	try {
 		setup_treePt = new MERKLE<LEAF_SIZE>(file_segmts);
 	} catch (bad_alloc& err) {
 		printf("Merkle construction error: %d",MALLOC_ERROR);
 		exit(MALLOC_ERROR);
 	}
+	num_segmts = setup_treePt->returnNumLeaves();
+	//TODO Size doesn't match
+	size_segmts = setup_treePt->returnPath(0).GetSerializeSize(SER_DISK,CLIENT_VERSION);
+	printf("Init Message: the size of file_segmets is  %lu ...\n",num_segmts);
+	printf("Init Message: the length of each segment is  %lu ...\n", size_segmts);
 	file_segmts.clear();
 
-	for(size_t i = 0; i < num_segmts; i++){
-		//TODO Write paths to the file
+	printf("Init Message: %s...\n","Writing Merkle paths to the file");
+	//TODO calculate and name the file in sequence say: 1.out 2... etc
+	try{
+		foutput.open("/scratch1/permacoin-nopor-test/1.out", ofstream::trunc | ofstream::binary);
+	}catch (ofstream::failure& err) {
+		printf("Init Message: Failed at opening file %d... \n",INVALID_FILE);
+		exit(INVALID_FILE);
 	}
 
+	vector<PATH <LEAF_SIZE> > test_path;
+	test_path.reserve(num_segmts);
+	for(size_t i = 0; i < num_segmts; i++){
+		setup_treePt->returnPath(i).Serialize(foutput,SER_DISK,CLIENT_VERSION);
+	}
+	foutput.close();
+	printf("Init Message: %s...\n Merkle root is: %s \n","File output done!",setup_treePt->returnRoot().GetHex().c_str());
+	return FINE;
 
 	return 0;
 }
