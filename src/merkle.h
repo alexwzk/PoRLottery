@@ -66,7 +66,7 @@ public:
 
 		// Hash the leaves (file segments)
 		for (size_t i = 0; i < num_segmts; i++) {
-			memcpy(segments[i], segmts[i].data, LEAF_BYTES);
+			memcpy(segments[i], segmts[i].begin(), LEAF_BYTES);
 			arrays[now_layer][i] = Hash(segments[i], segments[i] + LEAF_BYTES);
 			// coutest memcpy
 			/*std::cout << "No. " << i << ": ";
@@ -182,7 +182,7 @@ public:
 			const uint256& root) {
 		size_t next_id = u_i;
 		BUFFER<LEAF_BYTES> nleaf = vpath.returnLeaf();
-		uint256 hashvalue = Hash(BEGIN(nleaf.data), END(nleaf.data));
+		uint256 hashvalue = Hash(nleaf.begin(), nleaf.end());
 		std::vector<uint256> hash_siblings = vpath.returnHashSiblings();
 		for (size_t i = 0; i < hash_siblings.size(); i++) {
 			if (PMC::isEven(next_id)) {

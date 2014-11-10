@@ -15,13 +15,15 @@ class BUFFER {
 public:
 	uint8_t data[SIZE];
 
-    ADD_SERIALIZE_METHODS;
+	ADD_SERIALIZE_METHODS
+	;
 
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-			std::string nstr = this->toString();
-			READWRITE(nstr);
-    }
+	template<typename Stream, typename Operation>
+	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
+			int nVersion) {
+		std::string nstr = this->toString();
+		READWRITE(nstr);
+	}
 
 	void clear() {
 		memset(data, 0, SIZE);
@@ -46,12 +48,40 @@ public:
 		return true;
 	}
 
-	char* charData(){
+	char* begin() {
 		return (char *) data;
 	}
 
+	uint8_t* begin() {
+		return data;
+	}
+
+	const char* begin() {
+		return (char *) data;
+	}
+
+	const uint8_t* begin() {
+		return data;
+	}
+
+	char* end() {
+		return (char *) (data + SIZE - 1);
+	}
+
+	uint8_t* end() {
+			return (data + SIZE - 1);
+	}
+
+	const char* end() {
+		return (char *) (data + SIZE - 1);
+	}
+
+	const uint8_t* end() {
+			return (data + SIZE - 1);
+	}
+
 	std::string toString() const {
-		return std::string((const char*)data);
+		return std::string((const char*) data);
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {

@@ -37,7 +37,7 @@ public:
 		std::vector< BUFFER<FPS_LFBYTES> > fps_leaves;
 		fps_leaves.resize(num_leaves);
 		for (size_t i = 0; i < num_leaves; i++) {
-			GetRandBytes(fps_leaves[i].data, FPS_LFBYTES);
+			GetRandBytes(fps_leaves[i].begin(), FPS_LFBYTES);
 		}
 
 		try {
