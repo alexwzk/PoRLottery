@@ -46,6 +46,10 @@ public:
 		return true;
 	}
 
+	char* charData(){
+		return (char *) data;
+	}
+
 	std::string toString() const {
 		return std::string((const char*)data);
 	}
