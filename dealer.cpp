@@ -48,7 +48,7 @@ int main(int argc, const char *argv[]) {
 	try {
 		finput.open(file_path.c_str(), ifstream::binary);
 	} catch (ifstream::failure& err) {
-		strprintf("Invalid input file path: %d",INVALID_FILE);
+		printf("Invalid input file path: %d",INVALID_FILE);
 		exit(INVALID_FILE);
 	}
 
@@ -76,11 +76,11 @@ int main(int argc, const char *argv[]) {
 	num_segmts = file_segmts.size();
 	finput.close();
 
-	strprintf("Init Message: %s","Building the Merkle tree...");
+	printf("Init Message: %s","Building the Merkle tree...");
 	try {
 		setup_treePt = new MERKLE<LEAF_SIZE>(file_segmts);
 	} catch (bad_alloc& err) {
-		strprintf("Merkle construction error: %d",MALLOC_ERROR);
+		printf("Merkle construction error: %d",MALLOC_ERROR);
 		exit(MALLOC_ERROR);
 	}
 	file_segmts.clear();
