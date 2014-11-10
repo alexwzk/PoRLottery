@@ -13,10 +13,9 @@
 template<size_t SIZE>
 class BUFFER {
 public:
-	uint8_t data[SIZE];
+	unsigned char data[SIZE];
 
-	ADD_SERIALIZE_METHODS
-	;
+	ADD_SERIALIZE_METHODS;
 
 	template<typename Stream, typename Operation>
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
@@ -29,7 +28,7 @@ public:
 		memset(data, 0, SIZE);
 	}
 
-	int assign(const uint8_t* bPt, const size_t inlength) {
+	int assign(const unsigned char* bPt, const size_t inlength) {
 		if (bPt == NULL || inlength != SIZE) {
 			return INVALID_ERR;
 		}
@@ -49,36 +48,22 @@ public:
 	}
 
 	char* begin() {
-		return (char *) data;
+		return (char *) &data[0];
 	}
 
-	uint8_t* begin() {
-		return data;
-	}
-
-	const char* begin() {
-		return (char *) data;
-	}
-
-	const uint8_t* begin() {
-		return data;
+	const char* begin() const{
+		return (char *) &data[0];
 	}
 
 	char* end() {
-		return (char *) (data + SIZE - 1);
+	  return (char *) &data[SIZE];
 	}
 
-	uint8_t* end() {
-			return (data + SIZE - 1);
+
+	const char* end() const{
+		return (char *) &data[SIZE];
 	}
 
-	const char* end() {
-		return (char *) (data + SIZE - 1);
-	}
-
-	const uint8_t* end() {
-			return (data + SIZE - 1);
-	}
 
 	std::string toString() const {
 		return std::string((const char*) data);

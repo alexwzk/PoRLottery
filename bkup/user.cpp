@@ -26,7 +26,7 @@ USER::USER() {
 
 	// coutest new rand str
 	cout << "new rand str: ";
-	pmc::printHex((const uint8_t*) myticketPt->seed.data(), SEED_LENGTH);
+	pmc::printHex((const unsigned char*) myticketPt->seed.data(), SEED_LENGTH);
 
 	flags.set(PUBKEY, true);
 	flags.set(SEED, true);
@@ -51,8 +51,8 @@ int USER::generateTicket() {
 
 	size_t i_inl = 0, leaf_size = 0;
 	PATH *now_signPt = NULL, *init_signPt = NULL;
-	uint8_t *leafPt = NULL;
-	uint8_t empty_leaf[LAMBDA];
+	unsigned char *leafPt = NULL;
+	unsigned char empty_leaf[LAMBDA];
 	std::string prefix, uchar_str, inputs;
 	digest hashvalue;
 
@@ -77,7 +77,7 @@ int USER::generateTicket() {
 		inputs = prefix + now_signPt->returnPathAsStr() + uchar_str;
 
 		//Generate a new signature
-		SHA1((uint8_t*) inputs.data(), inputs.size(), hashvalue);
+		SHA1((unsigned char*) inputs.data(), inputs.size(), hashvalue);
 		now_signPt = fps_schemePt->newSignature(hashvalue);
 
 		//Push_back F[r_i] and sigma_i
@@ -161,8 +161,8 @@ void USER::resetSeed() {
 	flags.set(SEED, true);
 }
 
-uint8_t* USER::returnMyPubkey() {
-	uint8_t* cp_pubkey = new digest;
+unsigned char* USER::returnMyPubkey() {
+	unsigned char* cp_pubkey = new digest;
 	memcpy(cp_pubkey, myticketPt->pubkey, HASH_SIZE);
 	return cp_pubkey;
 }

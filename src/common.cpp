@@ -1,13 +1,13 @@
 #include "common.h"
 
-std::vector<uint8_t>* PMC::newByteVec(uint8_t* a_ptr, size_t a_length) {
+std::vector<unsigned char>* PMC::newByteVec(unsigned char* a_ptr, size_t a_length) {
 	if (a_ptr == NULL) {
 		return NULL;
 	}
-	return new std::vector<uint8_t>(a_ptr, a_ptr + a_length);
+	return new std::vector<unsigned char>(a_ptr, a_ptr + a_length);
 }
 
-void PMC::printHex(const uint8_t* ucstr, const size_t length) {
+void PMC::printHex(const unsigned char* ucstr, const size_t length) {
 	for (size_t i = 0; i < length; i++)
 		printf("%02x", ucstr[i]);
 	printf("\n");

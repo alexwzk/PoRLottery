@@ -13,7 +13,7 @@ template<unsigned int LEAF_BYTES>
 class MERKLE {
 private:
 	size_t num_segmts, num_leaves, height;
-	uint8_t **segments;
+	unsigned char **segments;
 	uint256 **arrays; //a hierarchical chunks of buffer (# elements from 0 to height: 1,2,4,8...)
 	int now_layer, next_layer;
 
@@ -56,9 +56,9 @@ public:
 
 		// Process leaves
 		try {
-			segments = new uint8_t*[num_elem]; // full binary tree
+			segments = new unsigned char*[num_elem]; // full binary tree
 			for (size_t i = 0; i < num_elem; i++) {
-				segments[i] = new uint8_t[LEAF_BYTES];
+				segments[i] = new unsigned char[LEAF_BYTES];
 			}
 		} catch (std::bad_alloc& err) {
 			throw error(err.what());

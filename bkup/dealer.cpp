@@ -4,7 +4,7 @@ DEALER::DEALER(std::string infile) {
 	using namespace std;
 	//Parse the file and divide them into segments
 	ifstream inputs;
-	vector<uint8_t *> file_segmts;
+	vector<unsigned char *> file_segmts;
 	char* inbufferPt = NULL;
 	try {
 		inputs.open(infile, ifstream::binary);
@@ -24,7 +24,7 @@ DEALER::DEALER(std::string infile) {
 			exit(MALLOC_ERR);
 		}
 		inputs.read(inbufferPt, LEAF_SIZE);
-		file_segmts.push_back((uint8_t *) inbufferPt);
+		file_segmts.push_back((unsigned char *) inbufferPt);
 	}
 
 	if (!inputs.eof()) {
@@ -41,7 +41,7 @@ DEALER::DEALER(std::string infile) {
 		for (int i = inputs.gcount(); i < LEAF_SIZE; i++) {
 			inbufferPt[i] = 0;
 		}
-		file_segmts.push_back((uint8_t *) inbufferPt);
+		file_segmts.push_back((unsigned char *) inbufferPt);
 	}
 
 	inputs.close();
@@ -88,7 +88,7 @@ int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 	using namespace std;
 	ofstream outpaths;
 	PATH* pathPt = NULL;
-	uint8_t* leafPt = NULL;
+	unsigned char* leafPt = NULL;
 	size_t tmp_size = 0, leaf_size = 0;
 
 	memcpy(pubkey,usr_pubkey,HASH_SIZE);
@@ -122,7 +122,7 @@ int DEALER::outSource(digest usr_pubkey, std::string outfile) {
 int DEALER::writeRoot(std::string outfile) {
 	using namespace std;
 	ofstream ofile_operat;
-	uint8_t* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
+	unsigned char* rootdigestPt = mktreePt->releaseRootPt();	//Method Delegate
 
 	//coutest root digest hex
 	cout << "The root digest is: ";

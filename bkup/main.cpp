@@ -28,7 +28,7 @@
 int main(int argc, const char *argv[]) {
 	using namespace std;
 	BUFFER<PMC_LFSIZE> tbuff;
-	uint8_t d[PMC_LFSIZE];
+	unsigned char d[PMC_LFSIZE];
 	for (int i = 0; i < PMC_LFSIZE; i++) {
 		d[i] = 'a';
 	}

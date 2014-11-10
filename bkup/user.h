@@ -73,7 +73,7 @@ public:
 	 * Reveals a new copy of the user's public key
 	 * OUTPUT this->myticket.pubkey
 	 */
-	uint8_t* returnMyPubkey();
+	unsigned char* returnMyPubkey();
 
 	/**
 	 * Writes the ticket to file

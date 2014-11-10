@@ -9,7 +9,7 @@
 class VERIFIER {
 private:
 	std::string puzzle_id;
-	uint8_t* root_digestPt;
+	unsigned char* root_digestPt;
 	TICKET* tic_verifyPt;
 	int i_ink = CHALNG_CONST;
 	size_t num_subset = SUBSET_CONST, num_all = ALL_CONST;

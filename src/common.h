@@ -68,13 +68,13 @@ inline size_t getRandByHash(const uint256& hashvalue, const size_t max){
  * INPUT pointer to the built-in array, the length of the array
  * OUTPUT the vector form of an array
  */
-std::vector<uint8_t>* newByteVec(uint8_t* a_pointer, size_t a_length);
+std::vector<unsigned char>* newByteVec(unsigned char* a_pointer, size_t a_length);
 
 /**
  * Prints the unchar array in Hex form
  * INPUT unchar array and its length
  */
-void printHex(const uint8_t* ucstr, const size_t length);
+void printHex(const unsigned char* ucstr, const size_t length);
 
 /**
  * Returns string in Hex form
