@@ -57,7 +57,7 @@ int main(int argc, const char *argv[]) {
 	printf("Init Message: %s \n","Reading from the open file...");
 	//TODO concatenate the Merkle node digests (since the size of leaves is 2 large)
 	while (finput) {
-		finput.read(temp_buffer.begin(), LEAF_SIZE);
+		finput.read((char *)temp_buffer.begin(), LEAF_SIZE);
 		try{
 			file_segmts.push_back(temp_buffer);
 		}catch(bad_alloc &e){
@@ -68,7 +68,7 @@ int main(int argc, const char *argv[]) {
 
 	if (!finput.eof() && !runout_memory) {
 		//File size can't be divided by the LEAF_SIZE
-		finput.read(temp_buffer.begin(), finput.gcount());
+		finput.read((char *)temp_buffer.begin(), finput.gcount());
 		for (size_t i = finput.gcount(); i < LEAF_SIZE; i++) {
 			*(temp_buffer.begin() + i) = 0;
 		}

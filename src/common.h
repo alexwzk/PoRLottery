@@ -37,8 +37,8 @@
 namespace PMC {
 
 /// Macros & typedef structure
-#define RUN_PMCLFBYTE 1024
-#define RUN_FPSLFBYTE 32
+#define RUN_PMCLFBYTE 1000000
+#define RUN_FPSLFBYTE 1024
 #define RUN_FPSLFNUM  1024
 
 #define ALL_CONST 16

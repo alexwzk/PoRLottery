@@ -20,8 +20,10 @@ public:
 	template<typename Stream, typename Operation>
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
 			int nVersion) {
-		std::vector<unsigned char> nvtr (&data[0],&data[SIZE]);
-		READWRITE(nvtr);
+		//Guarantee consistency TODO find a more efficient way
+		std::string nstr = this->toString();
+		READWRITE(nstr);
+		this->assign((const unsigned char*) nstr.c_str(),SIZE);
 	}
 
 	void clear() {
@@ -47,21 +49,25 @@ public:
 		return true;
 	}
 
-	char* begin() {
-		return (char *) &data[0];
+	unsigned char* begin() {
+		return (unsigned char *) &data[0];
 	}
 
-	const char* begin() const{
-		return (char *) &data[0];
+	const unsigned char* begin() const{
+		return (unsigned char *) &data[0];
 	}
 
-	char* end() {
-	  return (char *) &data[SIZE];
+	unsigned char* end() {
+	  return (unsigned char *) &data[SIZE];
 	}
 
 
-	const char* end() const{
-		return (char *) &data[SIZE];
+	const unsigned char* end() const{
+		return (unsigned char *) &data[SIZE];
+	}
+
+	std::string toString() const{
+		return std::string((const char *) this->begin(),SIZE);
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {
