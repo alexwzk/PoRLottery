@@ -104,6 +104,15 @@ public:
 	}
 
 	/**
+	 * Reset the FPS tree
+	 */
+	void reset() {
+		unrevealed_s.clear();
+		for (size_t i = 0; i < num_leaves; i++) {
+			unrevealed_s.push_back(i);
+		}
+	}
+	/**
 	 * Verifies the signature
 	 * INPUT a pointer to to-be-verified signature,
 	 *       H(m) as a random oracle and the user's signature (mk proof),

@@ -37,12 +37,15 @@
 namespace PMC {
 
 /// Macros & typedef structure
-#define RUN_PMCLFBYTE 1000000
+#define RUN_PMCLFBYTE 1000000 //1 MB
+#define RUN_PMCLFNUM  8
 #define RUN_FPSLFBYTE 1024
 #define RUN_FPSLFNUM  1024
+#define RUN_FPSLFSELECT 1
+#define RUN_FPSLFREVEAL 1  //TODO beta satisfy the security requirement
 
-#define ALL_CONST 16
-#define SUBSET_CONST 5
+#define ALL_CONST RUN_PMCLFNUM
+#define SUBSET_CONST RUN_PMCLFNUM/2
 #define CHALNG_CONST 2
 
 #define HEAD 0

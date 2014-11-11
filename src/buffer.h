@@ -50,20 +50,20 @@ public:
 	}
 
 	unsigned char* begin() {
-		return (unsigned char *) &data[0];
+		return &data[0];
 	}
 
 	const unsigned char* begin() const{
-		return (unsigned char *) &data[0];
+		return &data[0];
 	}
 
 	unsigned char* end() {
-	  return (unsigned char *) &data[SIZE];
+	  return &data[SIZE];
 	}
 
 
 	const unsigned char* end() const{
-		return (unsigned char *) &data[SIZE];
+		return &data[SIZE];
 	}
 
 	std::string toString() const{
