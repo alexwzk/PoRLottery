@@ -105,8 +105,6 @@ int main(int argc, const char *argv[]) {
 	for (size_t i = 0; i < num_segmts; i++) {
 		setup_treePt->returnPath(i).Serialize(foutput, SER_DISK,
 				CLIENT_VERSION);
-		setup_treePt->returnPath(i).Serialize(cout, SER_DISK,
-				CLIENT_VERSION);
 	}
 	printf("Init Message: %s...\n Merkle root is: %s \n", "File output done!",
 			setup_treePt->returnRoot().GetHex().c_str());

@@ -14,11 +14,11 @@
 template<unsigned int LEAF_BYTES>
 class PATH {
 
-private:
+public:
+
 	BUFFER<LEAF_BYTES> leaf;
 	std::vector<uint256> vhashes; // the item's hash siblings
 
-public:
 
 	PATH(){
 		setNull();

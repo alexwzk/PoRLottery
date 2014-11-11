@@ -20,7 +20,10 @@ public:
 	std::vector< PATH<PMC_LFBYTES> > mkproofs;
 	std::vector< PATH<FPS_LFBYTES> > signatures;
 
-    ADD_SERIALIZE_METHODS;
+	TICKET(){
+		clear();
+	}
+	ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -34,7 +37,15 @@ public:
 		pubkey.SetHex("0");
 		seed = 0;
 		mkproofs.clear();
+		mkproofs.reserve(CHALNG_CONST);
+		for(int i = 0; i < CHALNG_CONST; i++){
+			mkproofs[i].vhashes.reserve(RUN_PMCDEPTH);
+		}
 		signatures.clear();
+		signatures.reserve(CHALNG_CONST);
+		for(int i = 0; i < CHALNG_CONST; i++){
+			signatures[i].vhashes.reserve(RUN_PMCDEPTH);
+		}
 	}
 
 	std::string seedToString() const{
@@ -49,7 +60,9 @@ public:
 			const TICKET<PMC_LFBYTES, FPS_LFBYTES>& t) {
 		pubkey = t.pubkey;
 		seed = t.seed;
+		LogPrintf("copy mkproofs...\n");
 		mkproofs = t.mkproofs;
+		LogPrintf("copy signatures...\n");
 		signatures = t.signatures;
 		return (*this);
 	}

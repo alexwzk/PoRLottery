@@ -73,8 +73,8 @@ public:
 		nsign = mktree_keysPt->returnPath(*torevealIt);
 		torevealIt = unrevealed_s.erase(torevealIt);
 		// coutest revealed No.
-		/*std::cout << "revealed No." << (*torevealIt) << " signature."
-				<< std::endl;*/
+		std::cout << "revealed No." << (*torevealIt) << " signature."
+				<< std::endl;
 		return nsign;
 	}
 
