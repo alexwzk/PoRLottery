@@ -13,7 +13,11 @@
 template<size_t SIZE>
 class BUFFER {
 public:
-	unsigned char data[SIZE];
+	std::vector<unsigned char> vdata;
+
+	BUFFER () {
+		vdata.resize(SIZE);
+	}
 
 	ADD_SERIALIZE_METHODS;
 
@@ -21,13 +25,13 @@ public:
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
 			int nVersion) {
 		//Guarantee consistency TODO find a more efficient way
-		std::string nstr = this->toString();
-		READWRITE(nstr);
-		this->assign((const unsigned char*) nstr.c_str(),SIZE);
+		READWRITE(vdata);
 	}
 
 	void clear() {
-		memset(data, 0, SIZE);
+		for(int i = 0; i < SIZE; i++){
+			vdata[i] = 0;
+		}
 	}
 
 	int assign(const unsigned char* bPt, const size_t inlength) {
@@ -35,14 +39,14 @@ public:
 			return INVALID_ERR;
 		}
 		for (size_t i = 0; i < SIZE; i++) {
-			data[i] = bPt[i];
+			vdata[i] = bPt[i];
 		}
 		return FINE;
 	}
 
 	bool isEmpty() const {
 		for (size_t i = 0; i < SIZE; i++) {
-			if (data[i] != 0) {
+			if (vdata[i] != 0) {
 				return false;
 			}
 		}
@@ -50,28 +54,28 @@ public:
 	}
 
 	unsigned char* begin() {
-		return &data[0];
+		return vdata.data();
 	}
 
 	const unsigned char* begin() const{
-		return &data[0];
+		return vdata.data();
 	}
 
 	unsigned char* end() {
-	  return &data[SIZE];
+	  return vdata.data() + SIZE -1;
 	}
 
 
 	const unsigned char* end() const{
-		return &data[SIZE];
+		return vdata.data() + SIZE -1;
 	}
 
 	std::string toString() const{
-		return std::string((const char *) this->begin(),SIZE);
+		return std::string(vdata.begin(),vdata.end());
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {
-		this->assign(b.data, SIZE);
+		this->vdata = b.vdata;
 		return (*this);
 	}
 
