@@ -130,8 +130,8 @@ public:
 				(*torevealIt), pubkey);
 		torevealIt = unrevealed_v.erase(torevealIt);
 		// coutest verified No.
-		/*std::cout << "verified No." << (*torevealIt) << " signature."
-				<< std::endl;*/
+		std::cout << "verified No." << (*torevealIt) << " signature."
+				<< std::endl;
 		return passed;
 	}
 };
