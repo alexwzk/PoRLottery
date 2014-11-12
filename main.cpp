@@ -21,6 +21,7 @@
 
 #include "src/fps.h"
 #include "src/ticket.h"
+#include "clientversion.h"
 
 #define PMC_LFSIZE 10
 #define FPS_LFSIZE 16
@@ -32,8 +33,8 @@ int main(int argc, const char *argv[]) {
 	for (int i = 0; i < PMC_LFSIZE; i++) {
 		d[i] = 'a';
 	}
-	/*tbuff.Serialize(cout,SER_DISK,CLIENT_VERSION);
-	 cout << "\n";*/
+	tbuff.Serialize(cout,SER_DISK,CLIENT_VERSION);
+	 cout << "\n";
 
 	std::vector< BUFFER<PMC_LFSIZE> > tsegmts;
 	for (int i = 0; i < 4; i++) {
@@ -44,12 +45,12 @@ int main(int argc, const char *argv[]) {
 	PATH<PMC_LFSIZE> tpath;
 	MERKLE<PMC_LFSIZE> tmerkle(tsegmts);
 	tpath = tmerkle.returnPath(2);
-	/*cout << "Test Path info: " << endl;
-	PMC::printHex(tpath.returnLeaf().data,PMC_LFSIZE);
+	cout << "Test Path info: " << endl;
+	tpath.returnLeaf().getHex();
 	cout << "Hash siblings: (size)" << tpath.returnHashSiblings().size() << endl;
 	for(size_t i = 0; i < tpath.returnHashSiblings().size(); i++){
 		cout << tpath.returnHashSiblings().at(i).GetHex() << endl;
-	}*/
+	}
 	uint256 troot = tmerkle.returnRoot();
 
 	cout << boolalpha << MERKLE<PMC_LFSIZE>::verifyPath(tpath, 2, troot)

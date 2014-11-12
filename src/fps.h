@@ -86,8 +86,8 @@ public:
 	std::vector< PATH<FPS_LFBYTES> > rewardSign(std::vector< uint256 >& reveal_seeds){
 		std::vector< PATH<FPS_LFBYTES> > nreward_signs;
 		reveal_seeds.clear();
-		reveal_seeds.reserve(num_reveal);
-		nreward_signs.reserve(num_reveal);
+		reveal_seeds.reserve(num_reveal * 2);
+		nreward_signs.reserve(num_reveal * 2);
 		for(size_t i = 0; i < num_reveal; i++){
 			reveal_seeds[i] = GetRandHash();
 			nreward_signs[i] = this->returnSign(reveal_seeds[i]);

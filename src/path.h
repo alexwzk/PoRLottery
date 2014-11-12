@@ -68,6 +68,15 @@ public:
 		return nString;
 	}
 
+	std::string getHex() const {
+		std::string nString;
+		nString = leaf.getHex();
+		for(size_t i = 0; i < vhashes.size(); i++) {
+			nString += vhashes[i].GetHex();
+		}
+		return nString;
+	}
+
 	PATH<LEAF_BYTES>& operator=(const PATH<LEAF_BYTES>& p) {
 		leaf = p.returnLeaf();
 		vhashes = p.returnHashSiblings();

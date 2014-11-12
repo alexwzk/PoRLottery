@@ -101,7 +101,7 @@ int main(int argc, const char *argv[]) {
 			CLIENT_VERSION);
 
 	vector<PATH<LEAF_SIZE> > test_path;
-	test_path.reserve(num_segmts);
+	test_path.reserve(num_segmts * 2);
 	for (size_t i = 0; i < num_segmts; i++) {
 		setup_treePt->returnPath(i).Serialize(foutput, SER_DISK,
 				CLIENT_VERSION);

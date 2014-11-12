@@ -13,11 +13,7 @@
 template<size_t SIZE>
 class BUFFER {
 public:
-	std::vector<unsigned char> vdata;
-
-	BUFFER () {
-		vdata.resize(SIZE);
-	}
+	unsigned char data[SIZE];
 
 	ADD_SERIALIZE_METHODS;
 
@@ -25,13 +21,13 @@ public:
 	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
 			int nVersion) {
 		//Guarantee consistency TODO find a more efficient way
-		READWRITE(vdata);
+		std::string nstr = this->toString();
+		READWRITE(nstr);
+		this->assign((const unsigned char*) nstr.c_str(),SIZE);
 	}
 
 	void clear() {
-		for(int i = 0; i < SIZE; i++){
-			vdata[i] = 0;
-		}
+		memset(data, 0, SIZE);
 	}
 
 	int assign(const unsigned char* bPt, const size_t inlength) {
@@ -39,14 +35,14 @@ public:
 			return INVALID_ERR;
 		}
 		for (size_t i = 0; i < SIZE; i++) {
-			vdata[i] = bPt[i];
+			data[i] = bPt[i];
 		}
 		return FINE;
 	}
 
 	bool isEmpty() const {
 		for (size_t i = 0; i < SIZE; i++) {
-			if (vdata[i] != 0) {
+			if (data[i] != 0) {
 				return false;
 			}
 		}
@@ -54,28 +50,40 @@ public:
 	}
 
 	unsigned char* begin() {
-		return vdata.data();
+		return &data[0];
 	}
 
 	const unsigned char* begin() const{
-		return vdata.data();
+		return &data[0];
 	}
 
 	unsigned char* end() {
-	  return vdata.data() + SIZE -1;
+	  return &data[SIZE];
 	}
 
 
 	const unsigned char* end() const{
-		return vdata.data() + SIZE -1;
+		return &data[SIZE];
+	}
+
+	std::string getHex() const {
+		static const char* const lut = "0123456789ABCDEF";
+		std::string output;
+		output.reserve(2 * SIZE);
+		for (size_t i = 0; i < SIZE; ++i) {
+			const unsigned char c = data[i];
+			output.push_back(lut[c >> 4]);
+			output.push_back(lut[c & 15]);
+		}
+		return output;
 	}
 
 	std::string toString() const{
-		return std::string(vdata.begin(),vdata.end());
+		return std::string((const char *) this->begin(),SIZE);
 	}
 
 	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {
-		this->vdata = b.vdata;
+		this->assign(b.data, SIZE);
 		return (*this);
 	}
 

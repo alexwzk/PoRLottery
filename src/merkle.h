@@ -201,6 +201,9 @@ public:
 			next_id = next_id >> 1;
 		}
 		if (root.CompareTo(hashvalue) != 0) {
+			//TODO DEV purpose only
+			std::cout << root.GetHex() << std::endl;
+			std::cout << hashvalue.GetHex() << std::endl;
 			return false;
 		} else {
 			return true;
