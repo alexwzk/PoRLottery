@@ -37,15 +37,15 @@ public:
 		pubkey.SetHex("0");
 		seed = 0;
 		mkproofs.clear();
-		mkproofs.reserve(CHALNG_CONST);
+		/*		mkproofs.reserve(CHALNG_CONST);
 		for(int i = 0; i < CHALNG_CONST; i++){
 			mkproofs[i].vhashes.reserve(RUN_PMCDEPTH);
-		}
+			}*/
 		signatures.clear();
-		signatures.reserve(CHALNG_CONST);
+		/*signatures.reserve(CHALNG_CONST);
 		for(int i = 0; i < CHALNG_CONST; i++){
 			signatures[i].vhashes.reserve(RUN_PMCDEPTH);
-		}
+			}*/
 	}
 
 	std::string seedToString() const{
