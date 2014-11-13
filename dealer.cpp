@@ -15,7 +15,7 @@
 #define INVALID_FILE -2
 #define MALLOC_ERROR -3
 
-#define LEAF_SIZE 1000000 //1 MB
+#define LEAF_SIZE 100000 //1 MB
 #define NUM_ELEMENTS_PF 1000
 
 using namespace std;

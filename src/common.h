@@ -37,9 +37,9 @@
 namespace PMC {
 
 /// Macros & typedef structure
-#define RUN_PMCLFBYTE 1000000 //1 MB
-#define RUN_PMCLFNUM  8
-#define RUN_PMCDEPTH  3
+#define RUN_PMCLFBYTE 100000 //100KB
+#define RUN_PMCLFNUM  64
+#define RUN_PMCDEPTH  6
 #define RUN_FPSLFBYTE 1024
 #define RUN_FPSLFNUM  1024
 #define RUN_FPSLFSELECT 1
@@ -57,7 +57,7 @@ namespace PMC {
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-static uint256 db_rootdigest("9261080d5dc4e8d2eedc69847a0486c18236efbf06e153d73b89b07359f13d81");
+static uint256 db_rootdigest("878ef3039196885e8e1a84149bed67639283533309d922b371a110fecef44b88");
 
 /**
  * A random oracle lies within [0,max]
