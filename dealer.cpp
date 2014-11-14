@@ -15,7 +15,7 @@
 #define INVALID_FILE -2
 #define MALLOC_ERROR -3
 
-#define LEAF_SIZE 100000 //1 MB
+#define LEAF_SIZE 100000 //100KB
 #define NUM_ELEMENTS_PF 1000
 
 using namespace std;
@@ -97,7 +97,7 @@ int main(int argc, const char *argv[]) {
 
 	printf("Init Message: %s...\n", "Writing Merkle paths to the file");
 	//TODO calculate and name the file in sequence say: 1.out 2... etc
-	CAutoFile foutput(fopen("/scratch1/permacoin-nopor-test/1.out", "wb"), SER_DISK,
+	CAutoFile foutput(fopen("1.out", "wb"), SER_DISK,
 			CLIENT_VERSION);
 
 	vector<PATH<LEAF_SIZE> > test_path;
