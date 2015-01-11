@@ -200,7 +200,8 @@ public:
 			}
 			next_id = next_id >> 1;
 		}
-		if (root.CompareTo(hashvalue) != 0) {
+
+		if (UintToArith256(root).CompareTo(UintToArith256(hashvalue)) != 0) {
 			//TODO DEV purpose only
 			std::cout << root.GetHex() << std::endl;
 			std::cout << hashvalue.GetHex() << std::endl;

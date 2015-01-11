@@ -26,7 +26,7 @@
 /*BTC Dependent Headers*/
 #include "util.h"
 #include "utilstrencodings.h"
-#include "uint256.h"
+#include "arith_uint256.h"
 #include "hash.h"
 #include "random.h"
 #include "version.h"
@@ -57,15 +57,15 @@ namespace PMC {
 #define MALLOC_ERR -3
 #define FILE_ERR -4
 
-static uint256 db_rootdigest("1585467058409d26ff3f28bc8382692e8883ec8be9b2f98bd2f99a4983ab46b0");
-static uint256 genesis_hash("a05c86a06a2fb3138484abd84b69ceb2a12d34773263a17a336dd0b6ecbe2f9c");
+static arith_uint256 db_rootdigest("1585467058409d26ff3f28bc8382692e8883ec8be9b2f98bd2f99a4983ab46b0");
+static arith_uint256 genesis_hash("a05c86a06a2fb3138484abd84b69ceb2a12d34773263a17a336dd0b6ecbe2f9c");
 /**
  * A random oracle lies within [0,max]
  * INPUT hashvalue as a seed
  * OUTPUT a random number ranged [0,max]
  */
 inline size_t getRandByHash(const uint256& hashvalue, const size_t max){
-	return hashvalue.GetLow64() % max;
+	return UintToArith256(hashvalue).GetLow64() % max;
 }
 
 /**
