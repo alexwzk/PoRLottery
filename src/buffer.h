@@ -5,88 +5,23 @@
  *      Author: Zikai Alex Wen
  */
 
-#ifndef PMC_BUFFER_H_
-#define PMC_BUFFER_H_
+#ifndef PRM_BUFFER_H_
+#define PRM_BUFFER_H_
 
 #include "common.h"
+#include "uint256.h"
 
-template<size_t SIZE>
-class BUFFER {
-public:
-	unsigned char data[SIZE];
-
-	ADD_SERIALIZE_METHODS;
-
-	template<typename Stream, typename Operation>
-	inline void SerializationOp(Stream& s, Operation ser_action, int nType,
-			int nVersion) {
-		//Guarantee consistency TODO find a more efficient way
-		std::string nstr = this->toString();
-		READWRITE(nstr);
-		this->assign((const unsigned char*) nstr.c_str(),SIZE);
-	}
-
-	void clear() {
-		memset(data, 0, SIZE);
-	}
-
-	int assign(const unsigned char* bPt, const size_t inlength) {
-		if (bPt == NULL || inlength != SIZE) {
-			return INVALID_ERR;
-		}
-		for (size_t i = 0; i < SIZE; i++) {
-			data[i] = bPt[i];
-		}
-		return FINE;
-	}
-
-	bool isEmpty() const {
-		for (size_t i = 0; i < SIZE; i++) {
-			if (data[i] != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	unsigned char* begin() {
-		return &data[0];
-	}
-
-	const unsigned char* begin() const{
-		return &data[0];
-	}
-
-	unsigned char* end() {
-	  return &data[SIZE];
-	}
-
-
-	const unsigned char* end() const{
-		return &data[SIZE];
-	}
-
-	std::string getHex() const {
-		static const char* const lut = "0123456789ABCDEF";
-		std::string output;
-		output.reserve(2 * SIZE);
-		for (size_t i = 0; i < SIZE; ++i) {
-			const unsigned char c = data[i];
-			output.push_back(lut[c >> 4]);
-			output.push_back(lut[c & 15]);
-		}
-		return output;
-	}
-
-	std::string toString() const{
-		return std::string((const char *) this->begin(),SIZE);
-	}
-
-	BUFFER<SIZE>& operator=(const BUFFER<SIZE>& b) {
-		this->assign(b.data, SIZE);
+template<unsigned int BYTES>
+class BUFFER : public base_blob<BYTES * 8>{
+	public:
+	BUFFER() {}
+	BUFFER(const base_blob<BYTES * 8>& b) : base_blob<BYTES * 8>(b) {}
+	explicit BUFFER(const std::vector<unsigned char>& vch) : base_blob<BYTES * 8>(vch) {}
+	BUFFER<BYTES>& operator=(const BUFFER<BYTES>& new_data) {
+		memcpy(this->data,new_data.begin(),sizeof(this->data));
 		return (*this);
 	}
 
 };
 
-#endif /* PMC_BUFFER_H_ */
+#endif /* PRM_BUFFER_H_ */

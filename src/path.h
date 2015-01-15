@@ -5,8 +5,8 @@
  *      Author: Zikai Alex Wen
  */
 
-#ifndef PMC_PATH_H_
-#define PMC_PATH_H_
+#ifndef PRM_PATH_H_
+#define PRM_PATH_H_
 
 #include "buffer.h"
 #include "common.h"
@@ -27,7 +27,7 @@ public:
 	~PATH(){ }
 
 	void setNull(){
-		leaf.clear();
+		leaf.SetNull();
 		vhashes.clear();
 	}
 
@@ -70,7 +70,7 @@ public:
 
 	std::string getHex() const {
 		std::string nString;
-		nString = leaf.getHex();
+		nString = leaf.GetHex();
 		for(size_t i = 0; i < vhashes.size(); i++) {
 			nString += vhashes[i].GetHex();
 		}
@@ -84,4 +84,4 @@ public:
 	}
 
 };
-#endif /*PMC_PATH_H_*/
+#endif /*PRM_PATH_H_*/

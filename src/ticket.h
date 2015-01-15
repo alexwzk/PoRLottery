@@ -5,19 +5,19 @@
  *      Author: Zikai Alex Wen
  */
 
-#ifndef PMC_TICKET_H_
-#define PMC_TICKET_H_
+#ifndef PRM_TICKET_H_
+#define PRM_TICKET_H_
 
 #include <utilstrencodings.h>
 
 #include "path.h"
 
-template<unsigned int PMC_LFBYTES, unsigned int FPS_LFBYTES>
+template<unsigned int FILE_LFBYTES, unsigned int FPS_LFBYTES>
 class TICKET {
 public:
 	uint256 pubkey;
 	unsigned int seed;
-	std::vector< PATH<PMC_LFBYTES> > mkproofs;
+	std::vector< PATH<FILE_LFBYTES> > mkproofs;
 	std::vector< PATH<FPS_LFBYTES> > signatures;
 
 	TICKET(){
@@ -34,18 +34,10 @@ public:
     }
 
 	void clear(){
-		pubkey.SetHex("0");
+		pubkey.SetNull();
 		seed = 0;
 		mkproofs.clear();
-		/*		mkproofs.reserve(CHALNG_CONST);
-		for(int i = 0; i < CHALNG_CONST; i++){
-			mkproofs[i].vhashes.reserve(RUN_PMCDEPTH);
-			}*/
 		signatures.clear();
-		/*signatures.reserve(CHALNG_CONST);
-		for(int i = 0; i < CHALNG_CONST; i++){
-			signatures[i].vhashes.reserve(RUN_PMCDEPTH);
-			}*/
 	}
 
 	std::string seedToString() const{
@@ -56,8 +48,8 @@ public:
 		return SerializeHash(*this);
 	}
 
-	TICKET<PMC_LFBYTES, FPS_LFBYTES>& operator=(
-			const TICKET<PMC_LFBYTES, FPS_LFBYTES>& t) {
+	TICKET<FILE_LFBYTES, FPS_LFBYTES>& operator=(
+			const TICKET<FILE_LFBYTES, FPS_LFBYTES>& t) {
 		pubkey = t.pubkey;
 		seed = t.seed;
 		LogPrintf("copy mkproofs...\n");
@@ -69,4 +61,4 @@ public:
 
 };
 
-#endif /* PMC_TICKET_H_ */
+#endif /* PRM_TICKET_H_ */

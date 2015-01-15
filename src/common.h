@@ -4,8 +4,8 @@
  *  Created on: Sep 27, 2014
  *      Author: Zikai Alex Wen
  */
-#ifndef PMC_COMMON_H_
-#define PMC_COMMON_H_
+#ifndef PRM_COMMON_H_
+#define PRM_COMMON_H_
 
 #include <cmath>
 #include <cstdlib>
@@ -34,19 +34,19 @@
 
 
 
-namespace PMC {
+namespace PRM {
 
 /// Macros & typedef structure
-#define RUN_PMCLFBYTE 100000 //100KB
-#define RUN_PMCLFNUM  128
-#define RUN_PMCDEPTH  6
+#define RUN_PRMLFBYTE 100000 //100KB
+#define RUN_PRMLFNUM  128
+#define RUN_PRMDEPTH  6
 #define RUN_FPSLFBYTE 1024
 #define RUN_FPSLFNUM  1024
 #define RUN_FPSLFSELECT 1
 #define RUN_FPSLFREVEAL 1  //TODO beta satisfy the security requirement
 
-#define ALL_CONST RUN_PMCLFNUM
-#define SUBSET_CONST RUN_PMCLFNUM/2
+#define ALL_CONST RUN_PRMLFNUM
+#define SUBSET_CONST RUN_PRMLFNUM/2
 #define CHALNG_CONST 2
 
 #define HEAD 0
@@ -84,7 +84,6 @@ void printHex(const unsigned char* ucstr, const size_t length);
 /**
  * Returns string in Hex form
  * REF http://stackoverflow.com/questions/3381614/c-convert-string-to-hexadecimal-and-vice-versa
- * !!!! Not fully tested
  */
 std::string stringToHex(const std::string& input);
 
@@ -99,7 +98,7 @@ inline bool isEven(T v) {
 }
 
 /**
- * Computes u[i] := H_0(pk||i_inl) mod num_all
+ * Computes u[i] := H(pk||i_inl) mod num_all
  */
 size_t computeU_i(uint256 pk, size_t i_inl, size_t num_all);
 
@@ -116,4 +115,4 @@ size_t computeR_i(uint256 pk, std::string inputs, size_t num_sub,
 
 }
 
-#endif /*PMC_COMMON_H_*/
+#endif /*PRM_COMMON_H_*/

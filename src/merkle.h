@@ -5,10 +5,11 @@
  *      Author: Zikai Alex Wen
  */
 
-#ifndef PMC_MERKLE_H_
-#define PMC_MERKLE_H_
+#ifndef PRM_MERKLE_H_
+#define PRM_MERKLE_H_
 
 #include "path.h"
+
 template<unsigned int LEAF_BYTES>
 class MERKLE {
 private:
@@ -20,7 +21,6 @@ private:
 public:
 
 	/**
-	 * TODO Merkle setnull (?)
 	 * Merkle tree 1st constructor
 	 * INPUT a vector of buffer whose size is LEAF_BYTES
 	 * AFFECT all private variables
@@ -70,7 +70,7 @@ public:
 			arrays[now_layer][i] = Hash(segments[i], segments[i] + LEAF_BYTES);
 			// coutest memcpy
 			/*std::cout << "No. " << i << ": ";
-			PMC::printHex(segments[i], LEAF_BYTES);
+			PRM::printHex(segments[i], LEAF_BYTES);
 			std::cout << " and its";
 			std::cout << " hash value: ";
 			std::cout << arrays[now_layer][i].GetHex() << std::endl;*/
@@ -140,12 +140,12 @@ public:
 		size_t arrays_locate = 0;
 		BUFFER<LEAF_BYTES> inleaf;
 
-		inleaf.assign(segments[locate], LEAF_BYTES);
+		memcpy(inleaf.begin(), segments[locate], LEAF_BYTES);
 		npath.setLeafValue(inleaf);
 
 		now_layer = height - 1;
 		while (now_layer > 0) {
-			if (PMC::isEven(now_locate)) {
+			if (PRM::isEven(now_locate)) {
 				arrays_locate = now_locate + 1;
 			} else {
 				arrays_locate = now_locate - 1;
@@ -191,7 +191,7 @@ public:
 		uint256 hashvalue = Hash(nleaf.begin(), nleaf.end());
 		std::vector<uint256> hash_siblings = vpath.returnHashSiblings();
 		for (size_t i = 0; i < hash_siblings.size(); i++) {
-			if (PMC::isEven(next_id)) {
+			if (PRM::isEven(next_id)) {
 				hashvalue = Hash(hashvalue.begin(), hashvalue.end(),
 						hash_siblings[i].begin(), hash_siblings[i].end());
 			} else {
@@ -201,10 +201,10 @@ public:
 			next_id = next_id >> 1;
 		}
 
-		if (UintToArith256(root).CompareTo(UintToArith256(hashvalue)) != 0) {
-			//TODO DEV purpose only
-			std::cout << root.GetHex() << std::endl;
-			std::cout << hashvalue.GetHex() << std::endl;
+		if (memcmp(root.begin(),hashvalue.begin(),root.size()) != 0) {
+			//Coutest hash values
+		  /*std::cout << root.GetHex() << std::endl;
+			std::cout << hashvalue.GetHex() << std::endl;*/
 			return false;
 		} else {
 			return true;
@@ -213,4 +213,4 @@ public:
 
 };
 
-#endif /*PMC_MERKLE_H_*/
+#endif /*PRM_MERKLE_H_*/

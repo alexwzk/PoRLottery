@@ -1,19 +1,19 @@
 #include "common.h"
 
-std::vector<unsigned char>* PMC::newByteVec(unsigned char* a_ptr, size_t a_length) {
+std::vector<unsigned char>* PRM::newByteVec(unsigned char* a_ptr, size_t a_length) {
 	if (a_ptr == NULL) {
 		return NULL;
 	}
 	return new std::vector<unsigned char>(a_ptr, a_ptr + a_length);
 }
 
-void PMC::printHex(const unsigned char* ucstr, const size_t length) {
+void PRM::printHex(const unsigned char* ucstr, const size_t length) {
 	for (size_t i = 0; i < length; i++)
 		printf("%02x", ucstr[i]);
 	printf("\n");
 }
 
-std::string PMC::stringToHex(const std::string& input) {
+std::string PRM::stringToHex(const std::string& input) {
 	static const char* const lut = "0123456789ABCDEF";
 	size_t len = input.length();
 
@@ -27,20 +27,20 @@ std::string PMC::stringToHex(const std::string& input) {
 	return output;
 }
 
-size_t PMC::computeU_i(uint256 pk, size_t i_inl, size_t num_all) {
+size_t PRM::computeU_i(uint256 pk, size_t i_inl, size_t num_all) {
 	// coutest pk||i
 	std::string inputs = pk.ToString() + itostr(i_inl);
 	uint256 hashvalue = Hash(inputs.begin(),inputs.end());
 
-	return PMC::getRandByHash(hashvalue, num_all);
+	return PRM::getRandByHash(hashvalue, num_all);
 }
 
-size_t PMC::computeI_inL(std::string inputs, size_t num_sub) {
+size_t PRM::computeI_inL(std::string inputs, size_t num_sub) {
 	uint256 hashvalue = Hash(inputs.begin(),inputs.end());
-	return PMC::getRandByHash(hashvalue, num_sub);
+	return PRM::getRandByHash(hashvalue, num_sub);
 }
 
-size_t PMC::computeR_i(uint256 pk, std::string inputs,
+size_t PRM::computeR_i(uint256 pk, std::string inputs,
 		size_t num_sub, size_t num_all) {
 	return computeU_i(pk, computeI_inL(inputs, num_sub), num_all);
 }

@@ -4,8 +4,8 @@
  *  Created on: Sep 27, 2014
  *      Author: Zikai Alex Wen
  */
-#ifndef PMC_FPS_H_
-#define PMC_FPS_H_
+#ifndef PRM_FPS_H_
+#define PRM_FPS_H_
 
 #include "merkle.h"
 
@@ -66,7 +66,7 @@ public:
 	 */
 	PATH<FPS_LFBYTES> returnSign(const uint256& hashvalue) {
 		PATH<FPS_LFBYTES> nsign;
-		size_t index = PMC::getRandByHash(hashvalue,
+		size_t index = PRM::getRandByHash(hashvalue,
 				unrevealed_s.size()-1);
 		std::list<size_t>::iterator torevealIt = unrevealed_s.begin();
 		std::advance(torevealIt, index);
@@ -123,7 +123,7 @@ public:
 			const uint256& hashvalue, const uint256& pubkey,
 			std::list<size_t>& unrevealed_v) {
 		bool passed = false;
-		size_t index = PMC::getRandByHash(hashvalue, unrevealed_v.size()-1);
+		size_t index = PRM::getRandByHash(hashvalue, unrevealed_v.size()-1);
 		std::list<size_t>::iterator torevealIt = unrevealed_v.begin();
 		std::advance(torevealIt, index);
 		passed = MERKLE<FPS_LFBYTES>::verifyPath(vsign,
@@ -136,4 +136,4 @@ public:
 	}
 };
 
-#endif /*PMC_FPS_H_*/
+#endif /*PRM_FPS_H_*/
