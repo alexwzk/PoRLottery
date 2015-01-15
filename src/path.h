@@ -70,7 +70,7 @@ public:
 
 	std::string getHex() const {
 		std::string nString;
-		nString = leaf.GetHex();
+		nString = leaf.getHex();
 		for(size_t i = 0; i < vhashes.size(); i++) {
 			nString += vhashes[i].GetHex();
 		}
